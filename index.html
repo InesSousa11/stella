@@ -625,6 +625,12 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
  linear-gradient(180deg,rgba(255,255,255,.18) 0,rgba(255,255,255,.18) 2px,rgba(38,26,18,.03) 2px,rgba(38,26,18,0) 14px),
  radial-gradient(ellipse 120px 14px at 50% 12px,rgba(255,234,188,.26),rgba(255,234,188,0) 100%),
  linear-gradient(180deg,rgba(120,100,80,.09),rgba(120,100,80,.05) 60%,rgba(120,100,80,0))!important}
+
+/* coat pegs (dots) instead of the rod, floor line hidden behind the mirror */
+#pchip::before{left:-12px!important;top:45px!important;width:84px!important;height:18px!important;border-radius:0!important;box-shadow:none!important;background:radial-gradient(circle closest-side at 38% 34%,#F3D79E 0,#CF9442 55%,#94601F 92%,rgba(148,96,31,0) 100%) 3px 2px/11px 11px no-repeat,radial-gradient(circle closest-side at 38% 34%,#F3D79E 0,#CF9442 55%,#94601F 92%,rgba(148,96,31,0) 100%) 31px 2px/11px 11px no-repeat,radial-gradient(circle closest-side at 38% 34%,#F3D79E 0,#CF9442 55%,#94601F 92%,rgba(148,96,31,0) 100%) 59px 2px/11px 11px no-repeat,radial-gradient(closest-side,rgba(38,26,18,.30),rgba(38,26,18,0)) 0px 5px/16px 12px no-repeat,radial-gradient(closest-side,rgba(38,26,18,.30),rgba(38,26,18,0)) 28px 5px/16px 12px no-repeat,radial-gradient(closest-side,rgba(38,26,18,.30),rgba(38,26,18,0)) 56px 5px/16px 12px no-repeat!important}
+#pchip::after{display:none!important}
+.stage .photo::before{z-index:1!important}
+.stage .photo::after{z-index:0!important}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
