@@ -644,6 +644,16 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
 .pegs{position:absolute;left:0;top:50px;width:90px;height:20px;z-index:3;pointer-events:none;background:radial-gradient(circle closest-side at 38% 34%,#F3D79E 0,#CF9442 55%,#94601F 92%,rgba(148,96,31,0) 100%) 13px 2px/14px 14px no-repeat,radial-gradient(circle closest-side at 38% 34%,#F3D79E 0,#CF9442 55%,#94601F 92%,rgba(148,96,31,0) 100%) 39px 2px/14px 14px no-repeat,radial-gradient(closest-side,rgba(38,26,18,.30),rgba(38,26,18,0)) 12px 6px/16px 12px no-repeat,radial-gradient(closest-side,rgba(38,26,18,.30),rgba(38,26,18,0)) 38px 6px/16px 12px no-repeat}
 .stage .side-l{right:0!important;width:48px!important;align-items:center!important}
 .stage .side-l .act2{width:48px!important;padding:0!important;display:flex!important;justify-content:center!important}
+
+/* hooks + taller terracotta pouf with a grounded shadow, overlapping the mirror edge */
+.pegs{position:absolute;left:14px;top:46px;z-index:3;pointer-events:none;background:none!important;width:96px;height:34px}
+#pchip::before,#pchip::after{display:none!important}
+#pchip{bottom:97px!important}
+.pouf{position:absolute;left:14px;bottom:56px;width:92px;height:74px;z-index:2;pointer-events:none}
+.pouf i{position:absolute;display:block}
+.pouf .sh{left:-18px;right:-30px;bottom:-12px;height:26px;border-radius:50%;background:radial-gradient(ellipse at 42% 50%,rgba(38,26,18,.42) 0,rgba(38,26,18,.22) 45%,rgba(38,26,18,0) 72%);filter:blur(1px)}
+.pouf .bd{left:0;right:0;bottom:0;height:60px;border-radius:8px 8px 50% 50%/8px 8px 13px 13px;background:linear-gradient(90deg,#9C5527,#C27B45 28%,#C98550 52%,#A65B2C 82%,#8E4D22);box-shadow:inset 0 3px 0 rgba(255,255,255,.12),inset 0 -6px 8px rgba(80,35,10,.28)}
+.pouf .tp{left:0;right:0;bottom:46px;height:28px;border-radius:50%;background:radial-gradient(ellipse at 45% 40%,#E0A271 0,#D18F5E 60%,#BC7646 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),inset 0 -3px 5px rgba(110,55,20,.25)}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
@@ -674,7 +684,8 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
 </header>
 <section class="sheet">
 <div id="pchip"><button id="pico" aria-label="Pico, tap to say hi"></button><button id="pbub" class="pbub" aria-label="Tag this day"><b><i id="pd"></i><span id="pt"></span></b><span id="ps"></span></button></div>
-<div class="pegs" aria-hidden="true"></div>
+<svg class="pegs" width="96" height="34" viewBox="0 0 96 34" aria-hidden="true"><defs><linearGradient id="br" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0CB8E"/><stop offset=".5" stop-color="#CF9442"/><stop offset="1" stop-color="#94601F"/></linearGradient><radialGradient id="bb" cx=".35" cy=".3"><stop offset="0" stop-color="#FBE3B0"/><stop offset="1" stop-color="#B07A2C"/></radialGradient></defs><ellipse cx="14" cy="29" rx="14" ry="3" fill="rgba(38,26,18,.12)"/><rect x="6" y="4" width="5.5" height="22" rx="2.7" fill="url(#br)" stroke="#7A4E1A" stroke-width=".6"/><circle cx="8.75" cy="9" r="1" fill="#7A4E1A"/><circle cx="8.75" cy="21" r="1" fill="#7A4E1A"/><path d="M10 15 H19 Q25 15 25 8.5" fill="none" stroke="#7A4E1A" stroke-width="4.2" stroke-linecap="round"/><path d="M10 15 H19 Q25 15 25 8.5" fill="none" stroke="url(#br)" stroke-width="3" stroke-linecap="round"/><circle cx="25" cy="6.8" r="3.1" fill="url(#bb)" stroke="#7A4E1A" stroke-width=".6"/><ellipse cx="62" cy="29" rx="14" ry="3" fill="rgba(38,26,18,.12)"/><rect x="52" y="4" width="5.5" height="22" rx="2.7" fill="url(#br)" stroke="#7A4E1A" stroke-width=".6"/><circle cx="54.75" cy="9" r="1" fill="#7A4E1A"/><circle cx="54.75" cy="21" r="1" fill="#7A4E1A"/><path d="M56 15 H65 Q71 15 71 8.5" fill="none" stroke="#7A4E1A" stroke-width="4.2" stroke-linecap="round"/><path d="M56 15 H65 Q71 15 71 8.5" fill="none" stroke="url(#br)" stroke-width="3" stroke-linecap="round"/><circle cx="71" cy="6.8" r="3.1" fill="url(#bb)" stroke="#7A4E1A" stroke-width=".6"/></svg>
+<div class="pouf" aria-hidden="true"><i class="sh"></i><i class="bd"></i><i class="tp"></i></div>
 <div id="view"></div>
 <div class="pager" id="pager" role="group" aria-label="Swipe left or right to change the day"></div>
 </section>
