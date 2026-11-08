@@ -495,6 +495,23 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
   inset 0 0 0 2px rgba(255,246,222,.98),
   inset 0 0 8px 2px rgba(255,240,205,.75),
   inset 0 0 26px 4px rgba(255,232,185,.22)!important}
+
+/* ===== Mirror v5: original glass, soft blurred light that actually lights the room, mirror closes at the top ===== */
+.hero{height:calc(147px + var(--hp))!important}
+.hero-ui{padding-top:calc(var(--hp) + 4px)!important}
+.vs{top:calc(4px + var(--hp))!important}
+.sub{line-height:32px!important}
+.temp{margin-top:8px!important}.temp b{font-size:44px!important}
+.stage .photo{height:calc(var(--ah) - 276px - var(--hp) - var(--navh) + 96px)!important;padding-top:34px!important}
+#view{min-height:max(300px,calc(var(--ah) - 276px - var(--hp) - var(--navh) + 96px))}
+/* glass (as before) */
+.stage .photo::before{top:2px!important;bottom:21%!important;width:min(58%,210px)!important;border-radius:34px!important;
+ background:linear-gradient(112deg,rgba(255,255,255,.26) 0 14%,rgba(255,255,255,0) 14% 27%,rgba(255,255,255,.13) 27% 32%,rgba(255,255,255,0) 32%),linear-gradient(180deg,#B8B1A7 0%,#C9C2B8 70%,#D6CFC4 100%)!important;
+ box-shadow:0 0 0 1px rgba(110,92,72,.28),inset 0 0 14px 2px rgba(255,238,200,.5),inset 0 0 36px 6px rgba(255,232,185,.16)!important}
+/* the light itself: blurred, spilling onto wall and floor */
+.stage::before{display:block!important;content:"";position:absolute;left:50%;transform:translateX(-50%);top:2px;bottom:calc(21% - 0px);width:min(58%,210px);border-radius:34px;z-index:0;pointer-events:none;
+ border:8px solid rgba(255,242,212,.95);filter:blur(6px);
+ box-shadow:0 0 34px 16px rgba(255,226,165,.78),0 0 90px 40px rgba(255,222,155,.42),0 0 170px 80px rgba(255,220,150,.20)}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
