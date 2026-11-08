@@ -267,6 +267,16 @@ nav div{padding-bottom:calc(2px + env(safe-area-inset-bottom,0px))}
 .hero-ui{padding-top:var(--hp)!important}.hero{height:calc(173px + var(--hp))!important}.vs{top:calc(9px + var(--hp))!important}
 .stage .photo{display:flex;justify-content:center;align-items:flex-end}
 .stage .photo img.me{height:100%;width:auto;max-width:100%;object-fit:contain;display:block;pointer-events:none;-webkit-user-drag:none}
+/* header: no greeting, bigger date + place; Pico speaks the greeting */
+:root{--fh:480px}
+.hero-ui{padding-top:calc(var(--hp) + 9px)!important}
+.sub{font-size:20px;font-weight:800;line-height:36px;margin-top:0!important;opacity:1;letter-spacing:-.005em}
+.temp{margin-top:8px!important}
+.hero{height:calc(147px + var(--hp) + 9px)!important}
+.side{top:50%!important}
+#pchip{top:calc(6px + var(--fh)*.19)!important}
+.stage .photo{height:calc(var(--ah) - 276px - var(--hp) - var(--navh) + 96px - 9px)!important}
+#view{min-height:max(300px,calc(var(--ah) - 276px - var(--hp) - var(--navh) + 96px - 9px))}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
@@ -282,7 +292,7 @@ nav div{padding-bottom:calc(2px + env(safe-area-inset-bottom,0px))}
 <g class="rain"><line x1="30" y1="0" x2="24" y2="16"/><line x1="80" y1="30" x2="74" y2="46"/><line x1="130" y1="-10" x2="124" y2="6"/><line x1="190" y1="20" x2="184" y2="36"/><line x1="240" y1="-20" x2="234" y2="-4"/><line x1="290" y1="40" x2="284" y2="56"/><line x1="340" y1="0" x2="334" y2="16"/><line x1="380" y1="30" x2="374" y2="46"/></g>
 <path class="sheet-edge" id="wp" d=""/><g id="wl"></g></svg>
 <div class="hero-ui">
-<div class="row"><div><h1 id="greet">Good morning, Inês</h1><p class="sub" id="date"></p></div>
+<div class="row"><div><p class="sub" id="date"></p></div>
 </div>
 <div class="temp"><b id="t" role="button" tabindex="0" title="Preview other weather (demo)">19°</b><span class="tinfo" id="ti"></span></div>
 </div>
@@ -318,7 +328,7 @@ function fig(l){return `<img class="me" src="assets/me.webp" alt="You, wearing t
 function render(){
 app.dataset.scene=S.scene;const t=tips[S.scene];
 $('#t').textContent=t[1]+'°';$('#ti').innerHTML=t[2]+'<br>H '+t[4]+'° · L '+t[5]+'°';wave();
-$('#greet').textContent=(H<12?'Good morning':H<18?'Good afternoon':'Good evening')+', Inês';
+
 document.querySelectorAll('#seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===S.view));
 const d=day(S.off);$('#date').textContent=d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+' · Carcavelos';
 const v=$('#view');
@@ -369,12 +379,12 @@ mk('pbody',B);mk('pbclip',B);mk('pshade',H);
 })();
 let PM=null,pmt;
 function hop(){const p=$('#pico');p.classList.remove('hop');void p.offsetWidth;p.classList.add('hop')}
-let TIPU=0;function react(mood,title,sub,ms=2800){PM={mood,title,sub,until:Date.now()+ms};TIPU=Date.now()+ms+4000;hop();if(mood==='joy'||mood==='excited'||mood==='proud')party();updatePico();clearTimeout(pmt);pmt=setTimeout(updatePico,ms+60);setTimeout(updatePico,ms+4100)}
+const GRT=()=>(H<12?'Good morning':H<18?'Good afternoon':'Good evening')+', Inês';let TIPU=0;function react(mood,title,sub,ms=2800){PM={mood,title,sub,until:Date.now()+ms};TIPU=Date.now()+ms+4000;hop();if(mood==='joy'||mood==='excited'||mood==='proud')party();updatePico();clearTimeout(pmt);pmt=setTimeout(updatePico,ms+60);setTimeout(updatePico,ms+4100)}
 function updatePico(){const c=$('#pchip');c.hidden=S.view!=='daily';if(S.view!=='daily')return;
 const tg=tagOf(S.off),live=PM&&Date.now()<PM.until,p=$('#pico');const sig=key(S.off)+(tg?tg.n:'');if(sig!==updatePico.sig){updatePico.sig=sig;TIPU=Math.max(TIPU,Date.now()+6000);setTimeout(updatePico,6100)}c.classList.toggle('q',!(live||Date.now()<TIPU));
 p.dataset.mood=live?PM.mood:tg?tg.mood:S.scene==='night'?'sleepy':S.scene==='sunny'?'excited':'happy';p.dataset.wx=S.scene;const dur=p.dataset.mood==='excited'?'1.6s':p.dataset.mood==='sleepy'?'6.5s':'4.2s';if(p._d!==dur){p._d=dur;p.querySelectorAll('animate,animateTransform').forEach(x=>x.setAttribute('dur',dur))}
-$('#pt').textContent=live?PM.title:tg?tg.n:'What’s on today?';$('#pd').style.background=live||!tg?'var(--mut)':tg.c;
-$('#ps').textContent=live?PM.sub:tg?tg.cheer+' '+tips[S.scene][0]:'Tap to tag this day and I’ll plan around it.'}
+$('#pt').textContent=live?PM.title:tg?tg.n:GRT();$('#pd').style.background=live||!tg?'var(--mut)':tg.c;
+$('#ps').textContent=live?PM.sub:tg?tg.cheer+' '+tips[S.scene][0]:'What’s on today? Tap to tag this day.'}
 function openTags(){const k=key(S.off),cur=TG[k]&&TG[k].t;$('#tsd').textContent=day(S.off).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
 $('#tgrid').innerHTML=Object.entries(TAGS).map(([id,t])=>`<button data-tag="${id}" aria-pressed="${cur===id}"><i style="background:${t.c}"></i>${t.n}</button>`).join('');$('#sres').innerHTML='';SY=null;$('#ts').hidden=false}
 function closeTags(){$('#ts').hidden=true}
@@ -392,7 +402,7 @@ const P=[[-20,ys[0]],...xs.map((x,i)=>[x,ys[i]]),[420,ys[n-1]]];let d=`M${P[0][0
 for(let i=0;i<P.length-1;i++){const a=P[Math.max(i-1,0)],b=P[i],c=P[i+1],e=P[Math.min(i+2,P.length-1)];d+=`C${b[0]+(c[0]-a[0])/6} ${b[1]+(c[1]-a[1])/6} ${c[0]-(e[0]-b[0])/6} ${c[1]-(e[1]-b[1])/6} ${c[0]} ${c[1]}`}
 $('#wp').setAttribute('d',d+'L420 240L-20 240Z');
 $('#wl').innerHTML=xs.map((x,i)=>`<circle cx="${x}" cy="${ys[i]}" r="${i==cur?5.5:3.5}" fill="${i==cur?'#FFD60F':'#fff'}" stroke="#fff" stroke-width="${i==cur?2:0}"/><text class="wt${i==cur?' cur':''}" x="${x}" y="${ys[i]-11}">${T[i]}°</text>`).join('')}
-const _r=render;render=function(){_r();updatePico()};
+const _r=render;render=function(){_r();updatePico();if(window.__fit)__fit()};
 const newOff=dir=>{if(S.view==='daily')return S.off+dir;if(S.view==='weekly')return S.off+7*dir;const d=day(S.off),t=new Date(d.getFullYear(),d.getMonth()+dir,1);t.setDate(Math.min(d.getDate(),new Date(t.getFullYear(),t.getMonth()+1,0).getDate()));return Math.round((t-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5)};
 let PD=0;const V=$('#view');const tgt=()=>S.view==='daily'?(V.querySelector('.photo')||V):V;
 function paintPager(){const el=$('#pager');let h='';for(let o=-3;o<=3;o++){const td=S.view==='daily'&&o!==0&&-S.off===o;h+=`<i class="${o===0?'c':Math.abs(o)===3?'s':''}${td?' t':''}"></i>`}
@@ -412,12 +422,12 @@ const _r2=render;render=function(){_r2();paintPager()};
 const SC=['sunny','rainy','night'];const cyc=()=>{S.scene=SC[(SC.indexOf(S.scene)+1)%3];render();react(S.scene==='sunny'?'excited':S.scene==='night'?'sleepy':'happy',S.scene==='sunny'?'Sun’s out!':S.scene==='night'?'Sleepy time':'Rain incoming',tips[S.scene][0]);toast('Weather preview: '+S.scene)};
 $('#t').addEventListener('click',cyc);$('#t').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();cyc()}});
 
-render();react('happy',tagOf(0)?tagOf(0).n:'Hi Inês, it’s Pico!',tagOf(0)?tagOf(0).cheer:tips[S.scene][0],4500);
+render();react('happy',tagOf(0)?tagOf(0).n:GRT(),tagOf(0)?tagOf(0).cheer:tips[S.scene][0],4500);
 
 (function(){const r=document.documentElement;
-function fit(){try{const h=(window.visualViewport&&visualViewport.height)||window.innerHeight;r.style.setProperty('--ah',Math.round(h)+'px');
+function fit(){try{const h=(window.visualViewport&&visualViewport.height)||window.innerHeight;r.style.setProperty('--ah',Math.round(h)+'px');const im=document.querySelector('.stage .photo img');if(im&&im.getBoundingClientRect().height)r.style.setProperty('--fh',Math.round(im.getBoundingClientRect().height)+'px');
 const n=document.querySelector('#nav');if(n)r.style.setProperty('--navh',n.offsetHeight+'px')}catch(e){}}
-fit();addEventListener('resize',fit);addEventListener('orientationchange',fit);if(window.visualViewport)visualViewport.addEventListener('resize',fit);
+window.__fit=fit;fit();addEventListener('resize',fit);addEventListener('orientationchange',fit);if(window.visualViewport)visualViewport.addEventListener('resize',fit);
 if(window.ResizeObserver){const n=document.querySelector('#nav');if(n)new ResizeObserver(fit).observe(n,{box:'border-box'})}
-setTimeout(fit,300);addEventListener('load',fit)})();
+setTimeout(fit,300);addEventListener('load',fit);const _im=document.querySelector('.stage .photo img');if(_im)_im.addEventListener('load',fit)})();
 </script></body></html>
