@@ -542,6 +542,13 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
 .vs .temp .tinfo{font-size:14px!important}.vs .temp b{font-size:19px!important;font-weight:400!important;color:#fff}
 .sub{padding-left:0!important;max-width:calc(100vw - 196px)!important}
 @media (max-width:375px){.sub{padding-left:0!important}}
+
+/* white line along the temperature wave + softer sky gradient */
+#wline{fill:none;stroke:rgba(255,255,255,.92);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transform:translate(0,5.2px);filter:drop-shadow(0 0 3px rgba(255,255,255,.45))}
+#sk-night stop:nth-child(1){stop-color:#1A2745}#sk-night stop:nth-child(2){stop-color:#3C5081}#sk-night stop:nth-child(3){stop-color:#8A83A0}
+#sk-rainy stop:nth-child(1){stop-color:#76869B}#sk-rainy stop:nth-child(2){stop-color:#A3AFBD}#sk-rainy stop:nth-child(3){stop-color:#DCD3CB}
+[data-scene=night]{--h1:#46598A;--h2:#344A7A;--h3:#243A68}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:46%;background:linear-gradient(to bottom,rgba(233,223,211,0),rgba(233,223,211,.22));pointer-events:none;z-index:0}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
@@ -562,7 +569,7 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
 <path class="h2" d="M0 130L60 106 130 126 210 97 290 125 400 102V186H0Z"/>
 <path class="h3" d="M0 145C70 134 140 149 210 139 290 130 340 145 400 138V186H0Z"/>
 <g class="rain"><line x1="30" y1="0" x2="24" y2="16"/><line x1="80" y1="30" x2="74" y2="46"/><line x1="130" y1="-10" x2="124" y2="6"/><line x1="190" y1="20" x2="184" y2="36"/><line x1="240" y1="-20" x2="234" y2="-4"/><line x1="290" y1="40" x2="284" y2="56"/><line x1="340" y1="0" x2="334" y2="16"/><line x1="380" y1="30" x2="374" y2="46"/></g>
-<path class="sheet-edge" id="wp" d=""/><g id="wl"></g></svg>
+<path class="sheet-edge" id="wp" d=""/><path id="wline" d="" fill="none"/><g id="wl"></g></svg>
 <div class="hero-ui">
 <div class="row"><div><p class="sub" id="date"></p></div>
 </div>
@@ -671,7 +678,7 @@ const PK=139;
 function wave(){const T=WT[S.scene],n=T.length,xs=T.map((_,i)=>34+i*(332/(n-1))),cur=Math.min(n-1,Math.floor(H/3)),mn=Math.min(...T),mx=Math.max(...T),amp=Math.min(34,10+(mx-mn)*4),ys=T.map(t=>PK+(mx===mn?.5:1-(t-mn)/(mx-mn))*amp);
 const P=[[-20,ys[0]],...xs.map((x,i)=>[x,ys[i]]),[420,ys[n-1]]];let d=`M${P[0][0]} ${P[0][1]}`;
 for(let i=0;i<P.length-1;i++){const a=P[Math.max(i-1,0)],b=P[i],c=P[i+1],e=P[Math.min(i+2,P.length-1)];d+=`C${b[0]+(c[0]-a[0])/6} ${b[1]+(c[1]-a[1])/6} ${c[0]-(e[0]-b[0])/6} ${c[1]-(e[1]-b[1])/6} ${c[0]} ${c[1]}`}
-$('#wp').setAttribute('d',d+'L420 240L-20 240Z');{const m="<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 183' preserveAspectRatio='xMidYMax slice'><path transform='translate(0 5)' d='"+d+"L420 -3000L-20 -3000Z' fill='black'/></svg>";const u='url("data:image/svg+xml,'+encodeURIComponent(m)+'")';const hh=document.querySelector('.hero');hh.style.setProperty('-webkit-mask-image',u);hh.style.setProperty('mask-image',u);}
+$('#wp').setAttribute('d',d+'L420 240L-20 240Z');$('#wline').setAttribute('d',d);{const m="<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 183' preserveAspectRatio='xMidYMax slice'><path transform='translate(0 5)' d='"+d+"L420 -3000L-20 -3000Z' fill='black'/></svg>";const u='url("data:image/svg+xml,'+encodeURIComponent(m)+'")';const hh=document.querySelector('.hero');hh.style.setProperty('-webkit-mask-image',u);hh.style.setProperty('mask-image',u);}
 $('#wl').innerHTML=xs.map((x,i)=>`<circle cx="${x}" cy="${ys[i]}" r="${i==cur?5.5:3.5}" fill="${i==cur?'#FFD60F':'#fff'}" stroke="#fff" stroke-width="${i==cur?2:0}"/><text class="wt${i==cur?' cur':''}" x="${x}" y="${ys[i]-11}">${T[i]}°</text>`).join('')}
 const _r=render;render=function(){_r();updatePico();if(window.__fit)__fit()};
 const newOff=dir=>{if(S.view==='daily')return S.off+dir;if(S.view==='weekly')return S.off+7*dir;const d=day(S.off),t=new Date(d.getFullYear(),d.getMonth()+dir,1);t.setDate(Math.min(d.getDate(),new Date(t.getFullYear(),t.getMonth()+1,0).getDate()));return Math.round((t-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5)};
