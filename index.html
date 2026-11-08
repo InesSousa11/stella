@@ -633,11 +633,17 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
 .stage .side-l{left:auto!important;right:15px!important;top:calc(50% - 67px - 12px - 102px)!important;transform:none!important;gap:14px!important;align-items:center}
 /* Pico sits on a pouf at the bottom left, next to the mirror */
 #pchip{top:auto!important;bottom:84px!important;left:12px!important;flex-direction:column-reverse!important;align-items:flex-start!important;gap:4px!important;width:96px!important}
-#pchip::after{display:block!important;content:"";position:absolute!important;left:19px!important;right:auto!important;top:auto!important;bottom:4px!important;width:58px!important;height:15px!important;border-radius:50%;background:radial-gradient(ellipse at 50% 40%,#5E8FBF,#2B5C8A 75%)!important;box-shadow:inset 0 -2px 3px rgba(20,40,80,.35);z-index:-1}
-#pchip::before{content:"";position:absolute!important;left:7px!important;right:auto!important;top:auto!important;bottom:-16px!important;width:82px!important;height:36px!important;border-radius:28px 28px 20px 20px/20px 20px 16px 16px;
- background:linear-gradient(90deg,#1B3766,#2B5C8A 42%,#1B3766)!important;box-shadow:inset 0 -4px 0 rgba(207,148,66,.85),0 9px 10px rgba(38,26,18,.28)!important;z-index:-1}
+#pchip::after{display:block!important;content:"";position:absolute!important;left:1px!important;right:auto!important;top:auto!important;bottom:8px!important;width:66px!important;height:20px!important;border-radius:50%!important;
+ background:radial-gradient(ellipse at 50% 45%,#EBD2B3 0,#DDBC97 62%,#CFAA82 100%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.28),inset 0 -2px 4px rgba(120,80,40,.25);z-index:-1}
+#pchip::before{content:"";position:absolute!important;left:1px!important;right:auto!important;top:auto!important;bottom:-22px!important;width:66px!important;height:40px!important;border-radius:6px 6px 50% 50%/6px 6px 11px 11px;
+ background:linear-gradient(90deg,#B48E67,#D6B58F 30%,#D9B994 55%,#B48E67)!important;box-shadow:inset 0 3px 0 rgba(255,255,255,.14),0 9px 10px -3px rgba(38,26,18,.34)!important;z-index:-1}
 #pbub{width:92px!important}
 .pbub::before{top:auto!important;bottom:-4px!important;left:24px!important;border-left:0!important;border-top:0!important;border-right:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+
+/* two coat pegs top-left; worn/laundry aligned with the layer column */
+.pegs{position:absolute;left:0;top:50px;width:90px;height:20px;z-index:3;pointer-events:none;background:radial-gradient(circle closest-side at 38% 34%,#F3D79E 0,#CF9442 55%,#94601F 92%,rgba(148,96,31,0) 100%) 13px 2px/14px 14px no-repeat,radial-gradient(circle closest-side at 38% 34%,#F3D79E 0,#CF9442 55%,#94601F 92%,rgba(148,96,31,0) 100%) 39px 2px/14px 14px no-repeat,radial-gradient(closest-side,rgba(38,26,18,.30),rgba(38,26,18,0)) 12px 6px/16px 12px no-repeat,radial-gradient(closest-side,rgba(38,26,18,.30),rgba(38,26,18,0)) 38px 6px/16px 12px no-repeat}
+.stage .side-l{right:0!important;width:48px!important;align-items:center!important}
+.stage .side-l .act2{width:48px!important;padding:0!important;display:flex!important;justify-content:center!important}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
@@ -668,6 +674,7 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
 </header>
 <section class="sheet">
 <div id="pchip"><button id="pico" aria-label="Pico, tap to say hi"></button><button id="pbub" class="pbub" aria-label="Tag this day"><b><i id="pd"></i><span id="pt"></span></b><span id="ps"></span></button></div>
+<div class="pegs" aria-hidden="true"></div>
 <div id="view"></div>
 <div class="pager" id="pager" role="group" aria-label="Swipe left or right to change the day"></div>
 </section>
