@@ -260,6 +260,7 @@ nav div{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
 #view{min-height:max(300px,calc(var(--ah) - 312px - var(--sat) - var(--navh) + 96px - env(safe-area-inset-bottom,0px)))}
 @media (max-height:600px){.stage .photo{min-height:270px}#view{min-height:270px}}
 nav div{padding-bottom:calc(2px + env(safe-area-inset-bottom,0px))}
+.stage .photo{padding:66px 0 4px}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
@@ -307,10 +308,10 @@ const day=o=>{const d=new Date(now);d.setDate(d.getDate()+o);return d};
 const key=o=>{const d=day(o);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const planned=o=>o===0||o<0||((day(o).getDate()%3)!==0);
 function mini(o){if(!planned(o))return'<div class="mini empty"></div>';const l=(day(o).getDate()%3)+1;return`<div class="mini"><span style="background:${items[0].c}"></span><span style="background:${l>1?items[l-1].c:'#2F4380'}"></span><span style="background:#2F4380"></span></div>`}
-function fig(l){const c=items;let s=`<svg viewBox="30 10 140 246" preserveAspectRatio="xMidYMid meet"><ellipse cx="100" cy="52" rx="30" ry="32" fill="#3A2418"/><circle cx="100" cy="56" r="19" fill="#E9B79B"/><rect x="92" y="72" width="16" height="14" fill="#E9B79B"/><path d="M72 88h56l6 90H66z" fill="${c[0].c}"/><path d="M70 176h60l4 62h-28l-4-44-4 44H66z" fill="#2F4380"/><ellipse cx="100" cy="248" rx="46" ry="5" fill="#000" opacity=".1"/><ellipse cx="82" cy="242" rx="12" ry="5" fill="#2F4380"/><ellipse cx="118" cy="242" rx="12" ry="5" fill="#2F4380"/>`;
-if(l>1)s+=`<path d="M68 88h22l2 96H64zM110 88h22l4 96h-28z" fill="${c[1].c}"/>`;
-if(l>2)s+=`<path d="M62 86h30l2 150H52zM108 86h30l10 150h-42z" fill="${c[2].c}"/>`;
-return s+`<rect x="56" y="150" width="14" height="30" rx="5" fill="#2F4380"/><path d="M62 90Q50 140 60 150" stroke="#2F4380" stroke-width="3" fill="none"/></svg>`}
+function fig(l){const c=items;let s=`<svg viewBox="0 0 120 322" preserveAspectRatio="xMidYMax meet"><ellipse cx="60" cy="318" rx="36" ry="4" fill="#000" opacity=".1"/><ellipse cx="60" cy="25" rx="20" ry="25" fill="#3A2418"/><ellipse cx="60" cy="29" rx="12" ry="15" fill="#E9B79B"/><rect x="55" y="40" width="10" height="20" fill="#E9B79B"/><path d="M42 60H78L80 165H40z" fill="${c[0].c}"/><path d="M43 150H77L91 312H62L60 205L58 312H29z" fill="#2F4380"/><ellipse cx="45" cy="314" rx="12" ry="4" fill="#2F4380"/><ellipse cx="75" cy="314" rx="12" ry="4" fill="#2F4380"/>`;
+if(l>1)s+=`<path d="M34 59H56L55 184H31zM64 59H86L89 184H65z" fill="${c[1].c}"/>`;
+if(l>2)s+=`<path d="M25 58H58L55 232H13zM62 58H95L107 232H65z" fill="${c[2].c}"/>`;
+return s+`<rect x="22" y="146" width="13" height="28" rx="5" fill="#2F4380"/><path d="M33 62Q22 112 29 148" stroke="#2F4380" stroke-width="2.6" fill="none"/></svg>`}
 function render(){
 app.dataset.scene=S.scene;const t=tips[S.scene];
 $('#t').textContent=t[1]+'°';$('#ti').innerHTML=t[2]+'<br>H '+t[4]+'° · L '+t[5]+'°';wave();
