@@ -567,6 +567,24 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
 .hero.open .grab::before{background:rgba(31,53,82,.35)}
 .stage .photo{height:calc(var(--ah) - 183px - var(--hp) - var(--navh) + 96px)!important}
 #view{min-height:max(300px,calc(var(--ah) - 183px - var(--hp) - var(--navh) + 96px))}
+
+/* ===== Sky-glow header with sun arc ===== */
+.hero,.hero.open{height:calc(124px + var(--hp))!important;overflow:visible!important;-webkit-mask-image:none!important;mask-image:none!important;
+ background:linear-gradient(to bottom,var(--w1) 0,var(--w2) 50%,var(--w3) 88%,rgba(233,223,211,0) 100%)!important}
+.hero .scene,.hero::after,.hero::before,.hero .row{display:none!important}
+[data-scene=sunny]{--w1:#7F9BBA;--w2:#C4A07F;--w3:rgba(226,200,170,.55)}
+[data-scene=rainy]{--w1:#74849A;--w2:#A3AEBB;--w3:rgba(205,200,196,.55)}
+[data-scene=night]{--w1:#1A2745;--w2:#3C5081;--w3:rgba(120,118,150,.5)}
+.wx{position:absolute;left:0;right:0;top:0;bottom:0;z-index:3;color:#fff;font-family:Inter,system-ui,sans-serif;text-shadow:0 1px 8px rgba(20,33,61,.3);pointer-events:none}
+.wx .wcap{position:absolute;left:20px;top:calc(var(--hp) + 6px);font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.92;white-space:nowrap}
+.wx .dt{position:absolute;left:20px;top:calc(var(--hp) + 21px);font-family:Fraunces,Georgia,serif;font-weight:300;font-size:32px;line-height:1.1}
+.wx svg{position:absolute;left:22px;right:22px;top:calc(var(--hp) + 41px);width:calc(100% - 44px);height:auto;overflow:visible}
+.wx text{font-family:Inter,system-ui,sans-serif;fill:#fff;font-weight:500}
+.wx .tmp{font-family:Fraunces,Georgia,serif;font-weight:300;font-size:25px}
+.vs{right:14px!important;top:calc(var(--hp) + 6px)!important;left:auto!important;background:rgba(255,255,255,.2)!important;border:1px solid rgba(255,255,255,.5)!important;display:flex!important}
+.vs .temp{display:none!important}.vs button{color:#fff!important}.vs button[aria-pressed=true]{color:#BF6A1E!important}
+.stage .photo{height:calc(var(--ah) - 253px - var(--hp) - var(--navh) + 96px)!important}
+#view{min-height:max(300px,calc(var(--ah) - 253px - var(--hp) - var(--navh) + 96px))}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
@@ -588,7 +606,7 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
 <path class="h3" d="M0 145C70 134 140 149 210 139 290 130 340 145 400 138V186H0Z"/>
 <g class="rain"><line x1="30" y1="0" x2="24" y2="16"/><line x1="80" y1="30" x2="74" y2="46"/><line x1="130" y1="-10" x2="124" y2="6"/><line x1="190" y1="20" x2="184" y2="36"/><line x1="240" y1="-20" x2="234" y2="-4"/><line x1="290" y1="40" x2="284" y2="56"/><line x1="340" y1="0" x2="334" y2="16"/><line x1="380" y1="30" x2="374" y2="46"/></g>
 <path class="sheet-edge" id="wp" d=""/><path id="wline" d="" fill="none"/><g id="wl"></g></svg>
-<button class="grab" id="grab" aria-label="Show weather details" aria-expanded="false"></button><div class="hero-ui">
+<div class="wx" id="wx"></div><div class="hero-ui">
 <div class="row"><div><p class="sub" id="date"></p></div>
 </div>
 </div>
@@ -727,12 +745,22 @@ window.__fit=fit;fit();addEventListener('resize',fit);addEventListener('orientat
 if(window.ResizeObserver){const n=document.querySelector('#nav');if(n)new ResizeObserver(fit).observe(n,{box:'border-box'})}
 setTimeout(fit,300);addEventListener('load',fit);const _im=document.querySelector('.stage .photo img');if(_im)_im.addEventListener('load',fit)})();
 
-(function(){const h=document.querySelector('.hero'),g=document.getElementById('grab');if(!h||!g)return;
-function set(o){h.classList.toggle('open',o);g.setAttribute('aria-expanded',o)}
-g.addEventListener('click',()=>set(!h.classList.contains('open')));
-let y0=null;h.addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true});
-h.addEventListener('touchend',e=>{if(y0==null)return;const d=e.changedTouches[0].clientY-y0;y0=null;if(d>26)set(true);else if(d<-26)set(false)});
-h.addEventListener('wheel',e=>{if(e.deltaY<-8)set(true);else if(e.deltaY>8)set(false)},{passive:true});
-document.addEventListener('click',e=>{if(h.classList.contains('open')&&!h.contains(e.target)&&!e.target.closest('.hero'))set(false)});
-})();
+
+
+const _r3=render;render=function(){_r3();wxui()};
+function wxui(){try{const d=new Date(),w=document.getElementById('wx');if(!w)return;
+const wd=d.toLocaleDateString('en-GB',{weekday:'long'}),dm=d.getDate()+' '+d.toLocaleDateString('en-GB',{month:'short'});
+const sc=S.scene,em=({sunny:'☀️',rainy:'🌧️',night:'🌙'})[sc]||'☀️',f=({sunny:.42,rainy:.5,night:.4})[sc];
+const lab=sc==='night'?['17:20','07:02']:['07:02','17:20'];
+const x=2+342*f,y=52*(1-f)*(1-f)+2*f*(1-f)*(-26)+52*f*f,cx=Math.max(44,Math.min(302,x));
+const col=sc==='rainy'?'#E6ECF3':sc==='night'?'#FFF3C9':'#FFD27A';
+const t=document.getElementById('t').textContent;
+w.innerHTML=`<div class="wcap">${wd} · 📍 Carcavelos</div><div class="dt">${dm}</div>
+<svg viewBox="0 0 346 66"><defs><radialGradient id="sg"><stop offset="0" stop-color="${col}" stop-opacity=".75"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></radialGradient></defs>
+<line x1="0" y1="52.5" x2="346" y2="52.5" stroke="rgba(255,255,255,.4)"/>
+<path d="M2 52Q173 -26 344 52" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.4" stroke-dasharray="1.5 5" stroke-linecap="round"/>
+<circle cx="${x}" cy="${y}" r="26" fill="url(#sg)"/><circle cx="${x}" cy="${y}" r="7" fill="${col}" stroke="#fff" stroke-width="2"/>
+<text class="tmp" x="${cx}" y="${y-16}" text-anchor="middle">${em} ${t}</text>
+<text x="2" y="64" font-size="10.5" opacity=".9">${lab[0]}</text><text x="344" y="64" font-size="10.5" text-anchor="end" opacity=".9">${lab[1]}</text></svg>`}catch(e){}}
+wxui();
 </script></body></html>
