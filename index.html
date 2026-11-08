@@ -549,6 +549,24 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
 #sk-rainy stop:nth-child(1){stop-color:#76869B}#sk-rainy stop:nth-child(2){stop-color:#A3AFBD}#sk-rainy stop:nth-child(3){stop-color:#DCD3CB}
 [data-scene=night]{--h1:#46598A;--h2:#344A7A;--h3:#243A68}
 .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:46%;background:linear-gradient(to bottom,rgba(233,223,211,0),rgba(233,223,211,.22));pointer-events:none;z-index:0}
+
+/* ===== Compact straight header; weather details pull down ===== */
+.hero{height:calc(54px + var(--hp))!important;overflow:visible!important;transition:none}
+.hero:not(.open){-webkit-mask-image:linear-gradient(to bottom,#000 62%,rgba(0,0,0,0) 100%)!important;mask-image:linear-gradient(to bottom,#000 62%,rgba(0,0,0,0) 100%)!important;-webkit-mask-size:100% 100%!important;mask-size:100% 100%!important}
+.hero:not(.open) .scene{inset:0!important;height:100%!important;overflow:hidden}
+.hero:not(.open) .scene>:not(.sky){display:none}
+.hero:not(.open)::after{display:none}
+.hero.open{-webkit-mask-image:none!important;mask-image:none!important}
+.hero.open .scene{inset:0 0 auto 0!important;height:calc(178px + var(--hp))!important;filter:drop-shadow(0 8px 14px rgba(31,53,82,.22));animation:wxin .28s ease-out}
+@keyframes wxin{from{clip-path:inset(0 0 70% 0)}to{clip-path:inset(0 0 0 0)}}
+.hero.open #wp{fill:var(--bg)!important}
+.hero.open::after{display:none}
+.grab{position:absolute;left:50%;bottom:7px;transform:translateX(-50%);width:36px;height:12px;border:0;background:none;padding:0;z-index:6;cursor:pointer}
+.grab::before{content:"";position:absolute;left:0;right:0;top:4px;height:4px;border-radius:2px;background:rgba(255,255,255,.7)}
+.hero.open .grab{top:calc(166px + var(--hp));bottom:auto}
+.hero.open .grab::before{background:rgba(31,53,82,.35)}
+.stage .photo{height:calc(var(--ah) - 183px - var(--hp) - var(--navh) + 96px)!important}
+#view{min-height:max(300px,calc(var(--ah) - 183px - var(--hp) - var(--navh) + 96px))}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
@@ -570,7 +588,7 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
 <path class="h3" d="M0 145C70 134 140 149 210 139 290 130 340 145 400 138V186H0Z"/>
 <g class="rain"><line x1="30" y1="0" x2="24" y2="16"/><line x1="80" y1="30" x2="74" y2="46"/><line x1="130" y1="-10" x2="124" y2="6"/><line x1="190" y1="20" x2="184" y2="36"/><line x1="240" y1="-20" x2="234" y2="-4"/><line x1="290" y1="40" x2="284" y2="56"/><line x1="340" y1="0" x2="334" y2="16"/><line x1="380" y1="30" x2="374" y2="46"/></g>
 <path class="sheet-edge" id="wp" d=""/><path id="wline" d="" fill="none"/><g id="wl"></g></svg>
-<div class="hero-ui">
+<button class="grab" id="grab" aria-label="Show weather details" aria-expanded="false"></button><div class="hero-ui">
 <div class="row"><div><p class="sub" id="date"></p></div>
 </div>
 </div>
@@ -708,4 +726,13 @@ const n=document.querySelector('#nav');if(n)r.style.setProperty('--navh',n.offse
 window.__fit=fit;fit();addEventListener('resize',fit);addEventListener('orientationchange',fit);if(window.visualViewport)visualViewport.addEventListener('resize',fit);
 if(window.ResizeObserver){const n=document.querySelector('#nav');if(n)new ResizeObserver(fit).observe(n,{box:'border-box'})}
 setTimeout(fit,300);addEventListener('load',fit);const _im=document.querySelector('.stage .photo img');if(_im)_im.addEventListener('load',fit)})();
+
+(function(){const h=document.querySelector('.hero'),g=document.getElementById('grab');if(!h||!g)return;
+function set(o){h.classList.toggle('open',o);g.setAttribute('aria-expanded',o)}
+g.addEventListener('click',()=>set(!h.classList.contains('open')));
+let y0=null;h.addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true});
+h.addEventListener('touchend',e=>{if(y0==null)return;const d=e.changedTouches[0].clientY-y0;y0=null;if(d>26)set(true);else if(d<-26)set(false)});
+h.addEventListener('wheel',e=>{if(e.deltaY<-8)set(true);else if(e.deltaY>8)set(false)},{passive:true});
+document.addEventListener('click',e=>{if(h.classList.contains('open')&&!h.contains(e.target)&&!e.target.closest('.hero'))set(false)});
+})();
 </script></body></html>
