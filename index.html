@@ -408,6 +408,28 @@ nav,#toast,#ts{z-index:6}
 .temp{margin-top:12px!important}
 .stage .photo{height:calc(var(--ah) - 290px - var(--hp) - var(--navh) + 96px - 9px)!important}
 #view{min-height:max(300px,calc(var(--ah) - 290px - var(--hp) - var(--navh) + 96px - 9px))}
+
+/* ===== Grounding: floor shadow, cast shadow, elevated controls ===== */
+.stage .photo::after{background:radial-gradient(ellipse 92px 10px at 50% calc(100% - 7px),rgba(38,26,18,.5),rgba(38,26,18,0) 100%),radial-gradient(ellipse 150px 18px at 52% calc(100% - 6px),rgba(38,26,18,.18),rgba(38,26,18,0) 100%),linear-gradient(180deg,rgba(191,106,30,0),rgba(191,106,30,.10))!important}
+.stage .photo img.me{filter:drop-shadow(10px 6px 9px rgba(38,26,18,.20)) drop-shadow(0 0 3px rgba(38,26,18,.18))}
+.stage .photo::before{box-shadow:inset 14px 0 28px -12px rgba(31,53,82,.10),inset -10px 0 24px -14px rgba(31,53,82,.05),inset 0 12px 28px rgba(31,53,82,.07)!important}
+.act2 .ci{width:44px!important;height:44px!important;background:#F6F2EC!important;border:0!important;box-shadow:0 8px 18px rgba(38,26,18,.16),0 1px 3px rgba(38,26,18,.12)!important}
+.act2[aria-pressed=true] .ci{box-shadow:0 8px 18px rgba(191,106,30,.35),0 1px 3px rgba(38,26,18,.15)!important}
+.act2 svg{width:21px!important;height:21px!important}
+.side-r{width:48px!important;background:#F6F2EC!important;border:0!important;box-shadow:0 10px 24px rgba(38,26,18,.16),0 1px 3px rgba(38,26,18,.12)!important}
+.side-r .tab[aria-pressed=true]{box-shadow:0 5px 12px rgba(191,106,30,.4)!important}
+.side-l{gap:14px!important}
+nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!important}
+.pbub{box-shadow:0 8px 20px rgba(38,26,18,.14)!important;border:0!important}
+.fab{box-shadow:0 10px 22px rgba(191,106,30,.42),0 2px 4px rgba(38,26,18,.15)!important}
+
+/* wall meets floor: arch stops above the feet, floor runs forward and fades out */
+.stage .photo::before{bottom:6.5%!important;border-radius:999px 999px 0 0}
+.stage .photo::after{bottom:-26px!important;height:calc(6.5% + 26px)!important;left:-16px;right:-16px;background:
+ radial-gradient(ellipse 92px 10px at 50% calc(100% - 31px),rgba(38,26,18,.5),rgba(38,26,18,0) 100%),
+ radial-gradient(ellipse 150px 18px at 53% calc(100% - 30px),rgba(38,26,18,.2),rgba(38,26,18,0) 100%),
+ linear-gradient(180deg,rgba(38,26,18,.11) 0,rgba(38,26,18,0) 14px),
+ linear-gradient(180deg,rgba(150,105,60,.14),rgba(150,105,60,.06) 65%,rgba(150,105,60,0))!important}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
