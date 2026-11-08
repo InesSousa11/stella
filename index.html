@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><title>Stella · Home</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Stella"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#7D7885">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Stella"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#7F9BBA">
 <link rel="apple-touch-icon" href="assets/icon-180.png"><link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=Nunito:wght@500;700;800&display=swap">
 <style>
@@ -281,7 +281,7 @@ nav div{padding-bottom:calc(2px + env(safe-area-inset-bottom,0px))}
 #view{min-height:max(300px,calc(var(--ah) - 276px - var(--hp) - var(--navh) + 96px - 9px))}
 
 /* ===== Refined: quiet, thin, neutral — the outfit is the hero ===== */
-:root{--bg:#F3F1ED;--card:#FFFFFF;--ink:#3A2B24;--mut:#8E8B86;--pri:#3A2B24;--soft:#E9E6E0;--onpri:#fff;--hair:rgba(58,43,36,.12)}
+:root{--bg:#F3F1ED;--card:#FFFFFF;--ink:#1F3552;--mut:#8E8B86;--pri:#1F3552;--soft:#E9E6E0;--onpri:#fff;--hair:rgba(31,53,82,.12)}
 html,body{background:var(--bg)!important;font-family:Inter,system-ui,sans-serif!important}
 body{-webkit-font-smoothing:antialiased}
 /* header: realistic weather scene */
@@ -307,7 +307,7 @@ body{-webkit-font-smoothing:antialiased}
 .tinfo{font:400 12.5px/1.4 Inter,sans-serif!important;color:rgba(255,255,255,.88)!important;text-shadow:0 1px 8px rgba(0,0,0,.2)}
 .vs{background:rgba(255,255,255,.16)!important;border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:2px!important;gap:0!important}
 .vs button,.vs button[aria-pressed=true]{color:#fff!important;width:34px!important;height:28px!important;border-radius:14px!important}
-.vs button[aria-pressed=true]{background:#fff!important;color:#3A2B24!important}
+.vs button[aria-pressed=true]{background:#fff!important;color:#1F3552!important}
 .vs svg{stroke-width:1.3!important;width:19px!important;height:19px!important}
 /* stage: a soft spotlight, nothing else */
 .stage .photo{background:radial-gradient(ellipse 60% 52% at 50% 46%,rgba(255,255,255,.95),rgba(255,255,255,0) 70%)!important}
@@ -327,7 +327,7 @@ body{-webkit-font-smoothing:antialiased}
 .pbub::before{border-left:1px solid var(--hair);border-top:1px solid var(--hair)}
 .pbub b{font:600 12.5px/1.2 Inter,sans-serif!important}#ps{font:400 11px/1.35 Inter,sans-serif!important;color:var(--mut)}
 /* pager */
-.pager i{background:rgba(58,43,36,.22)!important;width:4px!important;height:4px!important}
+.pager i{background:rgba(31,53,82,.22)!important;width:4px!important;height:4px!important}
 .pager i.c{width:16px!important;height:2px!important;border-radius:2px!important;background:var(--ink)!important}
 .pager i.t{background:var(--ink)!important}
 .pager button{background:transparent!important;border:1px solid var(--hair)!important;color:var(--ink)!important;font:500 11px Inter,sans-serif!important;padding:3px 10px!important}
@@ -340,7 +340,7 @@ nav svg{stroke-width:1.3!important;width:24px!important;height:24px!important}
 nav .ic{width:44px!important;height:34px!important}
 nav button[aria-current=page] .ic::after{content:"";position:absolute;bottom:0;width:4px;height:4px;border-radius:50%;background:var(--ink)}
 nav .ic{position:relative}
-.fab{width:50px!important;height:50px!important;margin-top:-22px!important;background:var(--ink)!important;color:#fff!important;border:0!important;box-shadow:0 6px 16px rgba(58,43,36,.22)!important}
+.fab{width:50px!important;height:50px!important;margin-top:-22px!important;background:var(--ink)!important;color:#fff!important;border:0!important;box-shadow:0 6px 16px rgba(31,53,82,.22)!important}
 .fab svg{stroke-width:1.6!important;width:22px!important;height:22px!important}
 
 .month{font:500 13px Inter,sans-serif!important}.month .d{border-radius:8px!important;background:transparent!important;border:1px solid var(--hair)}
@@ -352,7 +352,7 @@ nav .ic{position:relative}
 .mini{border-radius:4px!important}.mini.empty{border:1px dashed var(--mut)!important}
 
 /* calmer backdrop: slightly darker than the outfit so the eye lands on you */
-:root{--bg:#D9D5CE;--soft:#CDC8C0;--hair:rgba(58,43,36,.14)}
+:root{--bg:#D9D5CE;--soft:#CDC8C0;--hair:rgba(31,53,82,.14)}
 .stage .photo{background:transparent!important}
 .act2 .ci{background:rgba(255,255,255,.5)!important}
 .side-r{background:rgba(255,255,255,.5)!important}
@@ -360,7 +360,7 @@ nav div{background:#ECE9E4!important}
 .pbub{background:#F4F2EE!important}
 
 /* cozy: warm oatmeal, espresso ink, golden-hour weather */
-:root{--bg:#E4D6C6;--soft:#D8C7B4;--hair:rgba(58,43,36,.16);--mut:#8F7B6D}
+:root{--bg:#E4D6C6;--soft:#D8C7B4;--hair:rgba(31,53,82,.16);--mut:#8F7B6D}
 [data-scene=sunny]{--sky:#86AAD0;--h1:#D2C6A8;--h2:#ABA67E;--h3:#7E8460;--orb:#FFE9B8}
 [data-scene=rainy]{--sky:#7D7885;--h1:#A79DA3;--h2:#887F87;--h3:#665D67}
 [data-scene=night]{--sky:#1E1A35;--h1:#43365C;--h2:#2F2646;--h3:#201A34;--orb:#F6E6C4}
@@ -368,8 +368,34 @@ nav div{background:#ECE9E4!important}
 .act2 .ci,.side-r{background:rgba(255,247,238,.62)!important}
 nav div{background:#F2E9DE!important}
 .pbub{background:#FBF5EC!important}
-nav button,nav .fabw{color:#A08F81!important}nav button[aria-current=page]{color:#3A2B24!important}
+nav button,nav .fabw{color:#A08F81!important}nav button[aria-current=page]{color:#1F3552!important}
 .fab{box-shadow:0 8px 20px rgba(80,50,30,.28)!important}
+
+/* ===== Palette: Amber & Deep Blue ===== */
+:root{--bg:#E9DFD3;--card:#F4F1EE;--ink:#1F3552;--mut:#7C8DA3;--pri:#BF6A1E;--soft:#DDE3EA;--hair:rgba(31,53,82,.16);--acc:#BF6A1E;--acc2:#2B5C8A}
+[data-scene=sunny]{--sky:#7F9BBA;--h1:#C2CCD9;--h2:#92A7C0;--h3:#4F739C;--orb:#FFE6B8}
+[data-scene=rainy]{--sky:#6F7F94;--h1:#ABB7C5;--h2:#8496AB;--h3:#5E7189}
+[data-scene=night]{--sky:#14213D;--h1:#34496F;--h2:#25375C;--h3:#182648;--orb:#F6E6C4}
+#sk-sunny stop:nth-child(1){stop-color:#7F9BBA}#sk-sunny stop:nth-child(2){stop-color:#CE9468}#sk-sunny stop:nth-child(3){stop-color:#F1E4D6}
+#sk-rainy stop:nth-child(1){stop-color:#6F7F94}#sk-rainy stop:nth-child(2){stop-color:#9AA8B8}#sk-rainy stop:nth-child(3){stop-color:#D6CFC8}
+#sk-night stop:nth-child(1){stop-color:#14213D}#sk-night stop:nth-child(2){stop-color:#26385E}#sk-night stop:nth-child(3){stop-color:#5B5670}
+[data-scene=rainy] .cloud{fill:#C4CCD6!important}[data-scene=night] .cloud{fill:#4B6088!important}
+#wl circle[stroke-width="2"]{fill:#E58B3A!important;stroke:rgba(255,255,255,.55)!important;stroke-width:4!important}
+.vs button[aria-pressed=true]{background:#fff!important;color:#BF6A1E!important}
+.fab{background:var(--acc)!important;color:#fff!important;box-shadow:0 8px 20px rgba(191,106,30,.35)!important}
+nav div{background:#F4F1EE!important}
+nav button,nav .fabw{color:#8EA3BC!important}
+nav button[aria-current=page]{color:var(--acc)!important}
+nav button[aria-current=page] .ic::after{background:var(--acc2)!important}
+.act2 .ci,.side-r{background:rgba(244,241,238,.78)!important}
+.act2 .ci,.side-r .tab{color:var(--ink)!important}
+.act2[aria-pressed=true] .ci,.side-r .tab[aria-pressed=true]{background:var(--acc)!important;border-color:var(--acc)!important;color:#fff!important}
+.pager i.c{background:var(--acc)!important}.pager i.t{background:var(--acc2)!important}
+.pbub{background:#F4F1EE!important}.pbub b i{background:var(--acc2)}
+.cell[aria-current=true]{border-color:var(--acc)!important;color:var(--acc)!important}
+.month .d i{background:var(--acc2)!important;opacity:1}
+.month .d.today,.month .d[aria-current]{background:var(--acc)!important;border-color:var(--acc)!important}
+.pager button{color:var(--acc)!important;border-color:var(--acc)!important}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
@@ -455,7 +481,7 @@ const TAGS={office:{n:'Office day',c:'#0A66C9',mood:'happy',cheer:'Polished, not
 let TG={};try{TG=JSON.parse(localStorage.getItem('stella-tags')||'{}')}catch(e){}
 const saveTG=()=>{try{localStorage.setItem('stella-tags',JSON.stringify(TG))}catch(e){}};
 const tagOf=o=>{const x=TG[key(o)];return x&&TAGS[x.t]||null};
-$('#pico').innerHTML=`<svg viewBox="8 14 84 86" aria-hidden="true"><defs><radialGradient id="pgb" cx=".32" cy=".22" r=".95"><stop offset="0" stop-color="#6CB8FF"/><stop offset=".45" stop-color="#2380E6"/><stop offset="1" stop-color="#0A4FB4"/></radialGradient><radialGradient id="pgp" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#5566DD"/><stop offset="1" stop-color="#1A2A78"/></radialGradient><linearGradient id="pgw" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9AD0FF"/><stop offset="1" stop-color="#3C94EE"/></linearGradient><filter id="pgl" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7"/></filter><filter id="pgs" x="-30%" y="-200%" width="160%" height="500%"><feGaussianBlur stdDeviation="2.2"/></filter><linearGradient id="pgsd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3D8DF2" stop-opacity="0"/><stop offset="1" stop-color="#0A4FB4" stop-opacity=".5"/></linearGradient><filter id="pgf" x="-10%" y="-20%" width="120%" height="140%"><feGaussianBlur stdDeviation="1.6"/></filter><clipPath id="pbc"><path id="pbclip"/></clipPath><clipPath id="pcl"><circle cx="40" cy="60" r="9"/></clipPath><clipPath id="pcr"><circle cx="60" cy="60" r="9"/></clipPath></defs><g class="au"><ellipse cx="50" cy="56" rx="34" ry="40" fill="#5AA3F5" opacity=".32" filter="url(#pgl)"/></g><ellipse class="sh" cx="50" cy="97.5" rx="25" ry="2.8" fill="#12295C" opacity=".14" filter="url(#pgs)"/><g class="bo"><path id="pbody" d="M21 51A29 29 0 0 1 79 51V84H21Z" fill="url(#pgb)"></path><path id="pshade" fill="url(#pgsd)" filter="url(#pgf)" clip-path="url(#pbc)"></path><g class="fc" transform="translate(0 -12)"><ellipse cx="38" cy="44" rx="9" ry="4.6" transform="rotate(-30 38 44)" fill="#fff" opacity=".4"/><g class="ck"><ellipse cx="30.5" cy="71.5" rx="5.2" ry="3" fill="#FF7FA8"/><ellipse cx="69.5" cy="71.5" rx="5.2" ry="3" fill="#FF7FA8"/></g><g class="ey"><circle cx="40" cy="61.6" r="9" fill="#B9CCF2"/><circle cx="60" cy="61.6" r="9" fill="#B9CCF2"/><circle cx="40" cy="60" r="9" fill="#fff"/><circle cx="60" cy="60" r="9" fill="#fff"/><g class="pp"><circle cx="40" cy="60.5" r="5.6" fill="url(#pgp)"/><circle cx="42" cy="58" r="2" fill="#fff"/><circle cx="38" cy="63" r="1" fill="#fff" opacity=".8"/><circle cx="60" cy="60.5" r="5.6" fill="url(#pgp)"/><circle cx="62" cy="58" r="2" fill="#fff"/><circle cx="58" cy="63" r="1" fill="#fff" opacity=".8"/></g><g clip-path="url(#pcl)"><rect class="ld" x="30" y="33" width="20" height="20" fill="#2380E6"/><rect class="bl" x="30" y="33" width="20" height="20" fill="#2380E6"/></g><g clip-path="url(#pcr)"><rect class="ld" x="50" y="33" width="20" height="20" fill="#2380E6"/><rect class="bl" x="50" y="33" width="20" height="20" fill="#2380E6"/></g></g><g class="sp"><g transform="translate(35 53)"><path d="M0-3.4Q.6-.6 3.4 0Q.6.6 0 3.4Q-.6.6-3.4 0Q-.6-.6 0-3.4Z" fill="#fff"/></g><g transform="translate(55 53)"><path d="M0-3.4Q.6-.6 3.4 0Q.6.6 0 3.4Q-.6.6-3.4 0Q-.6-.6 0-3.4Z" fill="#fff"/></g><g transform="translate(47 66)"><path d="M0-3.4Q.6-.6 3.4 0Q.6.6 0 3.4Q-.6.6-3.4 0Q-.6-.6 0-3.4Z" fill="#fff"/></g></g><g class="ja" fill="none" stroke="#10193F" stroke-width="2.4" stroke-linecap="round"><path d="M32 63Q40 52 48 63"/><path d="M52 63Q60 52 68 63"/></g><g class="gl"><rect x="30" y="52" width="19" height="13" rx="5" fill="#12295C"/><rect x="51" y="52" width="19" height="13" rx="5" fill="#12295C"/><path d="M49 57h2" stroke="#12295C" stroke-width="2"/><path d="M33 55l5 0" stroke="#fff" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"/></g><g class="tr"><g transform="translate(31 65)"><path d="M0-4Q4 2 0 5Q-4 2 0-4Z" fill="#CFE9FF" stroke="#8FC0F5" stroke-width=".8"/></g><g transform="translate(69 65)"><path d="M0-4Q4 2 0 5Q-4 2 0-4Z" fill="#CFE9FF" stroke="#8FC0F5" stroke-width=".8"/></g></g><g class="ts"><circle cx="43" cy="72" r="6" fill="#fff" stroke="#C3D3F3" stroke-width="2.4"/><circle cx="50" cy="69" r="6.6" fill="#fff" stroke="#C3D3F3" stroke-width="2.4"/><circle cx="57" cy="72" r="6.2" fill="#fff" stroke="#C3D3F3" stroke-width="2.4"/><circle cx="47" cy="77" r="5.6" fill="#fff" stroke="#C3D3F3" stroke-width="2.4"/><circle cx="54" cy="77" r="5.8" fill="#fff" stroke="#C3D3F3" stroke-width="2.4"/><circle cx="43" cy="72" r="6" fill="#fff"/><circle cx="50" cy="69" r="6.6" fill="#fff"/><circle cx="57" cy="72" r="6.2" fill="#fff"/><circle cx="47" cy="77" r="5.6" fill="#fff"/><circle cx="54" cy="77" r="5.8" fill="#fff"/><path d="M46 71Q50 68.5 54 71M45 76Q50 78 55 76" fill="none" stroke="#D7E2FA" stroke-width="1.1" stroke-linecap="round"/><path d="M60 66l3.6-3.4 1.2 4.4z" fill="#fff" stroke="#C3D3F3" stroke-width="1" stroke-linejoin="round"/></g></g></g><g class="cf">${[['#FFD60F',-30,-34,60,0],['#fff',-18,-42,-80,.05],['#FF7FA8',-6,-30,120,.1],['#FFD60F',8,-44,-40,.03],['#fff',20,-34,90,.12],['#FF7FA8',30,-40,-110,.07],['#FFD60F',-24,-24,30,.15],['#fff',26,-26,-60,.18]].map(c=>`<rect x="48" y="52" width="4.6" height="2.4" rx=".8" fill="${c[0]}" style="--x:${c[1]}px;--y:${c[2]}px;--r:${c[3]}deg;--d:${c[4]}s"/>`).join('')}</g></svg>`;
+$('#pico').innerHTML=`<svg viewBox="8 14 84 86" aria-hidden="true"><defs><radialGradient id="pgb" cx=".32" cy=".22" r=".95"><stop offset="0" stop-color="#8FB3D6"/><stop offset=".45" stop-color="#3E6EA0"/><stop offset="1" stop-color="#1F3F6E"/></radialGradient><radialGradient id="pgp" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#5566DD"/><stop offset="1" stop-color="#1A2A78"/></radialGradient><linearGradient id="pgw" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9AD0FF"/><stop offset="1" stop-color="#3C94EE"/></linearGradient><filter id="pgl" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7"/></filter><filter id="pgs" x="-30%" y="-200%" width="160%" height="500%"><feGaussianBlur stdDeviation="2.2"/></filter><linearGradient id="pgsd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3D8DF2" stop-opacity="0"/><stop offset="1" stop-color="#1F3F6E" stop-opacity=".5"/></linearGradient><filter id="pgf" x="-10%" y="-20%" width="120%" height="140%"><feGaussianBlur stdDeviation="1.6"/></filter><clipPath id="pbc"><path id="pbclip"/></clipPath><clipPath id="pcl"><circle cx="40" cy="60" r="9"/></clipPath><clipPath id="pcr"><circle cx="60" cy="60" r="9"/></clipPath></defs><g class="au"><ellipse cx="50" cy="56" rx="34" ry="40" fill="#5AA3F5" opacity=".32" filter="url(#pgl)"/></g><ellipse class="sh" cx="50" cy="97.5" rx="25" ry="2.8" fill="#12295C" opacity=".14" filter="url(#pgs)"/><g class="bo"><path id="pbody" d="M21 51A29 29 0 0 1 79 51V84H21Z" fill="url(#pgb)"></path><path id="pshade" fill="url(#pgsd)" filter="url(#pgf)" clip-path="url(#pbc)"></path><g class="fc" transform="translate(0 -12)"><ellipse cx="38" cy="44" rx="9" ry="4.6" transform="rotate(-30 38 44)" fill="#fff" opacity=".4"/><g class="ck"><ellipse cx="30.5" cy="71.5" rx="5.2" ry="3" fill="#FF7FA8"/><ellipse cx="69.5" cy="71.5" rx="5.2" ry="3" fill="#FF7FA8"/></g><g class="ey"><circle cx="40" cy="61.6" r="9" fill="#B9CCF2"/><circle cx="60" cy="61.6" r="9" fill="#B9CCF2"/><circle cx="40" cy="60" r="9" fill="#fff"/><circle cx="60" cy="60" r="9" fill="#fff"/><g class="pp"><circle cx="40" cy="60.5" r="5.6" fill="url(#pgp)"/><circle cx="42" cy="58" r="2" fill="#fff"/><circle cx="38" cy="63" r="1" fill="#fff" opacity=".8"/><circle cx="60" cy="60.5" r="5.6" fill="url(#pgp)"/><circle cx="62" cy="58" r="2" fill="#fff"/><circle cx="58" cy="63" r="1" fill="#fff" opacity=".8"/></g><g clip-path="url(#pcl)"><rect class="ld" x="30" y="33" width="20" height="20" fill="#3E6EA0"/><rect class="bl" x="30" y="33" width="20" height="20" fill="#3E6EA0"/></g><g clip-path="url(#pcr)"><rect class="ld" x="50" y="33" width="20" height="20" fill="#3E6EA0"/><rect class="bl" x="50" y="33" width="20" height="20" fill="#3E6EA0"/></g></g><g class="sp"><g transform="translate(35 53)"><path d="M0-3.4Q.6-.6 3.4 0Q.6.6 0 3.4Q-.6.6-3.4 0Q-.6-.6 0-3.4Z" fill="#fff"/></g><g transform="translate(55 53)"><path d="M0-3.4Q.6-.6 3.4 0Q.6.6 0 3.4Q-.6.6-3.4 0Q-.6-.6 0-3.4Z" fill="#fff"/></g><g transform="translate(47 66)"><path d="M0-3.4Q.6-.6 3.4 0Q.6.6 0 3.4Q-.6.6-3.4 0Q-.6-.6 0-3.4Z" fill="#fff"/></g></g><g class="ja" fill="none" stroke="#10193F" stroke-width="2.4" stroke-linecap="round"><path d="M32 63Q40 52 48 63"/><path d="M52 63Q60 52 68 63"/></g><g class="gl"><rect x="30" y="52" width="19" height="13" rx="5" fill="#12295C"/><rect x="51" y="52" width="19" height="13" rx="5" fill="#12295C"/><path d="M49 57h2" stroke="#12295C" stroke-width="2"/><path d="M33 55l5 0" stroke="#fff" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"/></g><g class="tr"><g transform="translate(31 65)"><path d="M0-4Q4 2 0 5Q-4 2 0-4Z" fill="#CFE9FF" stroke="#8FC0F5" stroke-width=".8"/></g><g transform="translate(69 65)"><path d="M0-4Q4 2 0 5Q-4 2 0-4Z" fill="#CFE9FF" stroke="#8FC0F5" stroke-width=".8"/></g></g><g class="ts"><circle cx="43" cy="72" r="6" fill="#fff" stroke="#C3D3F3" stroke-width="2.4"/><circle cx="50" cy="69" r="6.6" fill="#fff" stroke="#C3D3F3" stroke-width="2.4"/><circle cx="57" cy="72" r="6.2" fill="#fff" stroke="#C3D3F3" stroke-width="2.4"/><circle cx="47" cy="77" r="5.6" fill="#fff" stroke="#C3D3F3" stroke-width="2.4"/><circle cx="54" cy="77" r="5.8" fill="#fff" stroke="#C3D3F3" stroke-width="2.4"/><circle cx="43" cy="72" r="6" fill="#fff"/><circle cx="50" cy="69" r="6.6" fill="#fff"/><circle cx="57" cy="72" r="6.2" fill="#fff"/><circle cx="47" cy="77" r="5.6" fill="#fff"/><circle cx="54" cy="77" r="5.8" fill="#fff"/><path d="M46 71Q50 68.5 54 71M45 76Q50 78 55 76" fill="none" stroke="#D7E2FA" stroke-width="1.1" stroke-linecap="round"/><path d="M60 66l3.6-3.4 1.2 4.4z" fill="#fff" stroke="#C3D3F3" stroke-width="1" stroke-linejoin="round"/></g></g></g><g class="cf">${[['#FFD60F',-30,-34,60,0],['#fff',-18,-42,-80,.05],['#FF7FA8',-6,-30,120,.1],['#FFD60F',8,-44,-40,.03],['#fff',20,-34,90,.12],['#FF7FA8',30,-40,-110,.07],['#FFD60F',-24,-24,30,.15],['#fff',26,-26,-60,.18]].map(c=>`<rect x="48" y="52" width="4.6" height="2.4" rx=".8" fill="${c[0]}" style="--x:${c[1]}px;--y:${c[2]}px;--r:${c[3]}deg;--d:${c[4]}s"/>`).join('')}</g></svg>`;
 
 const PL=$('#pico');let lt;
 function look(x,y){PL.style.setProperty('--lx',x+'px');PL.style.setProperty('--ly',y+'px')}
