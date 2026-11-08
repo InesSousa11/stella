@@ -430,6 +430,30 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
  radial-gradient(ellipse 150px 18px at 53% calc(100% - 30px),rgba(38,26,18,.2),rgba(38,26,18,0) 100%),
  linear-gradient(180deg,rgba(38,26,18,.11) 0,rgba(38,26,18,0) 14px),
  linear-gradient(180deg,rgba(150,105,60,.14),rgba(150,105,60,.06) 65%,rgba(150,105,60,0))!important}
+
+/* ===== Fitting room: LED mirror behind you, curtains, rod where Pico sits ===== */
+.stage::before{content:"";position:absolute;left:-16px;right:-16px;top:-8px;bottom:-26px;z-index:0;pointer-events:none;
+ background:
+ repeating-linear-gradient(90deg,rgba(98,84,70,.30) 0 3px,rgba(168,154,138,.22) 3px 7px,rgba(120,106,92,.30) 7px 11px) left top/13px 100% no-repeat,
+ repeating-linear-gradient(90deg,rgba(120,106,92,.30) 0 3px,rgba(168,154,138,.22) 3px 7px,rgba(98,84,70,.30) 7px 11px) right top/13px 100% no-repeat,
+ linear-gradient(90deg,rgba(60,48,38,.16),rgba(60,48,38,0) 22px) left top/22px 100% no-repeat,
+ linear-gradient(270deg,rgba(60,48,38,.16),rgba(60,48,38,0) 22px) right top/22px 100% no-repeat}
+.stage .photo::before{width:min(66%,246px)!important;top:2.5%!important;bottom:6.5%!important;border-radius:3px!important;
+ border:2px solid rgba(255,250,238,.96);
+ background:linear-gradient(115deg,rgba(255,255,255,.30) 0 16%,rgba(255,255,255,0) 16% 31%,rgba(255,255,255,.16) 31% 37%,rgba(255,255,255,0) 37%),linear-gradient(180deg,#C9C2B8,#D6CFC5)!important;
+ box-shadow:0 0 0 1px rgba(255,255,255,.35),0 0 14px 2px rgba(255,238,200,.65),0 0 40px 6px rgba(255,238,200,.25),inset 0 0 16px rgba(255,240,205,.5),inset 0 -10px 24px rgba(31,53,82,.06)!important}
+/* light from the mirror spilling onto the floor */
+.stage .photo::after{background:
+ radial-gradient(ellipse 92px 10px at 50% calc(100% - 31px),rgba(38,26,18,.5),rgba(38,26,18,0) 100%),
+ radial-gradient(ellipse 150px 18px at 53% calc(100% - 30px),rgba(38,26,18,.2),rgba(38,26,18,0) 100%),
+ radial-gradient(ellipse 130px 12px at 50% 6px,rgba(255,240,205,.75),rgba(255,240,205,0) 100%),
+ linear-gradient(180deg,rgba(38,26,18,.10) 0,rgba(38,26,18,0) 12px),
+ linear-gradient(180deg,rgba(120,100,80,.16),rgba(120,100,80,.08) 65%,rgba(120,100,80,0))!important}
+/* the rod Pico sits on */
+#pchip::before{content:"";position:absolute;left:-12px;top:52px;width:138px;height:5px;border-radius:0 3px 3px 0;background:linear-gradient(#34343A,#15151A);box-shadow:0 5px 8px rgba(38,26,18,.28);z-index:0}
+#pchip::after{content:"";position:absolute;left:119px;top:49px;width:3px;height:11px;border-radius:2px;background:#15151A}
+#pico{position:relative;z-index:1;margin-top:-1px}
+#pchip #pbub{margin-top:14px}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
