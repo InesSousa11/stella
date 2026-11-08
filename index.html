@@ -478,6 +478,23 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
  linear-gradient(180deg,rgba(255,255,255,.35) 0,rgba(255,255,255,.35) 2px,rgba(38,26,18,.045) 2px,rgba(38,26,18,0) 14px),
  radial-gradient(ellipse 120px 14px at 50% 12px,rgba(255,234,188,.5),rgba(255,234,188,0) 100%),
  linear-gradient(180deg,rgba(120,100,80,.15),rgba(120,100,80,.08) 60%,rgba(120,100,80,0))!important}
+
+/* ===== Mirror v4: floor-to-ceiling feel (runs up behind the header), reflective glass, real LED bloom ===== */
+.hero{z-index:4!important}
+.stage .photo::before{top:-64px!important;bottom:21%!important;width:min(50%,184px)!important;border-radius:30px!important;
+ background:
+  linear-gradient(90deg,rgba(0,0,0,0) 0 58%,rgba(90,76,62,.26) 58% 86%,rgba(0,0,0,0) 86%),
+  linear-gradient(112deg,rgba(255,255,255,.22) 0 12%,rgba(255,255,255,0) 12% 24%,rgba(255,255,255,.11) 24% 29%,rgba(255,255,255,0) 29%),
+  linear-gradient(180deg,#8F8880 0%,#A29B91 30%,#B5AEA3 62%,#CDC5B9 100%)!important;
+ box-shadow:
+  0 0 0 3px rgba(190,163,120,.6),
+  0 0 0 4px rgba(70,55,40,.18),
+  0 0 9px 2px rgba(255,238,200,.60),
+  0 0 26px 7px rgba(255,230,180,.30),
+  0 0 70px 18px rgba(255,232,185,.14),
+  inset 0 0 0 2px rgba(255,246,222,.98),
+  inset 0 0 8px 2px rgba(255,240,205,.75),
+  inset 0 0 26px 4px rgba(255,232,185,.22)!important}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
