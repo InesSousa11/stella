@@ -533,6 +533,15 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
 
 @media (max-width:375px){.wd{display:none}.sub{padding-left:78px!important}}
 @media (max-width:340px){.pn{display:none}}
+
+/* hero is cut along the weather wave: the wall (and mirror light) continues behind it, no seam */
+.hero{-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+#wp{fill:none!important}
+/* temperature lives inside the pill with the view buttons */
+.vs .temp{position:static!important;display:flex!important;flex-direction:row;align-items:center;gap:4px!important;height:30px;margin:0 6px 0 8px!important;padding-right:8px;border-right:1px solid rgba(255,255,255,.35)}
+.vs .temp .tinfo{font-size:14px!important}.vs .temp b{font-size:19px!important;font-weight:400!important;color:#fff}
+.sub{padding-left:0!important;max-width:calc(100vw - 196px)!important}
+@media (max-width:375px){.sub{padding-left:0!important}}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
@@ -557,10 +566,9 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
 <div class="hero-ui">
 <div class="row"><div><p class="sub" id="date"></p></div>
 </div>
-<div class="temp"><b id="t" role="button" tabindex="0" title="Preview other weather (demo)">19°</b><span class="tinfo" id="ti"></span></div>
 </div>
 
-<div class="vs" id="seg" role="group" aria-label="Plan view"><button data-v="daily" aria-pressed="true" aria-label="Daily" title="Daily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M8 3v4M16 3v4"/><rect class="f" x="9.5" y="11.5" width="5" height="5" rx="1.4"/></svg></button><button data-v="weekly" aria-pressed="false" aria-label="Weekly" title="Weekly"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M8 3v4M16 3v4"/><rect class="f" x="6.5" y="12" width="11" height="3.6" rx="1.6"/></svg></button><button data-v="monthly" aria-pressed="false" aria-label="Monthly" title="Monthly"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M8 3v4M16 3v4"/><g class="f"><circle cx="7.6" cy="12.2" r="1.1"/><circle cx="10.5" cy="12.2" r="1.1"/><circle cx="13.5" cy="12.2" r="1.1"/><circle cx="16.4" cy="12.2" r="1.1"/><circle cx="7.6" cy="14.8" r="1.1"/><circle cx="10.5" cy="14.8" r="1.1"/><circle cx="13.5" cy="14.8" r="1.1"/><circle cx="16.4" cy="14.8" r="1.1"/><circle cx="7.6" cy="17.4" r="1.1"/><circle cx="10.5" cy="17.4" r="1.1"/><circle cx="13.5" cy="17.4" r="1.1"/><circle cx="16.4" cy="17.4" r="1.1"/></g></svg></button></div>
+<div class="vs" id="seg" role="group" aria-label="Plan view"><div class="temp"><b id="t" role="button" tabindex="0" title="Preview other weather (demo)">19°</b><span class="tinfo" id="ti"></span></div><button data-v="daily" aria-pressed="true" aria-label="Daily" title="Daily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M8 3v4M16 3v4"/><rect class="f" x="9.5" y="11.5" width="5" height="5" rx="1.4"/></svg></button><button data-v="weekly" aria-pressed="false" aria-label="Weekly" title="Weekly"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M8 3v4M16 3v4"/><rect class="f" x="6.5" y="12" width="11" height="3.6" rx="1.6"/></svg></button><button data-v="monthly" aria-pressed="false" aria-label="Monthly" title="Monthly"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M8 3v4M16 3v4"/><g class="f"><circle cx="7.6" cy="12.2" r="1.1"/><circle cx="10.5" cy="12.2" r="1.1"/><circle cx="13.5" cy="12.2" r="1.1"/><circle cx="16.4" cy="12.2" r="1.1"/><circle cx="7.6" cy="14.8" r="1.1"/><circle cx="10.5" cy="14.8" r="1.1"/><circle cx="13.5" cy="14.8" r="1.1"/><circle cx="16.4" cy="14.8" r="1.1"/><circle cx="7.6" cy="17.4" r="1.1"/><circle cx="10.5" cy="17.4" r="1.1"/><circle cx="13.5" cy="17.4" r="1.1"/><circle cx="16.4" cy="17.4" r="1.1"/></g></svg></button></div>
 </header>
 <section class="sheet">
 <div id="pchip"><button id="pico" aria-label="Pico, tap to say hi"></button><button id="pbub" class="pbub" aria-label="Tag this day"><b><i id="pd"></i><span id="pt"></span></b><span id="ps"></span></button></div>
@@ -663,7 +671,7 @@ const PK=139;
 function wave(){const T=WT[S.scene],n=T.length,xs=T.map((_,i)=>34+i*(332/(n-1))),cur=Math.min(n-1,Math.floor(H/3)),mn=Math.min(...T),mx=Math.max(...T),amp=Math.min(34,10+(mx-mn)*4),ys=T.map(t=>PK+(mx===mn?.5:1-(t-mn)/(mx-mn))*amp);
 const P=[[-20,ys[0]],...xs.map((x,i)=>[x,ys[i]]),[420,ys[n-1]]];let d=`M${P[0][0]} ${P[0][1]}`;
 for(let i=0;i<P.length-1;i++){const a=P[Math.max(i-1,0)],b=P[i],c=P[i+1],e=P[Math.min(i+2,P.length-1)];d+=`C${b[0]+(c[0]-a[0])/6} ${b[1]+(c[1]-a[1])/6} ${c[0]-(e[0]-b[0])/6} ${c[1]-(e[1]-b[1])/6} ${c[0]} ${c[1]}`}
-$('#wp').setAttribute('d',d+'L420 240L-20 240Z');
+$('#wp').setAttribute('d',d+'L420 240L-20 240Z');{const m="<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 183' preserveAspectRatio='xMidYMax slice'><path transform='translate(0 5)' d='"+d+"L420 -3000L-20 -3000Z' fill='black'/></svg>";const u='url("data:image/svg+xml,'+encodeURIComponent(m)+'")';const hh=document.querySelector('.hero');hh.style.setProperty('-webkit-mask-image',u);hh.style.setProperty('mask-image',u);}
 $('#wl').innerHTML=xs.map((x,i)=>`<circle cx="${x}" cy="${ys[i]}" r="${i==cur?5.5:3.5}" fill="${i==cur?'#FFD60F':'#fff'}" stroke="#fff" stroke-width="${i==cur?2:0}"/><text class="wt${i==cur?' cur':''}" x="${x}" y="${ys[i]-11}">${T[i]}°</text>`).join('')}
 const _r=render;render=function(){_r();updatePico();if(window.__fit)__fit()};
 const newOff=dir=>{if(S.view==='daily')return S.off+dir;if(S.view==='weekly')return S.off+7*dir;const d=day(S.off),t=new Date(d.getFullYear(),d.getMonth()+dir,1);t.setDate(Math.min(d.getDate(),new Date(t.getFullYear(),t.getMonth()+1,0).getDate()));return Math.round((t-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5)};
