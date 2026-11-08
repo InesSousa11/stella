@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><title>Stella · Home</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Stella"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#6F86B5">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Stella"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#F3F1ED">
 <link rel="apple-touch-icon" href="assets/icon-180.png"><link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Nunito:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=Nunito:wght@500;700;800&display=swap">
 <style>
 :root{--sat:env(safe-area-inset-top,0px);--bg:#FFF6EA;--card:#fff;--ink:#12295C;--mut:#6F7FA6;--pri:#0A66C9;--onpri:#fff;--rose:#FF7FA8;--blush:#FFA9C4;--soft:#E1ECFC;--mint:#4FD8A5;--gold:#FFD60F;--photo:#FBE6D6;box-sizing:border-box}
 :root[data-theme="dark"]{--bg:#0E1A38;--card:#172753;--ink:#F3F6FF;--mut:#9DB0E0;--pri:#5AA3F5;--onpri:#0B1A3D;--soft:#22366C;--photo:#2B3A6E}
@@ -279,6 +279,68 @@ nav div{padding-bottom:calc(2px + env(safe-area-inset-bottom,0px))}
 .pbub::before{left:20px!important;top:-4px!important}
 .stage .photo{height:calc(var(--ah) - 276px - var(--hp) - var(--navh) + 96px - 9px)!important}
 #view{min-height:max(300px,calc(var(--ah) - 276px - var(--hp) - var(--navh) + 96px - 9px))}
+
+/* ===== Refined: quiet, thin, neutral — the outfit is the hero ===== */
+:root{--bg:#F3F1ED;--card:#FFFFFF;--ink:#1B1B1F;--mut:#8E8B86;--pri:#1B1B1F;--soft:#E9E6E0;--onpri:#fff;--hair:rgba(27,27,31,.12);--sky:#F3F1ED}
+html,body{background:var(--bg)!important;font-family:Inter,system-ui,sans-serif!important}
+body{-webkit-font-smoothing:antialiased}
+/* header: no illustration */
+.hero{background:var(--bg)!important;color:var(--ink)!important}
+.scene .sky,.scene .h1,.scene .h2,.scene .h3,.scene .orb,.scene .rain,.scene [class*=cloud],.scene .star,.scene .moon{display:none!important}
+.scene>*:not(#wl):not(#wp){display:none!important}
+#wp{display:block!important;fill:none!important;stroke:#1B1B1F;stroke-width:.9;opacity:.55}
+#wl circle{fill:#1B1B1F!important;stroke:none!important}
+#wl circle[stroke-width="2"]{fill:#1B1B1F!important;stroke:#F3F1ED!important;stroke-width:3!important}
+.wt{fill:#1B1B1F!important;font:500 12px Inter,sans-serif!important;opacity:.75}.wt.cur{opacity:1;font-weight:600!important}
+.hero::after{display:none!important}
+.sub{font:500 15px/36px Inter,sans-serif!important;color:var(--ink)!important;letter-spacing:.01em}
+.temp b{font-family:Fraunces,Georgia,serif!important;font-weight:300!important;font-size:50px!important;color:var(--ink)}
+.tinfo{font:400 12.5px/1.4 Inter,sans-serif!important;color:var(--mut)!important}
+.vs{background:transparent!important;border:1px solid var(--hair);padding:2px!important;gap:0!important}
+.vs button,.vs button[aria-pressed=true]{color:var(--ink)!important;width:34px!important;height:28px!important;border-radius:14px!important}
+.vs button[aria-pressed=true]{background:var(--ink)!important;color:#fff!important}
+.vs svg{stroke-width:1.3!important;width:19px!important;height:19px!important}
+/* stage: a soft spotlight, nothing else */
+.stage .photo{background:radial-gradient(ellipse 60% 52% at 50% 46%,rgba(255,255,255,.95),rgba(255,255,255,0) 70%)!important}
+/* side controls: small, hairline */
+.act2 .ci{width:40px!important;height:40px!important;background:rgba(255,255,255,.85)!important;color:var(--ink)!important;border:1px solid var(--hair)!important;box-shadow:none!important}
+.act2[aria-pressed=true] .ci{background:var(--ink)!important;color:#fff!important;border-color:var(--ink)!important;box-shadow:none!important}
+.act2 svg{width:20px!important;height:20px!important;stroke-width:1.4!important}
+.side-l{gap:12px!important}
+.side-r{width:44px!important;padding:5px 3px!important;gap:2px!important;border-radius:22px!important;background:rgba(255,255,255,.85)!important;border:1px solid var(--hair)!important;box-shadow:none!important}
+.side-r .tab{padding:9px 2px!important;color:var(--ink)!important;border-radius:18px!important}
+.side-r .tab svg{width:22px!important;height:22px!important;stroke-width:1.3!important}
+.side-r .tab[aria-pressed=true]{background:var(--ink)!important;color:#fff!important}
+.side-r .tab sup{display:none!important}
+/* Pico: quieter */
+#pico{width:50px!important;filter:saturate(.8)}
+.pbub{background:#fff!important;border:1px solid var(--hair);box-shadow:none!important;border-radius:12px!important}
+.pbub::before{border-left:1px solid var(--hair);border-top:1px solid var(--hair)}
+.pbub b{font:600 12.5px/1.2 Inter,sans-serif!important}#ps{font:400 11px/1.35 Inter,sans-serif!important;color:var(--mut)}
+/* pager */
+.pager i{background:rgba(27,27,31,.22)!important;width:4px!important;height:4px!important}
+.pager i.c{width:16px!important;height:2px!important;border-radius:2px!important;background:var(--ink)!important}
+.pager i.t{background:var(--ink)!important}
+.pager button{background:transparent!important;border:1px solid var(--hair)!important;color:var(--ink)!important;font:500 11px Inter,sans-serif!important;padding:3px 10px!important}
+/* nav */
+nav div{background:#fff!important;border-radius:0!important;box-shadow:none!important;border-top:1px solid var(--hair)!important}
+nav button,nav .fabw{color:#9A978F!important}
+nav button[aria-current=page]{color:var(--ink)!important}
+nav button[aria-current=page] .ic,nav .ic{background:transparent!important;transform:none!important}
+nav svg{stroke-width:1.3!important;width:24px!important;height:24px!important}
+nav .ic{width:44px!important;height:34px!important}
+nav button[aria-current=page] .ic::after{content:"";position:absolute;bottom:0;width:4px;height:4px;border-radius:50%;background:var(--ink)}
+nav .ic{position:relative}
+.fab{width:50px!important;height:50px!important;margin-top:-22px!important;background:var(--ink)!important;color:#fff!important;border:0!important;box-shadow:0 6px 16px rgba(27,27,31,.22)!important}
+.fab svg{stroke-width:1.6!important;width:22px!important;height:22px!important}
+
+.month{font:500 13px Inter,sans-serif!important}.month .d{border-radius:8px!important;background:transparent!important;border:1px solid var(--hair)}
+.month .d i{width:4px!important;height:4px!important;background:var(--ink)!important;opacity:.6}.month .h{font-weight:500!important;font-size:10.5px!important;letter-spacing:.06em}
+.month .d.today,.month .d[aria-current]{background:var(--ink)!important;color:#fff;border-color:var(--ink)}
+
+.cell{border-radius:10px!important;background:transparent!important;border:1px solid var(--hair);font:500 12px Inter,sans-serif!important}
+.cell[aria-current=true]{outline:0!important;border-color:var(--ink);color:var(--ink)}
+.mini{border-radius:4px!important}.mini.empty{border:1px dashed var(--mut)!important}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
