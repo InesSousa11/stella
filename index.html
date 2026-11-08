@@ -261,6 +261,9 @@ nav div{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
 @media (max-height:600px){.stage .photo{min-height:270px}#view{min-height:270px}}
 nav div{padding-bottom:calc(2px + env(safe-area-inset-bottom,0px))}
 .stage .photo{padding:66px 0 4px}
+#pchip{pointer-events:none}#pico,#pbub{pointer-events:auto}
+.pbub{transition:opacity .35s,transform .35s}#pchip.q #pbub{opacity:0;pointer-events:none;transform:translateX(-8px)}
+.stage .photo{padding:6px 0 4px}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
@@ -366,9 +369,9 @@ mk('pbody',B);mk('pbclip',B);mk('pshade',H);
 })();
 let PM=null,pmt;
 function hop(){const p=$('#pico');p.classList.remove('hop');void p.offsetWidth;p.classList.add('hop')}
-function react(mood,title,sub,ms=2800){PM={mood,title,sub,until:Date.now()+ms};hop();if(mood==='joy'||mood==='excited'||mood==='proud')party();updatePico();clearTimeout(pmt);pmt=setTimeout(updatePico,ms+60)}
+let TIPU=0;function react(mood,title,sub,ms=2800){PM={mood,title,sub,until:Date.now()+ms};TIPU=Date.now()+ms+4000;hop();if(mood==='joy'||mood==='excited'||mood==='proud')party();updatePico();clearTimeout(pmt);pmt=setTimeout(updatePico,ms+60);setTimeout(updatePico,ms+4100)}
 function updatePico(){const c=$('#pchip');c.hidden=S.view!=='daily';if(S.view!=='daily')return;
-const tg=tagOf(S.off),live=PM&&Date.now()<PM.until,p=$('#pico');
+const tg=tagOf(S.off),live=PM&&Date.now()<PM.until,p=$('#pico');const sig=key(S.off)+(tg?tg.n:'');if(sig!==updatePico.sig){updatePico.sig=sig;TIPU=Math.max(TIPU,Date.now()+6000);setTimeout(updatePico,6100)}c.classList.toggle('q',!(live||Date.now()<TIPU));
 p.dataset.mood=live?PM.mood:tg?tg.mood:S.scene==='night'?'sleepy':S.scene==='sunny'?'excited':'happy';p.dataset.wx=S.scene;const dur=p.dataset.mood==='excited'?'1.6s':p.dataset.mood==='sleepy'?'6.5s':'4.2s';if(p._d!==dur){p._d=dur;p.querySelectorAll('animate,animateTransform').forEach(x=>x.setAttribute('dur',dur))}
 $('#pt').textContent=live?PM.title:tg?tg.n:'What’s on today?';$('#pd').style.background=live||!tg?'var(--mut)':tg.c;
 $('#ps').textContent=live?PM.sub:tg?tg.cheer+' '+tips[S.scene][0]:'Tap to tag this day and I’ll plan around it.'}
