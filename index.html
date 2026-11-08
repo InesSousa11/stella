@@ -396,6 +396,18 @@ nav button[aria-current=page] .ic::after{background:var(--acc2)!important}
 .month .d i{background:var(--acc2)!important;opacity:1}
 .month .d.today,.month .d[aria-current]{background:var(--acc)!important;border-color:var(--acc)!important}
 .pager button{color:var(--acc)!important;border-color:var(--acc)!important}
+
+/* ===== A little depth: arch niche, floor, grain; roomier header ===== */
+.stage .photo{position:relative}
+.stage .photo::before{content:"";position:absolute;left:50%;transform:translateX(-50%);width:min(74%,300px);top:1%;bottom:0;border-radius:999px 999px 0 0;background:linear-gradient(180deg,#D8C8B5 0%,#E3D6C7 55%,#EADFD2 100%);box-shadow:inset 0 10px 30px rgba(31,53,82,.06);z-index:0;pointer-events:none}
+.stage .photo::after{content:"";position:absolute;left:-16px;right:-16px;bottom:0;height:11%;background:linear-gradient(180deg,rgba(191,106,30,0),rgba(191,106,30,.09));z-index:0;pointer-events:none}
+.stage .photo img.me{position:relative;z-index:1}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.07;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .3  0 0 0 0 .22  0 0 0 0 .15  0 0 0 .9 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+nav,#toast,#ts{z-index:6}
+.hero{height:calc(161px + var(--hp) + 9px)!important}
+.temp{margin-top:12px!important}
+.stage .photo{height:calc(var(--ah) - 290px - var(--hp) - var(--navh) + 96px - 9px)!important}
+#view{min-height:max(300px,calc(var(--ah) - 290px - var(--hp) - var(--navh) + 96px - 9px))}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
