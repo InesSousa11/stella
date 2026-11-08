@@ -514,6 +514,25 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
  box-shadow:0 0 26px 11px rgba(255,226,165,.66),0 0 70px 28px rgba(255,222,155,.34),0 0 130px 56px rgba(255,220,150,.15)}
 
 .stage .photo::after{top:89%!important}
+
+/* ===== One-line header: [emoji temp]  date · place ===== */
+.hero{height:calc(120px + var(--hp))!important}
+.hero-ui{padding-top:calc(var(--hp) + 4px)!important}
+.row{display:block;height:36px}
+.row>div:first-child{height:36px;display:flex;align-items:center}
+.temp{position:absolute!important;top:calc(var(--hp) + 4px);left:20px;margin:0!important;height:36px;display:flex!important;flex-direction:row;align-items:center!important;gap:6px!important}
+.temp .tinfo{order:-1;font-size:17px!important;line-height:1!important;color:#fff!important;text-shadow:none}
+.temp b{font-size:27px!important;line-height:1!important;font-weight:300!important}
+.sub{margin:0!important;padding-left:88px;font:500 14px/36px Inter,sans-serif!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100vw - 150px)}
+.stage .photo{height:calc(var(--ah) - 249px - var(--hp) - var(--navh) + 96px)!important}
+#view{min-height:max(300px,calc(var(--ah) - 249px - var(--hp) - var(--navh) + 96px))}
+
+.sub{padding-left:80px!important;font-size:13.5px!important;max-width:calc(100vw - 136px)!important;white-space:pre}
+.vs button,.vs button[aria-pressed=true]{width:30px!important}
+.vs{right:14px!important}
+
+@media (max-width:375px){.wd{display:none}.sub{padding-left:78px!important}}
+@media (max-width:340px){.pn{display:none}}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
@@ -571,10 +590,10 @@ function mini(o){if(!planned(o))return'<div class="mini empty"></div>';const l=(
 function fig(l){return `<img class="me" src="assets/me.webp" alt="You, wearing the planned outfit" draggable="false">`}
 function render(){
 app.dataset.scene=S.scene;const t=tips[S.scene];
-$('#t').textContent=t[1]+'°';$('#ti').innerHTML=t[2]+'<br>H '+t[4]+'° · L '+t[5]+'°';wave();
+$('#t').textContent=t[1]+'°';$('#ti').textContent=({sunny:'☀️',rainy:'🌧️',night:'🌙'})[S.scene]||'☀️';$('#ti').title=t[2]+' · H '+t[4]+'° · L '+t[5]+'°';wave();
 
 document.querySelectorAll('#seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===S.view));
-const d=day(S.off);$('#date').textContent=d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+' · Carcavelos';
+const d=day(S.off);$('#date').innerHTML='<span class="wd">'+d.toLocaleDateString('en-GB',{weekday:'short'})+' </span>'+d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+'  <span class="pl">📍<span class="pn">Carcavelos</span></span>';
 const v=$('#view');
 if(S.view==='daily'){const k=key(S.off);
 v.innerHTML=`<div class="stage"><div class="photo">${fig(S.layer)}</div>
