@@ -1158,6 +1158,13 @@ nav div,#nav{background:#FFF9EE!important}
 
 /* v22: full-bleed curve */
 #info .wv{width:100vw!important;max-width:none!important;margin-left:-26px!important}
+
+/* v23: icon Today button level with the dots */
+[data-today]{position:fixed!important;right:18px!important;left:auto!important;top:auto!important;bottom:calc(var(--navh) + 16px)!important;width:36px!important;height:36px!important;padding:0!important;border:0!important;border-radius:50%!important;display:grid!important;place-items:center;background:rgba(255,252,246,.42)!important;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 6px 16px -10px rgba(40,30,20,.3),inset 0 0 0 1px rgba(255,255,255,.55)!important;color:#BF6A1E!important;font-size:0!important}
+[data-today] svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+[data-today].fw svg{transform:scaleX(-1)}
+#pager [data-today],.pager button[data-today]{border:0!important;border-color:transparent!important;padding:0!important;font-size:0!important}
+[data-today]{border:0 none transparent!important;border-width:0!important;outline:0!important}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><clipPath id="blobclip" clipPathUnits="objectBoundingBox"><path d="M0.30 0.10 C0.42 0.00 0.62 -0.02 0.78 0.07 C0.94 0.16 1.03 0.36 0.98 0.55 C0.93 0.74 0.78 0.86 0.62 0.94 C0.48 1.00 0.28 0.99 0.15 0.88 C0.02 0.77 -0.02 0.58 0.03 0.42 C0.07 0.28 0.18 0.18 0.30 0.10 Z"/></clipPath></defs></svg><div class="bgroom" id="bgroom" aria-hidden="true"><i class="bl"></i><i class="bsun"></i><i class="bcl c1"></i><i class="bcl c2"></i><i class="bst"></i><i class="bsh"></i></div>
@@ -1297,7 +1304,7 @@ const _r=render;render=function(){_r();updatePico();if(window.__fit)__fit()};
 const newOff=dir=>{if(S.view==='daily')return S.off+dir;if(S.view==='weekly')return S.off+7*dir;const d=day(S.off),t=new Date(d.getFullYear(),d.getMonth()+dir,1);t.setDate(Math.min(d.getDate(),new Date(t.getFullYear(),t.getMonth()+1,0).getDate()));return Math.round((t-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5)};
 let PD=0;const V=$('#view');const tgt=()=>S.view==='daily'?(V.querySelector('.photo')||V):V;
 function paintPager(){const el=$('#pager');let h='';for(let o=-3;o<=3;o++){const td=S.view==='daily'&&o!==0&&-S.off===o;h+=`<i class="${o===0?'c':Math.abs(o)===3?'s':''}${td?' t':''}"></i>`}
-if(S.off!==0)h+='<button data-today aria-label="Back to today">Today</button>';el.innerHTML=h;el.classList.remove('nl','nr');if(PD){void el.offsetWidth;el.classList.add(PD>0?'nl':'nr');PD=0}}
+if(S.off!==0)h+=`<button data-today class="${S.off<0?'fw':''}" aria-label="Back to today" title="Back to today"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5"/><path d="M4.2 3.8v4.2h4.2"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg></button>`;el.innerHTML=h;el.classList.remove('nl','nr');if(PD){void el.offsetWidth;el.classList.add(PD>0?'nl':'nr');PD=0}}
 function commit(dir,target=null){const out=dir>0?-1:1,T=tgt();T.style.transition='transform .16s ease-in,opacity .16s';T.style.transform=`translateX(${out*70}px)`;T.style.opacity='0';
 setTimeout(()=>{S.off=target===null?newOff(dir):target;PD=dir;render();const N=tgt();N.style.transition='none';N.style.transform=`translateX(${-out*70}px)`;N.style.opacity='0';void N.offsetWidth;N.style.transition='transform .22s ease-out,opacity .22s';N.style.transform='';N.style.opacity=''},160)}
 let sx=0,sy=0,dx=0,drag=false,lock=false,moved=false,t0=0,DT=null;
