@@ -1218,6 +1218,15 @@ nav div{padding-bottom:max(18px,env(safe-area-inset-bottom,0px))!important}
 :root{--wt:calc(var(--ah) - var(--navh) - 132px);--pt:calc(var(--ah) - var(--navh) - 38px)}
 #info{top:var(--wt)!important;bottom:auto!important}
 #pager{top:var(--pt)!important;bottom:auto!important}
+/* v34: weekday letters instead of dots */
+#pager i.lt{width:auto!important;min-width:16px;height:auto!important;border-radius:0!important;background:none!important;display:flex!important;flex-direction:column;align-items:center;font:600 12px/16px Inter,sans-serif;color:rgba(45,58,107,.42)!important;letter-spacing:0;position:relative}
+#pager i.lt.s{font-size:11px;opacity:.55!important}
+#pager i.lt.c{font-weight:800;font-size:15px;color:#2D3A6B!important;width:auto!important}
+#pager i.lt.c::after{content:"";width:14px;height:2px;border-radius:2px;background:#BF6A1E;margin-top:1px}
+#pager i.lt.t:not(.c){color:#BF6A1E!important;opacity:1!important;background:none!important}
+#pager i.lt.c{background:none!important}
+#pager{gap:12px!important;height:auto!important}
+@keyframes nl{from{transform:translateX(28px)}}@keyframes nr{from{transform:translateX(-28px)}}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><clipPath id="blobclip" clipPathUnits="objectBoundingBox"><path d="M0.30 0.10 C0.42 0.00 0.62 -0.02 0.78 0.07 C0.94 0.16 1.03 0.36 0.98 0.55 C0.93 0.74 0.78 0.86 0.62 0.94 C0.48 1.00 0.28 0.99 0.15 0.88 C0.02 0.77 -0.02 0.58 0.03 0.42 C0.07 0.28 0.18 0.18 0.30 0.10 Z"/></clipPath></defs></svg><div class="bgroom" id="bgroom" aria-hidden="true"><i class="bl"></i><i class="bsun"></i><i class="bcl c1"></i><i class="bcl c2"></i><i class="bst"></i><i class="bsh"></i></div>
@@ -1581,5 +1590,16 @@ const _r=render;render=function(){_r.apply(this,arguments);requestAnimationFrame
 addEventListener('resize',()=>setTimeout(ctr,60));addEventListener('load',()=>setTimeout(ctr,350));
 const im=document.querySelector('.stage .photo img');if(im)im.addEventListener('load',()=>setTimeout(ctr,50));
 setTimeout(ctr,350);setTimeout(ctr,900);setTimeout(ctr,1600);try{new MutationObserver(()=>requestAnimationFrame(ctr)).observe(document.documentElement,{attributes:true,attributeFilter:['style']})}catch(e){}
+})();
+
+;(function(){
+const L=['S','M','T','W','T','F','S'];
+function letters(){try{
+ const el=document.querySelector('#pager');if(!el||S.view!=='daily')return;
+ const b=new Date();b.setHours(12,0,0,0);
+ el.querySelectorAll('i').forEach((i,k)=>{if(i.classList.contains('lt'))return;
+  const d=new Date(b);d.setDate(d.getDate()+S.off+(k-3));i.textContent=L[d.getDay()];i.classList.add('lt')});
+}catch(e){}}
+const _r=render;render=function(){_r.apply(this,arguments);letters()};letters();
 })();
 </script></body></html>
