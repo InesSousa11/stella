@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><title>Stella · Home</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Stella"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#7F9BBA">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Stella"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#F5EEE0">
 <link rel="apple-touch-icon" href="assets/icon-180.png"><link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=Nunito:wght@500;700;800&display=swap">
 <style>
@@ -777,6 +777,14 @@ nav div{background:rgba(244,241,238,.58)!important;-webkit-backdrop-filter:blur(
   linear-gradient(#CB9378,#BC8068)!important;
  box-shadow:inset 0 0 0 4px #F0E2C8,inset 0 0 0 11px #B98A6B,inset 0 0 0 14px #F0E2C8,inset 0 0 0 28px #B8755C,inset 0 0 0 31px #E6C98F,0 -2px 8px rgba(60,30,15,.25)!important}
 .bgroom .rg::before{background:repeating-linear-gradient(90deg,#EEDFC0 0 2px,transparent 2px 6px)!important}
+
+/* v4: cream-white wall all the way to the top; header no longer tinted by the weather */
+html,body{background:#F5EEE0!important}
+.bgroom .bw{background:linear-gradient(#F8F2E6,#F4ECDD 40%,#EFE4D1 85%,#EADDC6)!important}
+.bgroom .shL,.bgroom .shR{background:linear-gradient(90deg,rgba(120,85,45,.09),rgba(120,85,45,0))!important}
+.bgroom .pl{border-color:rgba(160,120,70,.28)!important;box-shadow:inset 0 0 14px rgba(160,120,70,.08),0 0 0 3px rgba(190,150,100,.07)!important}
+#wx svg path:nth-of-type(1){fill:none!important}
+#wx svg circle{stroke:#BF6A1E;stroke-width:1.4}
 </style></head>
 <body>
 <div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><div class="wnd wl2"><i class="g"></i></div><div class="wnd wr2"><i class="g"></i></div><i class="fl"></i><i class="rg"></i><i class="fsh"></i></div>
