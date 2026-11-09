@@ -941,9 +941,21 @@ html,body{background:#F5EEE0!important}
 .bgroom .mirg{opacity:.12}
 .bgroom .wnd .g{filter:saturate(.7) brightness(.92)}
 [data-today]{background:rgba(248,241,228,.94)!important;color:#BF6A1E!important;border-color:rgba(191,106,30,.55)!important;box-shadow:0 2px 8px rgba(60,35,15,.18)}
+
+/* v25: header sits in a translucent top bar, mirror of the bottom nav bar */
+.hero:not(.open) #wx{z-index:1}
+.bgroom::before{background:
+ radial-gradient(ellipse 30% 5% at 50% calc(var(--st) + var(--ph) * .945),rgba(255,236,200,.38),transparent 100%),
+ radial-gradient(ellipse 62% 46% at 50% calc(var(--st) - 10px),rgba(255,242,216,.26),transparent 100%),
+ radial-gradient(ellipse 30% 26% at 50% calc(var(--st) + var(--ph) * .24),rgba(255,244,224,.20),transparent 100%)!important}
+#wx svg path:nth-of-type(2){filter:drop-shadow(0 0 1.5px rgba(90,60,30,.55))}
+.bgroom .tbar{position:absolute;left:0;right:0;top:0;height:calc(var(--hp) + 80px);z-index:8;background:rgba(244,238,226,.80);box-shadow:0 1px 0 rgba(255,255,255,.6),0 6px 14px -8px rgba(90,60,30,.3)}
+
+#wx svg path:nth-of-type(2){filter:none!important}
+#wx svg circle{stroke:#fff!important}
 </style></head>
 <body>
-<div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><i class="mirg"></i><i class="mir"></i><div class="wnd wl2"><i class="g"></i></div><div class="wnd wr2"><i class="g"></i></div><i class="fl"></i><i class="rg"></i><i class="rg rg2"></i><i class="fsh"></i></div>
+<div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><i class="mirg"></i><i class="mir"></i><div class="wnd wl2"><i class="g"></i></div><div class="wnd wr2"><i class="g"></i></div><i class="fl"></i><i class="rg"></i><i class="rg rg2"></i><i class="fsh"></i><i class="tbar"></i></div>
 <main class="app" id="app" data-scene="rainy">
 <header class="hero">
 <svg class="scene" viewBox="0 0 400 183" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
@@ -1111,7 +1123,7 @@ function wxui(){try{const hero=document.querySelector('.hero'),w=document.getEle
 const W=hero.clientWidth||innerWidth,hp=Math.max(10,(parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sat'))||0)-14);
 const probe=document.createElement('div');probe.style.cssText='position:absolute;visibility:hidden;height:var(--hp)';document.body.appendChild(probe);const hpx=probe.getBoundingClientRect().height||hp;probe.remove();
 const d=new Date(),short=W<360,wd=d.toLocaleDateString('en-GB',{weekday:short?'short':'long'}),dm=d.getDate()+' '+d.toLocaleDateString('en-GB',{month:'short'});
-const sc=S.scene,f=({sunny:.66,rainy:.5,night:.4})[sc],yb=hpx+82,amp=30,H=hpx+124;
+const sc=S.scene,f=({sunny:.66,rainy:.5,night:.4})[sc],yb=hpx+66,amp=24,H=hpx+124;
 const x=22+(W-44)*f,y=(1-f)*(1-f)*yb+2*f*(1-f)*(yb-2*amp)+f*f*yb;
 const sky=({sunny:['#86AAD0','#F0CFA6','#F6DDBC'],rainy:['#A9B6C6','#CFC9C4','#DDD6CE'],night:['#8F9CC6','#C7B8CB','#DCCFD0']})[sc];
 const col=sc==='rainy'?'#C9D2DD':sc==='night'?'#EDE3B8':'#F4B860';
@@ -1121,12 +1133,12 @@ const lab=sc==='night'?['17:20','07:02']:['07:02','17:20'];const t=document.getE
 w.style.height=H+'px';
 w.innerHTML=`<svg width="${W}" height="${H}" style="position:absolute;left:0;top:0"><defs><linearGradient id="skg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset=".78" stop-color="${sky[1]}"/><stop offset="1" stop-color="${sky[2]}"/></linearGradient></defs>
 <path d="M0 0H${W}V${yb}H${W-22}Q${W/2} ${yb-2*amp} 22 ${yb}H0Z" fill="url(#skg)"/>
-<path d="M22 ${yb}Q${W/2} ${yb-2*amp} ${W-22} ${yb}" fill="none" stroke="#fff" stroke-width="1.8" stroke-dasharray="2 4" stroke-linecap="round"/>
+<path d="M22 ${yb}Q${W/2} ${yb-2*amp} ${W-22} ${yb}" fill="none" stroke="#BF6A1E" stroke-width="1.5" stroke-dasharray="2 4" stroke-linecap="round"/>
 <circle cx="${x}" cy="${y}" r="7" fill="${col}" stroke="#fff" stroke-width="2"/></svg>
 <div class="wt" style="left:20px;top:${hpx+8}px"><b>Today · ${wd} ${dm}</b><div class="w3">📍 Carcavelos</div></div>
 <div class="wt" style="left:auto;right:20px;top:${hpx+8}px;text-align:right"><b>${cond}</b><div class="w2">${hl}</div></div>
-<div class="wtemp" style="left:${x-30}px;top:${y-30}px">${t}</div>
-<div class="wxl" style="left:22px;top:${yb+6}px">${lab[0]}</div><div class="wxl" style="right:22px;top:${yb+6}px">${lab[1]}</div>`}catch(e){}}
+<div class="wtemp" style="left:${x-30}px;top:${y+9}px">${t}</div>
+<div class="wxl" style="left:22px;top:${yb+3}px">${lab[0]}</div><div class="wxl" style="right:22px;top:${yb+3}px">${lab[1]}</div>`}catch(e){}}
 addEventListener('resize',()=>wxui());
 wxui();
 
