@@ -3,10 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
 /* standalone hosting: the app owns the whole screen; its height is measured in script (--appH) */
-html,body{margin:0;height:100%;overflow:hidden;background:#F6F1EA}
-.app{position:fixed;top:0;left:0;right:0;margin:0 auto;height:var(--appH,100dvh)}
+html,body{margin:0;height:var(--appH,100dvh);min-height:100%;overflow:hidden;background:#F6F1EA}
+.app{position:absolute;top:0;left:0;right:0;margin:0 auto;height:var(--appH,100dvh)}
 .screen{padding-top:calc(14px + env(safe-area-inset-top,0px))!important}
 nav.tabs{position:absolute!important}
 </style>
@@ -577,6 +578,7 @@ function sheetSettings(){
     <div class="field"><label for="s-name">Your name</label><input id="s-name" value="${esc(S.settings.name)}" maxlength="24"></div>
     <div class="field"><label for="s-city">City for weather</label><select id="s-city">${Object.keys(CITIES).map(c=>`<option ${c===S.settings.city?'selected':''}>${c}</option>`).join('')}</select></div>
     <p class="note">${wLive?'Weather: live forecast from Open-Meteo for the next 16 days.':'Weather: seasonal estimates for '+esc(S.settings.city)+'. The live forecast could not load here.'}</p>
+    <p class="note" style="font-size:11px">Screen fit: ${esc(FIT.txt)}</p>
     <button class="btn" data-act="save-settings">Save</button>
     <button class="linkbtn ${V.confirmReset?'warn':''}" data-act="reset">${V.confirmReset?'Tap again to erase everything and restore the sample wardrobe':'Restore sample wardrobe'}</button>`);
 }
@@ -685,8 +687,18 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#layer').innerHTML)closeSheet()});
 /* fit the app to the real screen: iOS home-screen apps can report a viewport shorter than the screen */
-function fitH(){let h=window.innerHeight;if(window.navigator.standalone===true){const port=h>=window.innerWidth,sh=port?Math.max(screen.width,screen.height):Math.min(screen.width,screen.height);if(sh>h&&sh-h<=80)h=sh}document.documentElement.style.setProperty('--appH',h+'px')}
-fitH();addEventListener('resize',fitH);addEventListener('orientationchange',()=>setTimeout(fitH,250));
+let FIT={txt:'measuring'};
+function fitH(){
+  const vv=window.visualViewport,ih=window.innerHeight,vh=vv?Math.round(vv.height):ih,port=ih>=window.innerWidth;
+  const sh=port?Math.max(screen.width,screen.height):Math.min(screen.width,screen.height);
+  const app=window.navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone),(display-mode: fullscreen)').matches);
+  let h=ih,fix=false;
+  /* home-screen apps on iPhone can report a viewport shorter than the screen; when the gap is small, use the whole screen */
+  if(app&&sh>ih&&sh-ih<=140){h=sh;fix=true}
+  document.documentElement.style.setProperty('--appH',h+'px');
+  FIT={txt:`viewport ${ih}px · visible ${vh}px · screen ${sh}px · ${app?'home-screen app':'browser'}${fix?' · stretched to screen':''}`};
+}
+fitH();addEventListener('resize',fitH);addEventListener('orientationchange',()=>setTimeout(fitH,250));if(window.visualViewport)visualViewport.addEventListener('resize',fitH);
 render(true);
 loadWeather();
 loadPhotos();
