@@ -865,6 +865,13 @@ html,body{background:#F5EEE0!important}
 .bgroom .pa{left:5px!important}.bgroom .pb{right:5px!important}
 .bgroom .pc{width:calc(min(43%,168px) + 26px)!important;top:calc(var(--st) - 43px)!important;height:calc(var(--ph) * .78 + 56px)!important;border-radius:calc(min(43%,168px)/2 + 13px) calc(min(43%,168px)/2 + 13px) 3px 3px!important}
 @media (max-width:359px){.bgroom .pc{width:calc(min(36%,168px) + 26px)!important;border-radius:calc(min(36%,168px)/2 + 13px) calc(min(36%,168px)/2 + 13px) 3px 3px!important}}
+
+/* v19: true semicircular top on the mirror line (concentric with the mirror), window lines run down to the mirror line's bottom */
+.bgroom .mir{border-radius:999px 999px 0 0!important}
+.bgroom .mirg{border-radius:999px 999px 0 0!important}
+.bgroom .pc{border-radius:999px 999px 3px 3px!important}
+.bgroom .pa,.bgroom .pb{height:calc(var(--ph) * .78 + 26px)!important}
+@media (max-width:359px){.bgroom .pc{border-radius:999px 999px 3px 3px!important}.bgroom .mir,.bgroom .mirg{border-radius:999px 999px 0 0!important}}
 </style></head>
 <body>
 <div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><i class="mirg"></i><i class="mir"></i><div class="wnd wl2"><i class="g"></i></div><div class="wnd wr2"><i class="g"></i></div><i class="fl"></i><i class="rg"></i><i class="fsh"></i></div>
