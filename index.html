@@ -803,9 +803,14 @@ html,body{background:#F5EEE0!important}
 
 /* v9: no mirror attached to the figure; the static wall panel stays put while the figure swipes */
 .stage .photo::before,.stage::before{display:none!important;content:none!important}
+
+/* v10: the mirror lives in the fixed room (does not travel with the figure) */
+.bgroom .mir,.bgroom .mirg{position:absolute;left:50%;transform:translateX(-50%);width:min(50%,190px);top:calc(var(--st) - 30px);height:calc(var(--ph) * .78 + 30px);border-radius:95px 95px 0 0;pointer-events:none}
+.bgroom .mirg{left:calc(50% - 0px);width:calc(min(50%,190px) + 40px);top:calc(var(--st) - 44px);height:calc(var(--ph) * .78 + 44px);border-radius:115px 115px 0 0;background:radial-gradient(ellipse at 50% 30%,rgba(255,238,196,.75),rgba(255,238,196,0) 70%);filter:blur(10px)}
+.bgroom .mir{background:linear-gradient(115deg,rgba(255,255,255,.55) 0 8%,rgba(255,255,255,0) 22%,rgba(255,255,255,0) 60%,rgba(255,255,255,.28) 72%,rgba(255,255,255,0) 84%),linear-gradient(180deg,#EDE3D1,#F2E9D9 55%,#EFE3CF);box-shadow:inset 14px 0 28px -12px rgba(31,53,82,.10),inset -10px 0 24px -14px rgba(31,53,82,.05),inset 0 12px 28px rgba(31,53,82,.07),0 14px 20px -4px rgba(90,60,30,.28),0 3px 6px rgba(90,60,30,.18);filter:blur(1.6px)}
 </style></head>
 <body>
-<div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><div class="wnd wl2"><i class="g"></i></div><div class="wnd wr2"><i class="g"></i></div><i class="fl"></i><i class="rg"></i><i class="fsh"></i></div>
+<div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><i class="mirg"></i><i class="mir"></i><div class="wnd wl2"><i class="g"></i></div><div class="wnd wr2"><i class="g"></i></div><i class="fl"></i><i class="rg"></i><i class="fsh"></i></div>
 <main class="app" id="app" data-scene="rainy">
 <header class="hero">
 <svg class="scene" viewBox="0 0 400 183" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
