@@ -892,6 +892,24 @@ html,body{background:#F5EEE0!important}
  radial-gradient(ellipse 34% 5.5% at 50% calc(var(--st) + var(--ph) * .945),rgba(255,240,210,.40),transparent 100%),
  radial-gradient(ellipse 46% 40% at 50% calc(var(--st) + var(--ph) * .42),rgba(255,244,224,var(--sp)),transparent 100%),
  radial-gradient(ellipse 80% 62% at 50% calc(var(--st) + var(--ph) * .48),transparent 38%,rgba(78,50,22,var(--vg)) 100%)}
+
+/* v22: darker vignette/sides; rug sharp like the feet standing on it (blur moved off the rug) */
+.bgroom{filter:none!important;--vg:.48;--sp:.34}
+.bgroom[data-scene=night]{--vg:.60;--sp:.30}
+.bgroom::after{background:
+ radial-gradient(ellipse 34% 5.5% at 50% calc(var(--st) + var(--ph) * .945),rgba(255,240,210,.40),transparent 100%),
+ radial-gradient(ellipse 46% 40% at 50% calc(var(--st) + var(--ph) * .42),rgba(255,244,224,var(--sp)),transparent 100%),
+ radial-gradient(ellipse 78% 60% at 50% calc(var(--st) + var(--ph) * .48),transparent 30%,rgba(70,44,20,var(--vg)) 100%)!important}
+.bgroom .bw,.bgroom .shL,.bgroom .shR,.bgroom .pl,.bgroom .wnd,.bgroom .fl,.bgroom .fsh{filter:blur(1.5px)}
+.bgroom .wnd{filter:blur(1.2px)}
+.bgroom .rg{filter:saturate(.8) sepia(.08)!important}
+
+/* header zone stays bright for legibility under the darker vignette */
+.bgroom::after{background:
+ linear-gradient(180deg,rgba(248,242,230,.92) 0,rgba(248,242,230,.92) calc(var(--st) - 60px),rgba(248,242,230,0) calc(var(--st) + 10px)),
+ radial-gradient(ellipse 34% 5.5% at 50% calc(var(--st) + var(--ph) * .945),rgba(255,240,210,.40),transparent 100%),
+ radial-gradient(ellipse 46% 40% at 50% calc(var(--st) + var(--ph) * .42),rgba(255,244,224,var(--sp)),transparent 100%),
+ radial-gradient(ellipse 78% 60% at 50% calc(var(--st) + var(--ph) * .48),transparent 30%,rgba(70,44,20,var(--vg)) 100%)!important}
 </style></head>
 <body>
 <div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><i class="mirg"></i><i class="mir"></i><div class="wnd wl2"><i class="g"></i></div><div class="wnd wr2"><i class="g"></i></div><i class="fl"></i><i class="rg"></i><i class="fsh"></i></div>
