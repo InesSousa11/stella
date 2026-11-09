@@ -1204,6 +1204,14 @@ nav div{padding-bottom:max(18px,env(safe-area-inset-bottom,0px))!important}
 #info{overflow:visible!important}
 #info .wvw{width:100vw;margin-left:-26px;overflow:hidden}
 #info .wv{display:block;width:300vw!important;max-width:none!important;margin-left:-100vw!important;height:auto;overflow:visible;will-change:transform}
+
+/* v31: shorter chart, more room for figure */
+:root{--ib:150px}
+@media (max-height:660px){:root{--ib:78px}}
+
+:root{--ib:140px}
+#info,#info{bottom:calc(var(--navh) + 56px)!important}
+@media (max-height:660px){:root{--ib:78px}#info{bottom:calc(var(--navh) + 56px)!important}}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><clipPath id="blobclip" clipPathUnits="objectBoundingBox"><path d="M0.30 0.10 C0.42 0.00 0.62 -0.02 0.78 0.07 C0.94 0.16 1.03 0.36 0.98 0.55 C0.93 0.74 0.78 0.86 0.62 0.94 C0.48 1.00 0.28 0.99 0.15 0.88 C0.02 0.77 -0.02 0.58 0.03 0.42 C0.07 0.28 0.18 0.18 0.30 0.10 Z"/></clipPath></defs></svg><div class="bgroom" id="bgroom" aria-hidden="true"><i class="bl"></i><i class="bsun"></i><i class="bcl c1"></i><i class="bcl c2"></i><i class="bst"></i><i class="bsh"></i></div>
@@ -1468,10 +1476,10 @@ function tempsFor(o){if(o<-7||o>7)return null;const b=WT[S.scene],sh=Math.round(
 const sp=(X,Y)=>{const m=X.length;let d=`M${X[0]} ${Y[0]}`;for(let i=0;i<m-1;i++){const p0=i?i-1:0,p3=i+2<m?i+2:m-1,k=.18;d+=` C${X[i]+(X[i+1]-X[p0])*k} ${Y[i]+(Y[i+1]-Y[p0])*k} ${X[i+1]-(X[p3]-X[i])*k} ${Y[i+1]-(Y[p3]-Y[i])*k} ${X[i+1]} ${Y[i+1]}`}return d};
 let CW=390;
 function curve(){const e=document.getElementById('info');if(!e)return;
-const w=CW=innerWidth,h=92,n=8,st=w/n,hrNow=new Date().getHours(),curI=Math.min(n-1,Math.floor(hrNow/3));
+const w=CW=innerWidth,h=76,n=8,st=w/n,hrNow=new Date().getHours(),curI=Math.min(n-1,Math.floor(hrNow/3));
 const P=[-1,0,1].map(k=>{const o=S.off+k,T=tempsFor(o);return{k,o,T,PR:T?PRECIP(o):null}});
-const all=P.filter(p=>p.T).flatMap(p=>p.T),mn=all.length?Math.min(...all):0,mx=all.length?Math.max(...all):0,amp=all.length?Math.min(30,10+(mx-mn)*4):0;
-const Y=t=>40+(mx===mn?0:((mx+mn)/2-t)/(mx-mn))*amp,PY=p=>70-p/100*42;
+const all=P.filter(p=>p.T).flatMap(p=>p.T),mn=all.length?Math.min(...all):0,mx=all.length?Math.max(...all):0,amp=all.length?Math.min(26,12+(mx-mn)*3):0;
+const Y=t=>42+(mx===mn?0:((mx+mn)/2-t)/(mx-mn))*amp,PY=p=>68-p/100*34;
 // runs of consecutive panels with / without forecast
 const runs=[];P.forEach(p=>{const has=!!p.T,l=runs[runs.length-1];if(l&&l.has===has)l.ps.push(p);else runs.push({has,ps:[p]})});
 let defs=`<defs><linearGradient id="bf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BF6A1E" stop-opacity=".22"/><stop offset="1" stop-color="#BF6A1E" stop-opacity=".1"/></linearGradient></defs>`,g='';
@@ -1480,12 +1488,11 @@ const xs=[],ty=[],py=[];r.ps.forEach(p=>{for(let i=0;i<n;i++){xs.push((p.k+1)*w+
 const X=[x0,...xs,x1],TY=[ty[0],...ty,ty[ty.length-1]];
 if(r.has){const PYY=[py[0],...py,py[py.length-1]],td=sp(X,TY),pd=sp(X,PYY),rp=sp([...X].reverse(),[...PYY].reverse()).replace(/^M[^C]*/,'');
 g+=`<path d="${td} L${X[X.length-1]} ${PYY[PYY.length-1]} ${rp.replace(/^/,'')} Z" fill="url(#bf)"/>`;
-g+=`<path d="${pd}" fill="none" stroke="#BF6A1E" stroke-opacity=".75" stroke-width="1" stroke-linecap="round"/><path d="${td}" fill="none" stroke="#BF6A1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`}
+g+=`<path d="${pd}" fill="none" stroke="#BF6A1E" stroke-opacity=".75" stroke-width="1.2" stroke-linecap="round"/><path d="${td}" fill="none" stroke="#BF6A1E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`}
 else g+=`<path d="M${x0} 40 L${x1} 40" fill="none" stroke="#CFC6B2" stroke-width="1.8" stroke-linecap="round"/>`});
 P.forEach(p=>{for(let i=0;i<n;i++){const x=(p.k+1)*w+(i+.5)*st,cur=p.o===0&&i===curI;
-if(p.T){const y=Y(p.T[i]);g+=`<circle cx="${x}" cy="${y}" r="${cur?5:3}" fill="${cur?'#FFF9EE':'#BF6A1E'}" stroke="#BF6A1E" stroke-width="${cur?2:0}"/><text x="${x}" y="${y-14}" text-anchor="middle" font-family="Inter,sans-serif" font-size="${cur?15:13}" font-weight="${cur?700:500}" fill="${cur?'#2D3A6B':'#8A86A6'}">${p.T[i]}°</text>`}
-else g+=`<circle cx="${x}" cy="40" r="3" fill="#CFC6B2"/>`;
-g+=`<text x="${x}" y="${h-4}" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#A9AEC6">${String(i*3).padStart(2,'0')}</text>`}});
+if(p.T){const y=Y(p.T[i]);if(cur)g+=`<circle cx="${x}" cy="${y}" r="5" fill="#FFF9EE" stroke="#BF6A1E" stroke-width="2"/>`;g+=`<text x="${x}" y="${y-14}" text-anchor="middle" font-family="Inter,sans-serif" font-size="${cur?15:13}" font-weight="${cur?700:500}" fill="${cur?'#2D3A6B':'#8A86A6'}">${p.T[i]}°</text>`}
+else{g+=`<circle cx="${x}" cy="40" r="3" fill="#CFC6B2"/><text x="${x}" y="62" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#A9AEC6">${String(i*3).padStart(2,'0')}</text>`}}});
 e.innerHTML=`<div class="wvw"><svg class="wv" viewBox="0 0 ${3*w} ${h}" aria-label="Temperature and precipitation through the day">${defs}${g}</svg></div>`}
 const cvs=()=>document.querySelector('#info .wv');
 function cv(x,anim){const c=cvs();if(!c)return;c.style.transition=anim?'transform .16s ease-out':'none';c.style.transform=`translateX(${x}px)`}
