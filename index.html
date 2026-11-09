@@ -819,6 +819,11 @@ html,body{background:#F5EEE0!important}
 
 /* v12: quiet frame, tone-on-tone with the wall */
 .bgroom .mir{box-shadow:0 0 0 3.5px #EBE0CB,0 0 0 4.5px rgba(176,146,104,.35),inset 0 0 0 1.5px rgba(255,255,255,.7),inset 0 0 16px rgba(31,53,82,.14),0 14px 20px -4px rgba(90,60,30,.26)!important}
+
+/* v13: white frames for mirror and windows */
+.bgroom .mir{box-shadow:0 0 0 4px #FDFBF7,0 0 0 5px rgba(150,130,100,.28),inset 0 0 0 1.5px rgba(255,255,255,.7),inset 0 0 16px rgba(31,53,82,.14),0 14px 20px -4px rgba(90,60,30,.26)!important}
+.bgroom .wnd{border-color:#FDFBF7!important;background:#FDFBF7!important;box-shadow:0 0 0 1px rgba(150,130,100,.3),0 0 26px var(--wg,rgba(255,236,190,.55)),inset 0 0 6px rgba(80,50,20,.3)!important}
+.bgroom .wnd .g::after{background:linear-gradient(#FDFBF7,#FDFBF7) 50% 0/3px 100% no-repeat,linear-gradient(#FDFBF7,#FDFBF7) 0 46%/100% 3px no-repeat!important}
 </style></head>
 <body>
 <div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><i class="mirg"></i><i class="mir"></i><div class="wnd wl2"><i class="g"></i></div><div class="wnd wr2"><i class="g"></i></div><i class="fl"></i><i class="rg"></i><i class="fsh"></i></div>
