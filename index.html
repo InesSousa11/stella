@@ -1532,19 +1532,19 @@ const flake=(x,y,r,c,o)=>{let d='';for(let i=0;i<3;i++){const t=Math.PI/3*i,dx=M
 const waves=(c1,c2,c3)=>`<g transform="translate(390 0) scale(1.45) translate(-390 0)"><path d="M140 0 C185 24 205 64 248 74 C292 84 322 58 344 100 C362 134 380 142 400 150 L400 0Z" fill="${c1}"/><path d="M196 0 C228 26 250 52 286 58 C322 64 342 88 362 112 C376 128 390 132 400 136 L400 0Z" fill="${c2}"/><path d="M252 0 C274 22 300 32 324 58 C342 78 362 84 400 92 L400 0Z" fill="${c3}"/></g>`;
 const dots=(n,c,k)=>Array.from({length:n},(_,i)=>`<circle cx="${(50+rnd(i,k)*300).toFixed(0)}" cy="${(40+rnd(i,k+1)*250).toFixed(0)}" r="${(1.4+rnd(i,k+2)*2.4).toFixed(1)}" fill="${c}"/>`).join('');
 const hills=(c1,c2)=>`<path d="M0 252 C60 222 120 232 190 244 C250 254 310 214 390 236 L390 330 L0 330Z" fill="${c1}"/><path d="M0 286 C70 262 140 270 210 282 C270 292 330 262 390 276 L390 330 L0 330Z" fill="${c2}"/>`;
-const wrap=(id,base,inner)=>hd+`<defs>${clip(id)}</defs>${blob(base)}<g clip-path="url(#${id})"><g transform="translate(390 0) scale(-1 1)">${inner}</g></g></svg>`;
+const wrap=(id,base,inner)=>hd+`<defs>${clip(id)}<linearGradient id="g${id}" gradientUnits="userSpaceOnUse" x1="0" y1="90" x2="0" y2="318"><stop offset="0" stop-color="#fff"/><stop offset=".42" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient><mask id="m${id}" maskUnits="userSpaceOnUse" x="0" y="0" width="390" height="330"><rect width="390" height="330" fill="url(#g${id})"/></mask></defs><g mask="url(#m${id})">${blob(base)}<g clip-path="url(#${id})"><g transform="translate(390 0) scale(-1 1)">${inner}</g></g></g></svg>`;
 const rainL=(n,c,o)=>streaks(n,c,26,1.8,o);
 const A2={
-sunny:wrap('c1','#FBE4B6',`<circle cx="372" cy="22" r="262" fill="#FBDCA8"/><circle cx="372" cy="22" r="190" fill="#FCE8BE"/><circle cx="362" cy="48" r="84" fill="#FFF1B8"/>`),
-night:wrap('c2','#DDD2E8',`<circle cx="330" cy="70" r="150" fill="#D3C6E2"/><circle cx="330" cy="70" r="104" fill="#E3DAEE"/><circle cx="330" cy="70" r="62" fill="#F8E7B4"/>${dots(30,'#EBD08E',11)}`),
-cloudy:wrap('c3','#D6DEE4',waves('#DEE5EA','#E6ECEE','#EEF2F1')),
-mostly:wrap('c4','#D9DFE6',waves('#E1E7EC','#E9EEF0','#F1F4F3')+`<circle cx="318" cy="64" r="40" fill="#FBEBB8" opacity=".95"/>`+cl(214,62,1,'#fff','#CBD4DD')),
+sunny:wrap('c1','#FFD6C6',`<circle cx="372" cy="22" r="262" fill="#FFDDB6"/><circle cx="372" cy="22" r="190" fill="#FFE8B8"/><circle cx="362" cy="48" r="84" fill="#FFF28E"/>`),
+night:wrap('c2','#CBD3FF',`<circle cx="330" cy="70" r="150" fill="#BFD2FF"/><circle cx="330" cy="70" r="104" fill="#D6E6FF"/><circle cx="330" cy="70" r="62" fill="#FFF1A8"/>${dots(30,'#FFD866',11)}`),
+cloudy:wrap('c3','#C0DCFF',waves('#C8F0F4','#D6F7F7','#E5FBFA')),
+mostly:wrap('c4','#C9DCFB',waves('#CDEFF6','#DBF7F8','#E8FBFA')+`<circle cx="318" cy="64" r="40" fill="#FFF0A8" opacity=".95"/>`+cl(214,62,1,'#fff','#B9CCEE')),
 hazy:wrap('c5','#FBDDC2',`<circle cx="368" cy="26" r="240" fill="#FCE6CB"/><circle cx="368" cy="26" r="170" fill="#FDEDD6"/><circle cx="352" cy="52" r="70" fill="#FFF1C9"/><path d="M0 214 C80 188 140 240 220 210 S340 196 390 220 L390 330 L0 330Z" fill="#fff" opacity=".32"/><path d="M0 262 C90 238 150 286 230 258 S340 248 390 266 L390 330 L0 330Z" fill="#fff" opacity=".3"/>`),
-rainy:wrap('c6','#CDD7E1',waves('#D6DFE7','#DFE6EC','#E8EDF1')+rainL(26,'#fff',.75)),
-heavyrain:wrap('c7','#C0CAD7',`<g transform="translate(390 0) scale(1.45) translate(-390 0)"><path d="M120 0 C170 26 190 70 240 80 C290 90 318 60 342 104 C362 140 380 148 400 156 L400 0Z" fill="#B5BFCE"/><path d="M180 0 C220 30 244 56 284 62 C322 68 344 92 364 118 C378 134 390 138 400 142 L400 0Z" fill="#AAB5C6"/><path d="M244 0 C270 24 298 34 324 60 C344 82 364 88 400 96 L400 0Z" fill="#9FABBF"/></g>${rainL(48,'#fff',.6)}`),
-snow:wrap('c8','#DCE6EC',dots(32,'#fff',21)+hills('#EBF1F4','#F6F8F8')),
-heavysnow:wrap('c9','#D7E2EA',flake(90,96,22,'#fff',.9)+flake(300,70,26,'#fff',.85)+flake(70,226,16,'#fff',.85)+flake(330,200,20,'#fff',.9)+flake(200,276,17,'#fff',.75)+flake(250,130,12,'#fff',.75)+flake(130,40,10,'#fff',.75)+flake(46,150,9,'#fff',.65)+dots(14,'#fff',31)),
-hail:wrap('c10','#D5D3E4',Array.from({length:26},(_,i)=>{const x=50+rnd(i,3)*300,y=44+rnd(i,4)*250,r=3.4+rnd(i,5)*7;return i%3?hex(x,y,r,'#fff',.9):`<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(r*.5).toFixed(1)}" fill="#fff" opacity=".8"/>`}).join('')+waves('#CBC9DD','#C1BFD6','#B8B6D0'))
+rainy:wrap('c6','#C6D9FF',waves('#D0E2FF','#DCEAFF','#E9F2FF')+rainL(26,'#fff',.8)),
+heavyrain:wrap('c7','#BAC7F2',`<g transform="translate(390 0) scale(1.45) translate(-390 0)"><path d="M120 0 C170 26 190 70 240 80 C290 90 318 60 342 104 C362 140 380 148 400 156 L400 0Z" fill="#AFBDEC"/><path d="M180 0 C220 30 244 56 284 62 C322 68 344 92 364 118 C378 134 390 138 400 142 L400 0Z" fill="#A4B2E6"/><path d="M244 0 C270 24 298 34 324 60 C344 82 364 88 400 96 L400 0Z" fill="#99A7E0"/></g>${rainL(48,'#fff',.65)}`),
+snow:wrap('c8','#CDE9FF',dots(32,'#fff',21)+hills('#E4F3FF','#F3FAFF')),
+heavysnow:wrap('c9','#C7E4FF',flake(90,96,22,'#fff',.95)+flake(300,70,26,'#fff',.9)+flake(70,226,16,'#fff',.9)+flake(330,200,20,'#fff',.95)+flake(200,276,17,'#fff',.8)+flake(250,130,12,'#fff',.8)+flake(130,40,10,'#fff',.8)+flake(46,150,9,'#fff',.7)+dots(14,'#fff',31)),
+hail:wrap('c10','#D2D5FF',Array.from({length:26},(_,i)=>{const x=50+rnd(i,3)*300,y=44+rnd(i,4)*250,r=3.4+rnd(i,5)*7;return i%3?hex(x,y,r,'#fff',.92):`<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(r*.5).toFixed(1)}" fill="#fff" opacity=".85"/>`}).join('')+waves('#C6CAF9','#BABFF3','#AEB4ED'))
 };
 
 const wx=()=>S.wx||S.scene;
