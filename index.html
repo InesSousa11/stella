@@ -757,9 +757,29 @@ nav div{background:rgba(244,241,238,.58)!important;-webkit-backdrop-filter:blur(
   linear-gradient(#8E2F2A,#7C2622)!important;
  box-shadow:inset 0 0 0 4px #D9C095,inset 0 0 0 11px #26335A,inset 0 0 0 14px #D9C095,inset 0 0 0 28px #7A2420,inset 0 0 0 31px #C9A55E,0 -2px 8px rgba(60,30,15,.35)!important}
 .bgroom .rg::before{content:"";position:absolute;left:0;right:0;top:-12px;height:12px;background:repeating-linear-gradient(90deg,#E6D6B0 0 2px,transparent 2px 6px)}
+
+/* v3: windows showing the weather instead of curtains; softer rug in the app palette */
+.bgroom .win{display:none!important}
+.bgroom .wnd{position:absolute;top:calc(var(--st) + 12px);width:62px;height:calc(var(--ph) * .62);border:5px solid #EFE3CC;border-radius:31px 31px 2px 2px;box-shadow:0 0 0 1px rgba(148,96,31,.45),0 0 26px var(--wg,rgba(255,236,190,.55)),inset 0 0 6px rgba(80,50,20,.35);overflow:hidden;background:#EFE3CC}
+.bgroom .wl2{left:14px}.bgroom .wr2{right:14px}
+.bgroom .wnd .g{position:absolute;inset:0;display:block}
+.bgroom .wnd .g::after{content:"";position:absolute;inset:0;background:linear-gradient(#EFE3CC,#EFE3CC) 50% 0/3px 100% no-repeat,linear-gradient(#EFE3CC,#EFE3CC) 0 46%/100% 3px no-repeat}
+.bgroom[data-scene=sunny]{--wg:rgba(255,228,170,.6)}
+.bgroom[data-scene=rainy]{--wg:rgba(200,210,224,.45)}
+.bgroom[data-scene=night]{--wg:rgba(150,160,210,.4)}
+.bgroom[data-scene=sunny] .wnd .g{background:radial-gradient(circle at 68% 74%,#FFF3C4 0 10%,rgba(255,226,150,.7) 16%,transparent 42%),radial-gradient(ellipse 60% 14% at 30% 30%,rgba(255,255,255,.85),transparent),radial-gradient(ellipse 55% 11% at 70% 52%,rgba(255,255,255,.7),transparent),linear-gradient(#7FA2CE,#B7C6D6 55%,#F3D9AE)}
+.bgroom[data-scene=rainy] .wnd .g{background:repeating-linear-gradient(105deg,transparent 0 7px,rgba(255,255,255,.35) 7px 8px),radial-gradient(ellipse 80% 22% at 30% 24%,rgba(120,130,145,.8),transparent),radial-gradient(ellipse 70% 18% at 70% 50%,rgba(140,150,164,.7),transparent),linear-gradient(#8E9AAB,#B6BCC4 60%,#CFCAC4)}
+.bgroom[data-scene=night] .wnd .g{background:radial-gradient(circle at 66% 28%,#FFF3C9 0 6%,rgba(255,243,201,.35) 10%,transparent 24%),radial-gradient(circle,#fff 0 1px,transparent 1.6px) 6px 8px/19px 23px,radial-gradient(circle,rgba(255,255,255,.8) 0 1px,transparent 1.6px) 14px 20px/27px 31px,linear-gradient(#1D2650,#4A5A92 65%,#8F9CC6)}
+.bgroom .rg{filter:saturate(.7) sepia(.08)!important;opacity:.95!important;
+ background:
+  linear-gradient(45deg,rgba(244,230,204,.2) 25%,transparent 25% 75%,rgba(244,230,204,.2) 75%) 0 0/22px 22px,
+  linear-gradient(135deg,rgba(43,92,138,.16) 25%,transparent 25% 75%,rgba(43,92,138,.16) 75%) 0 0/22px 22px,
+  linear-gradient(#CB9378,#BC8068)!important;
+ box-shadow:inset 0 0 0 4px #F0E2C8,inset 0 0 0 11px #B98A6B,inset 0 0 0 14px #F0E2C8,inset 0 0 0 28px #B8755C,inset 0 0 0 31px #E6C98F,0 -2px 8px rgba(60,30,15,.25)!important}
+.bgroom .rg::before{background:repeating-linear-gradient(90deg,#EEDFC0 0 2px,transparent 2px 6px)!important}
 </style></head>
 <body>
-<div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><i class="win wl"></i><i class="win wr"></i><svg class="cur cl" id="curL" viewBox="0 0 100 100" preserveAspectRatio="none"></svg><svg class="cur cr" id="curR" viewBox="0 0 100 100" preserveAspectRatio="none"></svg><i class="fl"></i><i class="rg"></i><i class="fsh"></i></div>
+<div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><div class="wnd wl2"><i class="g"></i></div><div class="wnd wr2"><i class="g"></i></div><i class="fl"></i><i class="rg"></i><i class="fsh"></i></div>
 <main class="app" id="app" data-scene="rainy">
 <header class="hero">
 <svg class="scene" viewBox="0 0 400 183" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
@@ -922,7 +942,7 @@ setTimeout(fit,300);addEventListener('load',fit);const _im=document.querySelecto
 
 
 
-const _r3=render;render=function(){_r3();wxui()};
+const _r3=render;render=function(){_r3();wxui();try{document.getElementById('bgroom').dataset.scene=document.getElementById('app').dataset.scene}catch(e){}};
 function wxui(){try{const hero=document.querySelector('.hero'),w=document.getElementById('wx');if(!w||!hero)return;
 const W=hero.clientWidth||innerWidth,hp=Math.max(10,(parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sat'))||0)-14);
 const probe=document.createElement('div');probe.style.cssText='position:absolute;visibility:hidden;height:var(--hp)';document.body.appendChild(probe);const hpx=probe.getBoundingClientRect().height||hp;probe.remove();
