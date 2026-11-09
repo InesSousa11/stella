@@ -1214,6 +1214,10 @@ nav div{padding-bottom:max(18px,env(safe-area-inset-bottom,0px))!important}
 @media (max-height:660px){:root{--ib:78px}#info{bottom:calc(var(--navh) + 56px)!important}}
 /* v32: centre the person on screen height; blob + shadow follow */
 .stage .photo,#bgroom>.bb,#bgroom>i.bsh{translate:0 var(--cy,0px)!important}
+/* v33: dots above the person, wave below, evenly spaced */
+:root{--wt:calc(var(--ah) - var(--navh) - 132px);--pt:calc(var(--ah) - var(--navh) - 38px)}
+#info{top:var(--wt)!important;bottom:auto!important}
+#pager{top:var(--pt)!important;bottom:auto!important}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><clipPath id="blobclip" clipPathUnits="objectBoundingBox"><path d="M0.30 0.10 C0.42 0.00 0.62 -0.02 0.78 0.07 C0.94 0.16 1.03 0.36 0.98 0.55 C0.93 0.74 0.78 0.86 0.62 0.94 C0.48 1.00 0.28 0.99 0.15 0.88 C0.02 0.77 -0.02 0.58 0.03 0.42 C0.07 0.28 0.18 0.18 0.30 0.10 Z"/></clipPath></defs></svg><div class="bgroom" id="bgroom" aria-hidden="true"><i class="bl"></i><i class="bsun"></i><i class="bcl c1"></i><i class="bcl c2"></i><i class="bst"></i><i class="bsh"></i></div>
@@ -1557,16 +1561,25 @@ render()})();
 
 ;(function(){
 function ctr(){try{
- const r=document.documentElement,im=document.querySelector('.stage .photo img');if(!im||S.view!=='daily')return;
- r.style.setProperty('--cy','0px');
- const q=im.getBoundingClientRect();if(!q.height)return;
+ const r=document.documentElement,im=document.querySelector('.stage .photo img');
+ const set=(k,v)=>{if(r.style.getPropertyValue(k)!==v)r.style.setProperty(k,v)};
+ if(S.view!=='daily'||!im){if(S.view!=='daily')['--pt','--wt','--cy'].forEach(k=>r.style.removeProperty(k));return}
+ const cur=parseFloat(r.style.getPropertyValue('--cy'))||0;
+ let q=im.getBoundingClientRect();if(!q.height)return;
  const h=(window.visualViewport&&visualViewport.height)||innerHeight;
- r.style.setProperty('--cy',Math.round(h/2-(q.top+q.bottom)/2)+'px');
+ const cy=Math.round(h/2-((q.top+q.bottom)/2-cur));set('--cy',cy+'px');
+ const top0=q.top-cur+cy,g=e=>document.querySelector(e);
+ const hb=g('#vbtn'),sh=g('#bgroom>i.bsh'),nv=g('nav'),pg=g('#pager');
+ if(hb&&sh&&nv&&pg){
+  const shb=sh.getBoundingClientRect().bottom-cur+cy;
+  set('--pt',Math.round((hb.getBoundingClientRect().bottom+top0)/2-pg.offsetHeight/2)+'px');
+  set('--wt',Math.round((shb+nv.getBoundingClientRect().top)/2-34)+'px');
+ }
 }catch(e){}}
 window.ctrPerson=ctr;
 const _r=render;render=function(){_r.apply(this,arguments);requestAnimationFrame(ctr)};
 addEventListener('resize',()=>setTimeout(ctr,60));addEventListener('load',()=>setTimeout(ctr,350));
 const im=document.querySelector('.stage .photo img');if(im)im.addEventListener('load',()=>setTimeout(ctr,50));
-setTimeout(ctr,350);setTimeout(ctr,900);
+setTimeout(ctr,350);setTimeout(ctr,900);setTimeout(ctr,1600);try{new MutationObserver(()=>requestAnimationFrame(ctr)).observe(document.documentElement,{attributes:true,attributeFilter:['style']})}catch(e){}
 })();
 </script></body></html>
