@@ -4,10 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <style>
-/* standalone hosting: no wrapper pads the page, so clear the status bar and home indicator here */
-html,body{margin:0;height:100%;overflow:hidden}
-.app{height:100%;height:100dvh}
+/* standalone hosting: the app owns the whole screen; its height is measured in script (--appH) */
+html,body{margin:0;height:100%;overflow:hidden;background:#F6F1EA}
+.app{position:fixed;top:0;left:0;right:0;margin:0 auto;height:var(--appH,100dvh)}
 .screen{padding-top:calc(14px + env(safe-area-inset-top,0px))!important}
+nav.tabs{position:absolute!important}
 </style>
 <title>Stella</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -57,17 +58,20 @@ i.it{font-style:italic;font-weight:500;color:var(--clay-ink)}
 .hero .g{position:absolute;display:block}
 .hero .cover{position:absolute;inset:0;border-radius:inherit}
 .screen>*{flex-shrink:0}
-.hero.photo{background:linear-gradient(#D8BDB3,#E3C8C1);height:auto;flex:1 1 auto;min-height:340px}
+.hero.photo{background:var(--oat);height:auto;flex:1 1 auto;min-height:340px}
 .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%;display:block}
+.hero.photo .ph{top:60px;height:calc(100% - 64px)}
+.stage.photo .ph{top:16px;height:calc(100% - 20px)}
 .pill.topL{top:14px;bottom:auto}
 .heart.topR{top:14px;bottom:auto}
 .soon{position:absolute;right:14px;top:14px;height:30px;padding:0 12px;border-radius:15px;background:var(--card);font-size:12px;color:var(--muted);display:flex;align-items:center}
-.layers{position:absolute;left:12px;right:12px;bottom:12px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.layers{position:absolute;left:14px;top:60px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
 .layer{height:36px;padding:0 14px 0 10px;border-radius:18px;background:rgba(255,253,250,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--ink)}
 .layer .box{width:18px;height:18px;border-radius:6px;border:1.5px solid var(--clay);display:grid;place-items:center}
 .layer.on .box{background:var(--clay)}
 .layer.on .box::after{content:"";width:8px;height:4px;border:1.6px solid var(--card);border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}
-.stage.photo{background:linear-gradient(#D8BDB3,#E3C8C1);height:420px}
+.stage.photo{background:var(--oat);height:420px}
+.hero.photo::before,.stage.photo::before{content:"";position:absolute;left:28%;right:28%;bottom:4px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(96,78,62,.26),rgba(96,78,62,0))}
 .planbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .planbar .btn{height:46px;font-size:14px}
 nav.tabs::after{content:"";position:absolute;left:0;right:0;top:100%;height:200px;background:var(--card)}
@@ -350,8 +354,8 @@ async function loadWeather(){
    Each photographed look lists its pieces and one image per combination of visible layers.
    More looks can be added in photos/index.json using the same shape. */
 let PHOTOS=[{id:'look-001',items:['i1','i17','i18','i19','i20'],images:[
-  {show:['i1','i17','i18','i19','i20'],src:'photos/look-001-full.jpg'},
-  {show:['i17','i18','i19','i20'],src:'photos/look-001-no-coat.jpg'}]}];
+  {show:['i1','i17','i18','i19','i20'],src:'photos/look-001-full.webp'},
+  {show:['i17','i18','i19','i20'],src:'photos/look-001-no-coat.webp'}]}];
 const same=(a,b)=>a.length===b.length&&a.every(x=>b.includes(x));
 const photoFor=ids=>PHOTOS.find(p=>same(p.items,ids));
 const imageFor=(p,vis)=>{const m=p.images.find(im=>same(im.show,vis));return m&&m.src};
@@ -680,6 +684,9 @@ document.addEventListener('click',e=>{
   }
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#layer').innerHTML)closeSheet()});
+/* fit the app to the real screen: iOS home-screen apps can report a viewport shorter than the screen */
+function fitH(){let h=window.innerHeight;if(window.navigator.standalone===true){const port=h>=window.innerWidth,sh=port?Math.max(screen.width,screen.height):Math.min(screen.width,screen.height);if(sh>h&&sh-h<=80)h=sh}document.documentElement.style.setProperty('--appH',h+'px')}
+fitH();addEventListener('resize',fitH);addEventListener('orientationchange',()=>setTimeout(fitH,250));
 render(true);
 loadWeather();
 loadPhotos();
