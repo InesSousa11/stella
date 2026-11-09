@@ -1191,6 +1191,10 @@ nav div{padding-top:8px!important;padding-bottom:max(6px,calc(env(safe-area-inse
 :root{--st:calc(68px + var(--hp));--ph:clamp(280px,calc(var(--ah) - var(--navh) - var(--hp) - var(--ib) - 76px),720px)}
 .hero,.hero.open{height:calc(68px + var(--hp))!important}
 .hbar{margin-top:8px}
+
+/* v28: taller bottom bar (layout offsets unchanged), lower header */
+nav div{padding-bottom:max(12px,calc(env(safe-area-inset-bottom,0px) - 6px))!important}
+.hbar{margin-top:18px!important}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><clipPath id="blobclip" clipPathUnits="objectBoundingBox"><path d="M0.30 0.10 C0.42 0.00 0.62 -0.02 0.78 0.07 C0.94 0.16 1.03 0.36 0.98 0.55 C0.93 0.74 0.78 0.86 0.62 0.94 C0.48 1.00 0.28 0.99 0.15 0.88 C0.02 0.77 -0.02 0.58 0.03 0.42 C0.07 0.28 0.18 0.18 0.30 0.10 Z"/></clipPath></defs></svg><div class="bgroom" id="bgroom" aria-hidden="true"><i class="bl"></i><i class="bsun"></i><i class="bcl c1"></i><i class="bcl c2"></i><i class="bst"></i><i class="bsh"></i></div>
@@ -1350,7 +1354,7 @@ render();react('happy',tagOf(0)?tagOf(0).n:GRT(),tagOf(0)?tagOf(0).cheer:tips[S.
 
 (function(){const r=document.documentElement;
 function fit(){try{const h=(window.visualViewport&&visualViewport.height)||window.innerHeight;r.style.setProperty('--ah',Math.round(h)+'px');const im=document.querySelector('.stage .photo img');if(im&&im.getBoundingClientRect().height)r.style.setProperty('--fh',Math.round(im.getBoundingClientRect().height)+'px');
-const n=document.querySelector('#nav');if(n)r.style.setProperty('--navh',n.offsetHeight+'px')}catch(e){}}
+const n=document.querySelector('#nav');if(n)r.style.setProperty('--navh',(n.offsetHeight-6)+'px')}catch(e){}}
 window.__fit=fit;fit();addEventListener('resize',fit);addEventListener('orientationchange',fit);if(window.visualViewport)visualViewport.addEventListener('resize',fit);
 if(window.ResizeObserver){const n=document.querySelector('#nav');if(n)new ResizeObserver(fit).observe(n,{box:'border-box'})}
 setTimeout(fit,300);addEventListener('load',fit);const _im=document.querySelector('.stage .photo img');if(_im)_im.addEventListener('load',fit)})();
