@@ -670,6 +670,23 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
 #pchip{bottom:125px!important}
 .side-r .tab{width:42px!important;height:40px!important;padding:0!important;display:grid!important;place-items:center}
 
+/* ===== Salon background (blurred): paneled bay walls, sconces, curtains, wood floor, rug ===== */
+.stage::after{display:none!important}
+.room2{position:absolute;left:-16px;right:-16px;top:0;bottom:-24px;z-index:-1;overflow:hidden;pointer-events:none;filter:blur(1.6px)}
+.room2>*{position:absolute;display:block}
+.room2 .rw{inset:0 0 16% 0;background:linear-gradient(#E8D0AE,#DDBF98 55%,#D6B48A)}
+.room2 .cor{left:0;right:0;top:0;height:14px;background:linear-gradient(#F4E3C6,#E6CDA6 70%,rgba(200,160,110,.0));box-shadow:0 3px 6px rgba(120,80,40,.18)}
+.room2 .pl{top:7%;height:64%;border:1.5px solid rgba(255,248,232,.55);border-radius:2px;box-shadow:inset 0 0 14px rgba(160,110,60,.14),0 0 0 3px rgba(190,150,100,.12)}
+.room2 .pl-l{left:3%;width:13%}.room2 .pl-r{right:3%;width:13%}.room2 .pl-c{left:22%;right:22%;top:5%;height:70%}
+.room2 .glowL,.room2 .glowR{width:110px;height:130px;top:22%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,224,160,.75),rgba(255,224,160,0))}
+.room2 .glowL{left:-6px}.room2 .glowR{right:-6px;top:0}
+.room2 .scn{top:30%;filter:drop-shadow(0 0 10px rgba(255,220,150,.9))}.room2 .scn.l{left:26px}.room2 .scn.r{right:30px;top:5%;transform:scaleX(-1)}
+.room2 .tbl{display:none}
+.room2 .curL,.room2 .curR{top:6%;bottom:12%;width:9%;background:repeating-linear-gradient(90deg,rgba(255,247,229,.85) 0 5px,rgba(238,219,184,.7) 5px 11px);box-shadow:0 0 18px 6px rgba(255,236,190,.55)}
+.room2 .curL{left:0}.room2 .curR{right:0}
+.room2 .wfl{left:0;right:0;top:84%;bottom:0;background:repeating-linear-gradient(90deg,rgba(110,60,20,.10) 0 1px,transparent 1px 34px),linear-gradient(#CFA46C,#B98A52)}
+.room2 .rug{left:6%;right:6%;top:93%;bottom:-4%;clip-path:polygon(5% 0,95% 0,100% 100%,0 100%);
+ background:radial-gradient(ellipse,rgba(250,225,190,.55) 0 2.5px,transparent 3px) 0 0/20px 12px,linear-gradient(#D9A187,#C98D72);box-shadow:inset 0 0 0 4px rgba(232,201,164,.8);opacity:.85}
 
 /* ===== calendar view buttons: vertical capsule under the layers capsule ===== */
 :root{--ph:clamp(300px,calc(var(--ah) - 253px - var(--hp) - var(--navh) + 96px),720px)}
@@ -690,10 +707,7 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
 
 @media (max-height:700px){.pouf{transform:scale(.72);transform-origin:0 100%}#pchip{bottom:101px!important}}
 
-/* ===== Photo background (salon), our own mirror/glow/floor removed; buttons centred on the figure ===== */
-.stage::before,.stage .photo::before,.stage .photo::after{display:none!important}
-.stage::after{display:block!important;content:"";position:absolute;left:-16px;right:-16px;top:0;bottom:-24px;z-index:-1;pointer-events:none;clip-path:none!important;
- background:url(assets/salon.webp) no-repeat 50% calc(4px - .185 * (var(--ph) - 50px) / .601)/auto calc((var(--ph) - 50px) / .601)!important}
+/* buttons centred on the figure */
 .stage .side-r{top:max(0px,calc((100% - var(--lh) - var(--sh) - 15px) / 2 + 15px))!important}
 .sheet #seg{top:calc(max(0px,calc((var(--ph) - var(--lh) - var(--sh) - 15px) / 2 + 15px)) + var(--lh) + 15px)!important}
 </style></head>
@@ -761,7 +775,7 @@ document.querySelectorAll('#seg button').forEach(b=>b.setAttribute('aria-pressed
 const d=day(S.off);$('#date').innerHTML='<span class="wd">'+d.toLocaleDateString('en-GB',{weekday:'short'})+' </span>'+d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+'  <span class="pl">📍<span class="pn">Carcavelos</span></span>';
 const v=$('#view');
 if(S.view==='daily'){const k=key(S.off);
-v.innerHTML=`<div class="stage"><div class="photo">${fig(S.layer)}</div>
+v.innerHTML=`<div class="stage"><div class="room2" aria-hidden="true"><i class="rw"></i><i class="cor"></i><i class="pl pl-l"></i><i class="pl pl-c"></i><i class="pl pl-r"></i><i class="glowL"></i><i class="glowR"></i><svg class="scn l" viewBox="0 0 40 70" width="40" height="70"><defs><linearGradient id="shdl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF4D6"/><stop offset="1" stop-color="#F3D9A0"/></linearGradient></defs><path d="M10 8 H30 L34 34 H6 Z" fill="url(#shdl)"/><path d="M6 34 H34" stroke="#C89A4A" stroke-width="2"/><rect x="18.5" y="34" width="3" height="12" fill="#B98A3E"/><path d="M20 46 q0 10 -9 12" fill="none" stroke="#B98A3E" stroke-width="3" stroke-linecap="round"/><circle cx="9" cy="60" r="5" fill="#C99A48"/></svg><svg class="scn r" viewBox="0 0 40 70" width="40" height="70"><defs><linearGradient id="shdr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF4D6"/><stop offset="1" stop-color="#F3D9A0"/></linearGradient></defs><path d="M10 8 H30 L34 34 H6 Z" fill="url(#shdr)"/><path d="M6 34 H34" stroke="#C89A4A" stroke-width="2"/><rect x="18.5" y="34" width="3" height="12" fill="#B98A3E"/><path d="M20 46 q0 10 -9 12" fill="none" stroke="#B98A3E" stroke-width="3" stroke-linecap="round"/><circle cx="9" cy="60" r="5" fill="#C99A48"/></svg><svg class="tbl" viewBox="0 0 70 150" width="70" height="150"><g stroke="#EFE3C8" stroke-width="1.2" fill="none" stroke-linecap="round"><path d="M35 50 V28 M35 50 L22 22 M35 50 L48 20 M35 50 L14 34 M35 50 L57 32 M35 50 L28 12 M35 50 L42 10"/></g><g fill="#F7EEDC"><circle cx="22" cy="22" r="3"/><circle cx="48" cy="20" r="3"/><circle cx="14" cy="34" r="2.6"/><circle cx="57" cy="32" r="2.6"/><circle cx="28" cy="12" r="2.8"/><circle cx="42" cy="10" r="2.8"/><circle cx="35" cy="26" r="2.6"/><circle cx="26" cy="30" r="2"/><circle cx="45" cy="30" r="2"/></g><ellipse cx="35" cy="66" rx="13" ry="14" fill="rgba(235,245,240,.55)" stroke="rgba(255,255,255,.7)"/><rect x="14" y="80" width="42" height="5" rx="1" fill="#C9B79A"/><rect x="16" y="85" width="38" height="4" rx="1" fill="#D9C9AA"/><ellipse cx="35" cy="92" rx="30" ry="5" fill="#C99A48"/><path d="M31 96 H39 L41 116 H29 Z" fill="#B58638"/><ellipse cx="35" cy="122" rx="6" ry="3.5" fill="#C99A48"/><path d="M20 146 Q35 132 50 146 Z" fill="#B58638"/><ellipse cx="35" cy="147" rx="22" ry="3" fill="rgba(38,26,18,.22)"/></svg><i class="curL"></i><i class="curR"></i><i class="wfl"></i><i class="rug"></i></div><div class="photo">${fig(S.layer)}</div>
 <div class="side side-r" role="group" aria-label="Outfit actions and layers"><button class="act2" data-a="worn" aria-label="Worn" title="Worn" aria-pressed="${!!S.worn[k]}"><span class="ci"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button><button class="act2" data-a="laundry" aria-label="Laundry" title="Laundry" aria-pressed="${!!S.laundry[k]}"><span class="ci"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"/><circle cx="12" cy="14" r="4"/></svg></span></button><i class="sep" aria-hidden="true"></i>${['shirt','blazer','coat'].map((n,i)=>`<button class="tab" data-l="${i+1}" aria-label="${n}" title="${n}" aria-pressed="${S.layer===i+1}"><sup>${i+1}</sup><svg viewBox="0 0 24 24">${icons[n]}</svg></button>`).join('')}</div></div>`}
 else if(S.view==='weekly'){const mon=S.off-((d.getDay()+6)%7);v.innerHTML='<div class="week">'+[0,1,2,3,4,5,6].map(i=>{const o=mon+i;return`<button class="cell" data-o="${o}" ${o===0?'aria-current="true"':''}>${day(o).toLocaleDateString('en-GB',{weekday:'narrow'})}${mini(o)}${day(o).getDate()}${tagOf(o)?`<i class="tg" style="background:${tagOf(o).c}"></i>`:''}</button>`}).join('')+'</div><p class="names" style="font-size:15px;font-family:Nunito;color:var(--mut)">Tap a day to plan or change its look. Dashed days are still empty.</p>'}
 else{const f=new Date(d.getFullYear(),d.getMonth(),1),n=new Date(d.getFullYear(),d.getMonth()+1,0).getDate(),lead=(f.getDay()+6)%7;
