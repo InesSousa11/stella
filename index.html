@@ -924,6 +924,23 @@ html,body{background:#F5EEE0!important}
  conic-gradient(from 154deg at 50% calc(var(--st) - 24px),rgba(255,244,224,0) 0deg,rgba(255,244,224,.30) 26deg,rgba(255,244,224,0) 52deg,rgba(255,244,224,0) 360deg),
  radial-gradient(ellipse 34% 30% at 50% calc(var(--st) + var(--ph) * .22),rgba(255,246,228,.40),transparent 100%),
  radial-gradient(ellipse 78% 62% at 50% calc(var(--st) + var(--ph) * .50),transparent 30%,rgba(70,44,20,var(--vg)) 100%)!important}
+
+/* v24: warm multiply vignette, calmer mirror, soft top wash (no beam tip), softened top seam, Today pill, muted windows */
+.bgroom{--vg:.62}
+.bgroom[data-scene=night]{--vg:.74}
+.bgroom::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;background:
+ linear-gradient(180deg,rgba(242,233,215,.75) 0,rgba(242,233,215,0) 52px),
+ radial-gradient(ellipse 30% 5% at 50% calc(var(--st) + var(--ph) * .945),rgba(255,236,200,.38),transparent 100%),
+ radial-gradient(ellipse 62% 46% at 50% calc(var(--st) - 10px),rgba(255,242,216,.26),transparent 100%),
+ radial-gradient(ellipse 30% 26% at 50% calc(var(--st) + var(--ph) * .24),rgba(255,244,224,.20),transparent 100%)}
+.bgroom::after{z-index:6!important;mix-blend-mode:multiply;background:radial-gradient(ellipse 80% 64% at 50% calc(var(--st) + var(--ph) * .50),transparent 24%,rgba(176,122,70,var(--vg)) 100%)!important}
+.bgroom .mir{background:
+ linear-gradient(115deg,rgba(255,255,255,0) 18%,rgba(255,255,255,.18) 24%,rgba(255,255,255,0) 30%),
+ linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,0) 30%),
+ linear-gradient(180deg,#D3CEC2,#D9D4C8 55%,#D2CBBB)!important}
+.bgroom .mirg{opacity:.12}
+.bgroom .wnd .g{filter:saturate(.7) brightness(.92)}
+[data-today]{background:rgba(248,241,228,.94)!important;color:#BF6A1E!important;border-color:rgba(191,106,30,.55)!important;box-shadow:0 2px 8px rgba(60,35,15,.18)}
 </style></head>
 <body>
 <div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><i class="mirg"></i><i class="mir"></i><div class="wnd wl2"><i class="g"></i></div><div class="wnd wr2"><i class="g"></i></div><i class="fl"></i><i class="rg"></i><i class="rg rg2"></i><i class="fsh"></i></div>
