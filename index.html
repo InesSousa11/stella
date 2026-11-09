@@ -1245,6 +1245,8 @@ nav div{padding-bottom:max(18px,env(safe-area-inset-bottom,0px))!important}
 .side-r,.stage .side-r,#view .stage .side-r,.hbar .mn,#pager [data-today],[data-today]{box-shadow:0 1px 2px rgba(40,30,20,.05),0 10px 24px -14px rgba(40,30,20,.32),inset 0 0 0 1px rgba(255,255,255,.55)!important}
 nav{border-top:1px solid var(--ln)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+/* v37: solid icon set */
+svg.sd .f{fill:#FBF4E6!important;stroke:none!important}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><clipPath id="blobclip" clipPathUnits="objectBoundingBox"><path d="M0.30 0.10 C0.42 0.00 0.62 -0.02 0.78 0.07 C0.94 0.16 1.03 0.36 0.98 0.55 C0.93 0.74 0.78 0.86 0.62 0.94 C0.48 1.00 0.28 0.99 0.15 0.88 C0.02 0.77 -0.02 0.58 0.03 0.42 C0.07 0.28 0.18 0.18 0.30 0.10 Z"/></clipPath></defs></svg><div class="bgroom" id="bgroom" aria-hidden="true"><i class="bl"></i><i class="bsun"></i><i class="bcl c1"></i><i class="bcl c2"></i><i class="bst"></i><i class="bsh"></i></div>
@@ -1625,5 +1627,40 @@ function letters(){try{
   i.className='lt'+(k===sel?' c':'')+(sameWeek&&k===td?' t':'');i.textContent=L[k]});
 }catch(e){}}
 const _r=render;render=function(){_r.apply(this,arguments);letters()};letters();
+})();
+
+;(function(){
+const C='#FBF4E6';
+const SHIRT='<path d="M8.5 3L3 6l2 4.2 2.5-1V21h9V9.2l2.5 1L21 6l-5.500-3a3.6 3.6 0 0 1-7 0z"/>';
+const M={
+'Laundry':`<rect x="4.5" y="2.5" width="15" height="19" rx="3"/><g fill="none" stroke="${C}" stroke-width="1.5"><path d="M4.5 7.5h15"/><circle cx="12" cy="14.2" r="4"/></g>`,
+'Worn':`<circle cx="12" cy="12" r="9.500"/><path d="M8 12.500l3 3 5-6" fill="none" stroke="${C}" stroke-width="2"/>`,
+'Favourite look':'<path d="M12 20.500S4.500 16 4.500 9.800A4.100 4.100 0 0 1 12 7.600a4.100 4.100 0 0 1 7.500 2.200c0 6.200-7.500 10.700-7.500 10.700z"/>',
+'shirt':SHIRT,'Wardrobe':SHIRT,
+'blazer':`<path d="M9 3L4 6v15h6l2-9 2 9h6V6l-5-3-3 5z"/><path d="M12 8v4" fill="none" stroke="${C}" stroke-width="1.5"/>`,
+'coat':`<path d="M9 3L5 6v16h14V6l-4-3-3 5z"/><path d="M12 8v14M5 14.500h14" fill="none" stroke="${C}" stroke-width="1.500"/>`,
+'Home':'<path d="M4 11l8-7 8 7v8.500a1.500 1.500 0 0 1-1.500 1.500H15v-6H9v6H5.500A1.500 1.500 0 0 1 4 19.500z"/>',
+'Create':'<path d="M12 5v14M5 12h14" fill="none" stroke-width="2.600"/>',
+'Looks':'<path d="M12 3l2.300 6.200L21 12l-6.700 2.800L12 21l-2.300-6.200L3 12l6.700-2.800z"/>',
+'Me':'<path d="M4 7h9M18 7h2M4 17h2M11 17h9" fill="none" stroke-width="2.400"/><circle cx="15.500" cy="7" r="2.600"/><circle cx="8.500" cy="17" r="2.600"/>',
+'TODAY':'<path d="M20 12a8 8 0 1 1-2.500-5.800" fill="none" stroke-width="2.600"/><path d="M20 4v4.200h-4.200" fill="none" stroke-width="2.600"/><circle cx="12" cy="12" r="2.400"/>',
+};
+const KEEP=['Change view','Daily','Weekly','Monthly'];
+function solid(){try{
+ document.querySelectorAll('svg').forEach(sv=>{
+  if(sv.classList.contains('sd'))return;
+  const host=sv.closest('[data-today]')||sv.closest('[aria-label]');if(!host)return;
+  const lab=host.hasAttribute('data-today')?'TODAY':host.getAttribute('aria-label');
+  const keep=KEEP.includes(lab)||(host.dataset&&host.dataset.v);
+  if(!keep&&!M[lab])return;
+  if(!keep){sv.setAttribute('viewBox','0 0 24 24');sv.removeAttribute('width');sv.removeAttribute('height');sv.innerHTML=M[lab]}
+  sv.classList.add('sd');
+  const st=sv.style;st.setProperty('fill','currentColor','important');st.setProperty('stroke','currentColor','important');st.setProperty('stroke-width','1.6','important');st.setProperty('stroke-linecap','round','important');st.setProperty('stroke-linejoin','round','important');
+ });
+}catch(e){}}
+window.solidIcons=solid;
+const _r=render;render=function(){_r.apply(this,arguments);solid()};
+try{new MutationObserver(()=>solid()).observe(document.body,{childList:true,subtree:true})}catch(e){}
+solid();setTimeout(solid,300);
 })();
 </script></body></html>
