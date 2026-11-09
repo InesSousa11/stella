@@ -1137,6 +1137,15 @@ nav div,#nav{background:#FFF9EE!important}
 .side-r,.stage .side-r,#view .stage .side-r,.hbar .mn{background:rgba(255,252,246,.2)!important;-webkit-backdrop-filter:blur(6px) saturate(1.15)!important;backdrop-filter:blur(6px) saturate(1.15)!important;box-shadow:0 6px 18px -12px rgba(40,30,20,.22),inset 0 0 0 1px rgba(255,255,255,.5)!important}
 #view .stage .side-r.sl2{left:auto!important;right:0!important;top:calc(50% - 6px)!important;transform:translateY(-100%)!important}
 #view .stage .side-r:not(.sl2){top:calc(50% + 6px)!important;transform:none!important}
+
+/* v20: temperature under the date */
+:root{--st:calc(88px + var(--hp));--ph:clamp(280px,calc(var(--ah) - var(--navh) - var(--hp) - var(--ib) - 96px),720px)}
+.hero,.hero.open{height:calc(88px + var(--hp))!important}
+#info .r1{display:none!important}
+.hbar .tt .tw{display:flex;justify-content:center;align-items:baseline;gap:14px;margin-top:4px}
+.hbar .tt .tb{font:500 clamp(34px,10vw,40px)/1 Inter,sans-serif;letter-spacing:-1px;color:#2D3A6B}
+.hbar .tt .th{display:flex;gap:10px;font:500 clamp(16px,4.6vw,19px)/1 Inter,sans-serif}
+.hbar .tt .th b{font-weight:600;color:#2D3A6B}.hbar .tt .th i{font-style:normal;color:#A9AEC6}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><clipPath id="blobclip" clipPathUnits="objectBoundingBox"><path d="M0.30 0.10 C0.42 0.00 0.62 -0.02 0.78 0.07 C0.94 0.16 1.03 0.36 0.98 0.55 C0.93 0.74 0.78 0.86 0.62 0.94 C0.48 1.00 0.28 0.99 0.15 0.88 C0.02 0.77 -0.02 0.58 0.03 0.42 C0.07 0.28 0.18 0.18 0.30 0.10 Z"/></clipPath></defs></svg><div class="bgroom" id="bgroom" aria-hidden="true"><i class="bl"></i><i class="bsun"></i><i class="bcl c1"></i><i class="bcl c2"></i><i class="bst"></i><i class="bsh"></i></div>
@@ -1391,4 +1400,9 @@ Vw.addEventListener('pointerup',e=>{if(lock)return;const dy=e.clientY-sy,dxx=e.c
 let wt=0;addEventListener('wheel',e=>{const n=Date.now();if(n-wt<500||Math.abs(e.deltaY)<20)return;wt=n;step(e.deltaY>0?1:-1)},{passive:true});
 render();
 })();
+
+(function(){const _w=wxui;wxui=function(){_w();try{const tt=document.querySelector('.hbar .tt');if(!tt)return;
+const t=document.getElementById('t').textContent;const m=(document.getElementById('ti').title||'').match(/H\s*(-?\d+)°.*?L\s*(-?\d+)°/)||[0,'–','–'];
+const b=tt.querySelector('b');tt.innerHTML='';tt.appendChild(b);
+tt.insertAdjacentHTML('beforeend',`<div class="tw"><span class="tb">${t}</span><span class="th"><b>${m[1]}°</b><i>${m[2]}°</i></span></div>`)}catch(e){}};render()})();
 </script></body></html>
