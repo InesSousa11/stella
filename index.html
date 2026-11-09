@@ -1113,6 +1113,22 @@ nav div,#nav{background:#FFF9EE!important}
 
 /* v16: shadow taller, thinner */
 #bgroom>i.bsh{width:42%!important;height:calc(var(--ph)*.065)!important;top:calc(var(--st) + var(--ph)*.937)!important}
+
+/* v17: view menu top-left, left action capsule, centered capsules */
+#view{touch-action:none!important}
+.sheet #seg{display:none!important}
+#view .stage .side-r{top:50%!important;transform:translateY(-50%)!important;bottom:auto!important}
+#view .stage .side-r.sl2{right:auto!important;left:0!important}
+.side-r .sep{display:none!important}
+.hbar .mn{background:rgba(255,252,246,.72)!important;box-shadow:0 4px 12px -6px rgba(40,30,20,.3),inset 0 0 0 1px rgba(191,106,30,.18);pointer-events:auto;cursor:pointer}
+.hbar .mn svg{width:22px!important;height:22px!important;stroke:#BF6A1E;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hbar .mn .f{fill:#BF6A1E;stroke:none}
+#vmenu{position:fixed;left:18px;z-index:30;display:none;flex-direction:column;gap:2px;padding:6px;border-radius:18px;background:rgba(255,252,246,.96);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 14px 32px -10px rgba(40,30,20,.35),0 0 0 1px rgba(191,106,30,.12)}
+#vmenu.on{display:flex}
+#vmenu button{display:flex;align-items:center;gap:10px;height:42px;padding:0 16px 0 10px;border-radius:13px;color:#2D3A6B;font:600 15px/1 Inter,sans-serif;text-align:left}
+#vmenu button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#vmenu button .f{fill:currentColor;stroke:none}
+#vmenu button[aria-pressed=true]{background:#BF6A1E;color:#fff}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><clipPath id="blobclip" clipPathUnits="objectBoundingBox"><path d="M0.30 0.10 C0.42 0.00 0.62 -0.02 0.78 0.07 C0.94 0.16 1.03 0.36 0.98 0.55 C0.93 0.74 0.78 0.86 0.62 0.94 C0.48 1.00 0.28 0.99 0.15 0.88 C0.02 0.77 -0.02 0.58 0.03 0.42 C0.07 0.28 0.18 0.18 0.30 0.10 Z"/></clipPath></defs></svg><div class="bgroom" id="bgroom" aria-hidden="true"><i class="bl"></i><i class="bsun"></i><i class="bcl c1"></i><i class="bcl c2"></i><i class="bst"></i><i class="bsh"></i></div>
@@ -1156,7 +1172,7 @@ nav div,#nav{background:#FFF9EE!important}
 <script>
 const $=s=>document.querySelector(s),app=$('#app');
 const now=new Date(),H=now.getHours();
-const S={scene:(H>=20||H<6)?'night':'rainy',view:'daily',layer:3,off:0,worn:{},laundry:{}};
+const S={scene:(H>=20||H<6)?'night':'rainy',view:'daily',layer:3,off:0,worn:{},laundry:{},fav:{}};
 const items=[{n:'Lavender shirt',c:'#C9CDF2'},{n:'Taupe blazer',c:'#B49A86'},{n:'Camel coat',c:'#C79A5E'}];
 const tips={sunny:['Sun’s out. Light layers and sunglasses.',18,'Sunny','4% rain',21,13],rainy:['93% rain. Take the coat and flat shoes.',19,'Rain','93% rain',20,18],night:['Lay out tomorrow’s look before bed?',14,'Clear','2% rain',15,12]};
 const WT={sunny:[14,13,15,18,21,20,17,15],rainy:[18,18,18,19,20,20,19,18],night:[14,13,12,12,13,15,14,14]};
@@ -1193,6 +1209,7 @@ else if(t.id==='pbub'){openTags()}
 else if(t.id==='pico'){const q=QS[qi++%QS.length];react(q[0],q[1],q[2])}
 else if(t.dataset.v){S.view=t.dataset.v;render()}
 else if(t.dataset.l){S.layer=+t.dataset.l;render()}
+else if(t.dataset.a==='fav'){const k=key(S.off);S.fav[k]=!S.fav[k];if(S.fav[k])react('excited','Favourite!','Saved to your favourite looks.');else react('happy','Removed','Taken off your favourites.');render()}
 else if(t.dataset.a){const k=key(S.off),m=t.dataset.a==='worn'?S.worn:S.laundry;m[k]=!m[k];if(m[k])react('proud','Look at you!',t.dataset.a==='worn'?'Logged as worn. Lovely look.':'Into the laundry pile it goes.');else react('happy','Undone','No problem.');render()}
 else if(t.dataset.o!==undefined){S.off=+t.dataset.o;S.view='daily';render()}
 else if(t.dataset.today!==undefined){commit(S.off>0?-1:1,0)}});
@@ -1338,5 +1355,32 @@ night:hd+`<defs><linearGradient id="vc" x1="0" y1="0" x2="0" y2="1"><stop offset
 const ART=V==='a'?A:Bv;
 function paint(){try{const g=document.getElementById('bgroom');let d=g.querySelector('.bb');if(!d){d=document.createElement('i');d.className='bb';g.insertBefore(d,g.firstChild)}d.innerHTML=ART[S.scene]}catch(e){}}
 const _r10=render;render=function(){_r10();paint()};paint();
+})();
+
+(function(){
+const HEART='<svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg>';
+function split(){const r=document.querySelector('.stage .side-r:not(.sl2)');if(!r)return;
+const k=key(S.off);const w=r.querySelector('[data-a=worn]'),l=r.querySelector('[data-a=laundry]');if(!w||!l)return;
+const L=document.createElement('div');L.className='side side-r sl2';L.setAttribute('role','group');L.setAttribute('aria-label','Outfit actions');
+const f=document.createElement('button');f.className='act2';f.dataset.a='fav';f.setAttribute('aria-label','Favourite look');f.title='Favourite look';f.setAttribute('aria-pressed',String(!!S.fav[k]));f.innerHTML='<span class="ci">'+HEART+'</span>';
+L.append(l,w,f);r.after(L);const sp=r.querySelector('.sep');if(sp)sp.remove()}
+let menu=document.getElementById('vmenu');if(!menu){menu=document.createElement('div');menu.id='vmenu';menu.setAttribute('role','menu');document.body.appendChild(menu)}
+const NAMES={daily:'Daily',weekly:'Weekly',monthly:'Monthly'};
+function viewbtn(){const m=document.querySelector('.hbar .mn');if(!m)return;
+const src=document.querySelector('#seg [data-v='+S.view+'] svg');if(src)m.innerHTML=src.outerHTML;
+m.setAttribute('role','button');m.setAttribute('tabindex','0');m.setAttribute('aria-label','Change view');m.id='vbtn';
+menu.style.top=(m.getBoundingClientRect().bottom+8)+'px';
+menu.innerHTML=['daily','weekly','monthly'].map(v=>{const sv=document.querySelector('#seg [data-v='+v+'] svg');return `<button data-v="${v}" role="menuitem" aria-pressed="${S.view===v}">${sv?sv.outerHTML:''}${NAMES[v]}</button>`}).join('')}
+const _w=wxui;wxui=function(){_w();viewbtn()};
+const _r=render;render=function(){_r();split();viewbtn()};
+document.addEventListener('click',e=>{const b=e.target.closest('#vbtn');if(b){menu.classList.toggle('on');viewbtn();return}menu.classList.remove('on')},true);
+document.addEventListener('keydown',e=>{if(e.target.id==='vbtn'&&(e.key==='Enter'||e.key===' ')){e.preventDefault();menu.classList.toggle('on')}if(e.key==='Escape')menu.classList.remove('on')});
+// vertical swipe / scroll changes view
+const ORD=['daily','weekly','monthly'];
+function step(d){const i=ORD.indexOf(S.view),n=Math.max(0,Math.min(2,i+d));if(n!==i){S.view=ORD[n];render()}}
+const Vw=document.getElementById('view');
+Vw.addEventListener('pointerup',e=>{if(lock)return;const dy=e.clientY-sy,dxx=e.clientX-sx;if(Math.abs(dy)>60&&Math.abs(dy)>Math.abs(dxx)*1.5){moved=true;step(dy<0?1:-1)}});
+let wt=0;addEventListener('wheel',e=>{const n=Date.now();if(n-wt<500||Math.abs(e.deltaY)<20)return;wt=n;step(e.deltaY>0?1:-1)},{passive:true});
+render();
 })();
 </script></body></html>
