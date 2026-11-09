@@ -953,6 +953,9 @@ html,body{background:#F5EEE0!important}
 
 #wx svg path:nth-of-type(2){filter:none!important}
 #wx svg circle{stroke:#fff!important}
+
+/* v26: top bar = day, place and temperature only (sun arc removed) */
+.bgroom .tbar{height:calc(var(--hp) + 58px)!important}
 </style></head>
 <body>
 <div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><i class="mirg"></i><i class="mir"></i><div class="wnd wl2"><i class="g"></i></div><div class="wnd wr2"><i class="g"></i></div><i class="fl"></i><i class="rg"></i><i class="rg rg2"></i><i class="fsh"></i><i class="tbar"></i></div>
@@ -1131,14 +1134,8 @@ const cond=({sunny:'☀️ Sunny',rainy:'🌧️ Rain',night:'🌙 Clear night'}
 const tt=(document.getElementById('ti').title||'').split(' · ');const hl=tt.length>2?tt[1].replace('H ','H ')+' '+tt[2]:'';
 const lab=sc==='night'?['17:20','07:02']:['07:02','17:20'];const t=document.getElementById('t').textContent;
 w.style.height=H+'px';
-w.innerHTML=`<svg width="${W}" height="${H}" style="position:absolute;left:0;top:0"><defs><linearGradient id="skg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset=".78" stop-color="${sky[1]}"/><stop offset="1" stop-color="${sky[2]}"/></linearGradient></defs>
-<path d="M0 0H${W}V${yb}H${W-22}Q${W/2} ${yb-2*amp} 22 ${yb}H0Z" fill="url(#skg)"/>
-<path d="M22 ${yb}Q${W/2} ${yb-2*amp} ${W-22} ${yb}" fill="none" stroke="#BF6A1E" stroke-width="1.5" stroke-dasharray="2 4" stroke-linecap="round"/>
-<circle cx="${x}" cy="${y}" r="7" fill="${col}" stroke="#fff" stroke-width="2"/></svg>
-<div class="wt" style="left:20px;top:${hpx+8}px"><b>Today · ${wd} ${dm}</b><div class="w3">📍 Carcavelos</div></div>
-<div class="wt" style="left:auto;right:20px;top:${hpx+8}px;text-align:right"><b>${cond}</b><div class="w2">${hl}</div></div>
-<div class="wtemp" style="left:${x-30}px;top:${y+9}px">${t}</div>
-<div class="wxl" style="left:22px;top:${yb+3}px">${lab[0]}</div><div class="wxl" style="right:22px;top:${yb+3}px">${lab[1]}</div>`}catch(e){}}
+w.innerHTML=`<div class="wt" style="left:20px;top:${hpx+9}px"><b>Today · ${wd} ${dm}</b><div class="w3">📍 Carcavelos</div></div>
+<div class="wt" style="left:auto;right:20px;top:${hpx+5}px;text-align:right"><b style="font-size:20px;line-height:22px;font-weight:700">${cond.split(' ')[0]} ${t}</b><div class="w2" style="margin-top:1px">${hl}</div></div>`}catch(e){}}
 addEventListener('resize',()=>wxui());
 wxui();
 
