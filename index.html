@@ -884,6 +884,14 @@ html,body{background:#F5EEE0!important}
 .bgroom .pl{border-color:rgba(150,115,70,.16)!important;box-shadow:none!important}
 .bgroom .wnd{box-shadow:0 0 0 1px rgba(130,100,60,.25),0 0 8px var(--wg,rgba(255,236,190,.2)),inset 0 0 6px rgba(80,50,20,.25)!important}
 .bgroom .wnd .g{opacity:.9}
+
+/* v21: stage lighting - vignette + warm spotlight on the figure + floor light pool */
+.bgroom{--vg:.30;--sp:.34}
+.bgroom[data-scene=night]{--vg:.42;--sp:.30}
+.bgroom::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;background:
+ radial-gradient(ellipse 34% 5.5% at 50% calc(var(--st) + var(--ph) * .945),rgba(255,240,210,.40),transparent 100%),
+ radial-gradient(ellipse 46% 40% at 50% calc(var(--st) + var(--ph) * .42),rgba(255,244,224,var(--sp)),transparent 100%),
+ radial-gradient(ellipse 80% 62% at 50% calc(var(--st) + var(--ph) * .48),transparent 38%,rgba(78,50,22,var(--vg)) 100%)}
 </style></head>
 <body>
 <div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><i class="mirg"></i><i class="mir"></i><div class="wnd wl2"><i class="g"></i></div><div class="wnd wr2"><i class="g"></i></div><i class="fl"></i><i class="rg"></i><i class="fsh"></i></div>
