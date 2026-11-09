@@ -739,6 +739,12 @@ html,body{background:#DDBF98!important}
 .stage::before{filter:blur(4px)}
 /* translucent tab bar so the room shows underneath */
 nav div{background:rgba(244,241,238,.58)!important;-webkit-backdrop-filter:blur(16px) saturate(1.15);backdrop-filter:blur(16px) saturate(1.15)}
+
+/* curtains softer, mirror: pointed bottom corners + wider (further from me), rug in perspective under the feet */
+.bgroom .cur{filter:drop-shadow(0 0 6px rgba(255,240,200,.45)) saturate(.9)}
+.stage .photo::before,.stage::before{width:min(68%,258px)!important;border-radius:129px 129px 0 0!important}
+.bgroom .rg{left:3%;right:3%;top:calc(var(--st) + var(--ph) * .875);bottom:auto;height:420px;clip-path:none;transform-origin:50% 0;transform:perspective(420px) rotateX(58deg);
+ background:radial-gradient(ellipse,rgba(250,225,190,.55) 0 2.5px,transparent 3px) 0 0/20px 16px,linear-gradient(#D9A187,#C98D72);box-shadow:inset 0 0 0 5px rgba(232,201,164,.85),inset 0 0 0 9px rgba(150,70,50,.35),0 -2px 8px rgba(90,55,25,.25);opacity:.92}
 </style></head>
 <body>
 <div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><i class="win wl"></i><i class="win wr"></i><svg class="cur cl" id="curL" viewBox="0 0 100 100" preserveAspectRatio="none"></svg><svg class="cur cr" id="curR" viewBox="0 0 100 100" preserveAspectRatio="none"></svg><i class="fl"></i><i class="rg"></i><i class="fsh"></i></div>
@@ -934,5 +940,5 @@ o+=`<path d="M${x0} 0 C${x0+sw} 30,${f-sw} 60,${f} 100 L${g} 100 C${g-sw} 60,${x
 o+=`<rect x="0" y="0" width="100" height="100" fill="url(#chem${seed})"/>`;
 o+=`<rect x="0" y="0" width="100" height=".5" fill="rgba(60,35,12,.35)"/>`;
 return o}
-const L=document.getElementById('curL'),R=document.getElementById('curR');if(L)L.innerHTML=fold(7,3);if(R)R.innerHTML=fold(7,11)})();
+const L=document.getElementById('curL'),R=document.getElementById('curR');if(L)L.innerHTML=fold(3,3);if(R)R.innerHTML=fold(3,11)})();
 </script></body></html>
