@@ -745,6 +745,18 @@ nav div{background:rgba(244,241,238,.58)!important;-webkit-backdrop-filter:blur(
 .stage .photo::before,.stage::before{width:min(68%,258px)!important;border-radius:129px 129px 0 0!important}
 .bgroom .rg{left:3%;right:3%;top:calc(var(--st) + var(--ph) * .875);bottom:auto;height:420px;clip-path:none;transform-origin:50% 0;transform:perspective(420px) rotateX(58deg);
  background:radial-gradient(ellipse,rgba(250,225,190,.55) 0 2.5px,transparent 3px) 0 0/20px 16px,linear-gradient(#D9A187,#C98D72);box-shadow:inset 0 0 0 5px rgba(232,201,164,.85),inset 0 0 0 9px rgba(150,70,50,.35),0 -2px 8px rgba(90,55,25,.25);opacity:.92}
+
+/* v2: smooth curtains hung from a rod below the weather sky, slimmer mirror, vintage persian rug */
+.bgroom .cur,.bgroom .win{top:calc(var(--st) - 3px)!important;height:calc(var(--ph) * .87 + 3px)!important}
+.bgroom .cur{filter:drop-shadow(0 0 5px rgba(255,240,200,.35))!important}
+.stage .photo::before,.stage::before{width:min(50%,190px)!important;border-radius:95px 95px 0 0!important}
+.bgroom .rg{opacity:1!important;filter:saturate(.82) sepia(.18);
+ background:
+  linear-gradient(45deg,rgba(228,207,165,.22) 25%,transparent 25% 75%,rgba(228,207,165,.22) 75%) 0 0/22px 22px,
+  linear-gradient(135deg,rgba(38,51,90,.32) 25%,transparent 25% 75%,rgba(38,51,90,.32) 75%) 0 0/22px 22px,
+  linear-gradient(#8E2F2A,#7C2622)!important;
+ box-shadow:inset 0 0 0 4px #D9C095,inset 0 0 0 11px #26335A,inset 0 0 0 14px #D9C095,inset 0 0 0 28px #7A2420,inset 0 0 0 31px #C9A55E,0 -2px 8px rgba(60,30,15,.35)!important}
+.bgroom .rg::before{content:"";position:absolute;left:0;right:0;top:-12px;height:12px;background:repeating-linear-gradient(90deg,#E6D6B0 0 2px,transparent 2px 6px)}
 </style></head>
 <body>
 <div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><i class="win wl"></i><i class="win wr"></i><svg class="cur cl" id="curL" viewBox="0 0 100 100" preserveAspectRatio="none"></svg><svg class="cur cr" id="curR" viewBox="0 0 100 100" preserveAspectRatio="none"></svg><i class="fl"></i><i class="rg"></i><i class="fsh"></i></div>
@@ -934,11 +946,6 @@ w.innerHTML=`<svg width="${W}" height="${H}" style="position:absolute;left:0;top
 addEventListener('resize',()=>wxui());
 wxui();
 
-(function(){function fold(n,seed){let o='<defs>';for(let i=0;i<n;i++){const c=.38+((i*37+seed)%30)/100;o+=`<linearGradient id="cf${seed}_${i}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8A6038" stop-opacity=".5"/><stop offset="${c}" stop-color="#FFF8E6" stop-opacity=".92"/><stop offset="1" stop-color="#9A6E40" stop-opacity=".42"/></linearGradient>`}o+='<linearGradient id="chem'+seed+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".85" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#F2DFC0" stop-opacity=".45"/></linearGradient></defs>';
-const w=94/n;for(let i=0;i<n;i++){const x0=i*w*.82,x1=(i+1)*w*.82+3,f=i*w*1.0+2,g=(i+1)*w+5,sw=(i%2?-1:1)*2.2;
-o+=`<path d="M${x0} 0 C${x0+sw} 30,${f-sw} 60,${f} 100 L${g} 100 C${g-sw} 60,${x1+sw} 30,${x1} 0 Z" fill="url(#cf${seed}_${i})"/>`}
-o+=`<rect x="0" y="0" width="100" height="100" fill="url(#chem${seed})"/>`;
-o+=`<rect x="0" y="0" width="100" height=".5" fill="rgba(60,35,12,.35)"/>`;
-return o}
+(function(){function fold(n,seed){return `<defs><linearGradient id="cs${seed}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#C9A97C" stop-opacity=".62"/><stop offset=".55" stop-color="#F6EAD0" stop-opacity=".88"/><stop offset="1" stop-color="#DDC59C" stop-opacity=".6"/></linearGradient><linearGradient id="cv${seed}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7A5430" stop-opacity=".18"/><stop offset=".12" stop-color="#fff" stop-opacity="0"/><stop offset=".9" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#F2DFC0" stop-opacity=".4"/></linearGradient><linearGradient id="cr${seed}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0CB8E"/><stop offset=".5" stop-color="#CF9442"/><stop offset="1" stop-color="#94601F"/></linearGradient></defs><path d="M0 1 H100 V100 H0 Z" fill="url(#cs${seed})"/><rect x="0" y="1" width="100" height="99" fill="url(#cv${seed})"/><rect x="0" y="0" width="100" height="1" fill="url(#cr${seed})"/>`}
 const L=document.getElementById('curL'),R=document.getElementById('curR');if(L)L.innerHTML=fold(3,3);if(R)R.innerHTML=fold(3,11)})();
 </script></body></html>
