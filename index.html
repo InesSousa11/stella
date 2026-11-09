@@ -910,9 +910,23 @@ html,body{background:#F5EEE0!important}
  radial-gradient(ellipse 34% 5.5% at 50% calc(var(--st) + var(--ph) * .945),rgba(255,240,210,.40),transparent 100%),
  radial-gradient(ellipse 46% 40% at 50% calc(var(--st) + var(--ph) * .42),rgba(255,244,224,var(--sp)),transparent 100%),
  radial-gradient(ellipse 78% 60% at 50% calc(var(--st) + var(--ph) * .48),transparent 30%,rgba(70,44,20,var(--vg)) 100%)!important}
+
+/* v23: rug blurred except a sharp circle under the feet; darker top (no cream veil); top-down light on the figure; white sun arc */
+#wx svg circle{stroke:#fff!important}
+.wx .w3{color:#5A6E86}
+.bgroom{--vg:.50}
+.bgroom[data-scene=night]{--vg:.62}
+.bgroom .rg{filter:saturate(.8) sepia(.08) blur(1.5px)!important}
+.bgroom .rg2{filter:saturate(.8) sepia(.08)!important;-webkit-mask-image:radial-gradient(ellipse 105px 70px at 50% 62px,#000 0 50%,transparent 100%);mask-image:radial-gradient(ellipse 105px 70px at 50% 62px,#000 0 50%,transparent 100%)}
+.bgroom .rg2::before{display:none}
+.bgroom::after{background:
+ radial-gradient(ellipse 30% 5% at 50% calc(var(--st) + var(--ph) * .945),rgba(255,240,210,.42),transparent 100%),
+ conic-gradient(from 154deg at 50% calc(var(--st) - 24px),rgba(255,244,224,0) 0deg,rgba(255,244,224,.30) 26deg,rgba(255,244,224,0) 52deg,rgba(255,244,224,0) 360deg),
+ radial-gradient(ellipse 34% 30% at 50% calc(var(--st) + var(--ph) * .22),rgba(255,246,228,.40),transparent 100%),
+ radial-gradient(ellipse 78% 62% at 50% calc(var(--st) + var(--ph) * .50),transparent 30%,rgba(70,44,20,var(--vg)) 100%)!important}
 </style></head>
 <body>
-<div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><i class="mirg"></i><i class="mir"></i><div class="wnd wl2"><i class="g"></i></div><div class="wnd wr2"><i class="g"></i></div><i class="fl"></i><i class="rg"></i><i class="fsh"></i></div>
+<div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><i class="mirg"></i><i class="mir"></i><div class="wnd wl2"><i class="g"></i></div><div class="wnd wr2"><i class="g"></i></div><i class="fl"></i><i class="rg"></i><i class="rg rg2"></i><i class="fsh"></i></div>
 <main class="app" id="app" data-scene="rainy">
 <header class="hero">
 <svg class="scene" viewBox="0 0 400 183" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
@@ -1090,7 +1104,7 @@ const lab=sc==='night'?['17:20','07:02']:['07:02','17:20'];const t=document.getE
 w.style.height=H+'px';
 w.innerHTML=`<svg width="${W}" height="${H}" style="position:absolute;left:0;top:0"><defs><linearGradient id="skg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset=".78" stop-color="${sky[1]}"/><stop offset="1" stop-color="${sky[2]}"/></linearGradient></defs>
 <path d="M0 0H${W}V${yb}H${W-22}Q${W/2} ${yb-2*amp} 22 ${yb}H0Z" fill="url(#skg)"/>
-<path d="M22 ${yb}Q${W/2} ${yb-2*amp} ${W-22} ${yb}" fill="none" stroke="#BF6A1E" stroke-width="1.4" stroke-dasharray="2 4" stroke-linecap="round"/>
+<path d="M22 ${yb}Q${W/2} ${yb-2*amp} ${W-22} ${yb}" fill="none" stroke="#fff" stroke-width="1.8" stroke-dasharray="2 4" stroke-linecap="round"/>
 <circle cx="${x}" cy="${y}" r="7" fill="${col}" stroke="#fff" stroke-width="2"/></svg>
 <div class="wt" style="left:20px;top:${hpx+8}px"><b>Today · ${wd} ${dm}</b><div class="w3">📍 Carcavelos</div></div>
 <div class="wt" style="left:auto;right:20px;top:${hpx+8}px;text-align:right"><b>${cond}</b><div class="w2">${hl}</div></div>
