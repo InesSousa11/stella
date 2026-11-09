@@ -837,6 +837,16 @@ html,body{background:#F5EEE0!important}
 .bgroom .mir{box-shadow:0 0 0 4px #E4D5BA,0 0 0 5px rgba(150,120,80,.3),inset 0 0 0 1.5px rgba(255,255,255,.7),inset 0 0 16px rgba(31,53,82,.14),0 14px 20px -4px rgba(90,60,30,.26)!important}
 .bgroom .wnd{border-color:#E4D5BA!important;background:#E4D5BA!important}
 .bgroom .wnd .g::after{background:linear-gradient(#E4D5BA,#E4D5BA) 50% 0/3px 100% no-repeat,linear-gradient(#E4D5BA,#E4D5BA) 0 46%/100% 3px no-repeat!important}
+
+/* v16: no white in frames; wall panel lines follow the mirror and window arches */
+.bgroom .mir{box-shadow:0 0 0 4px #DCC9A8,0 0 0 5px rgba(130,100,60,.35),inset 0 0 14px rgba(31,53,82,.16),0 14px 20px -4px rgba(90,60,30,.26)!important}
+.bgroom .mirg{opacity:.35}
+.bgroom .wnd{border-color:#DCC9A8!important;background:#DCC9A8!important;box-shadow:0 0 0 1px rgba(130,100,60,.35),0 0 12px var(--wg,rgba(255,236,190,.3)),inset 0 0 6px rgba(80,50,20,.3)!important}
+.bgroom .wnd .g::after{background:linear-gradient(#DCC9A8,#DCC9A8) 50% 0/3px 100% no-repeat,linear-gradient(#DCC9A8,#DCC9A8) 0 46%/100% 3px no-repeat!important}
+.bgroom .pc{left:50%!important;right:auto!important;transform:translateX(-50%);width:calc(min(50%,190px) + 48px)!important;top:calc(var(--st) - 54px)!important;height:calc(var(--ph) * .78 + 78px)!important;border-radius:calc(min(50%,190px)/2 + 24px) calc(min(50%,190px)/2 + 24px) 3px 3px!important}
+.bgroom .pa,.bgroom .pb{width:98px!important;top:calc(var(--st) - 54px)!important;height:calc(var(--ph) * .78 + 78px)!important;border-radius:49px 49px 3px 3px!important}
+.bgroom .pa{left:1px!important}.bgroom .pb{right:1px!important}
+.bgroom .pl{border:1.5px solid rgba(150,115,70,.3)!important}
 </style></head>
 <body>
 <div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><i class="mirg"></i><i class="mir"></i><div class="wnd wl2"><i class="g"></i></div><div class="wnd wr2"><i class="g"></i></div><i class="fl"></i><i class="rg"></i><i class="fsh"></i></div>
