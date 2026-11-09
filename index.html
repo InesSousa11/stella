@@ -1174,6 +1174,11 @@ nav div,#nav{background:#FFF9EE!important}
 .side-r .tab[aria-pressed=true],.side-r .act2[aria-pressed=true] .ci{border-radius:12px!important}
 
 .side-r,.stage .side-r,#view .stage .side-r,.hbar .mn,[data-today]{background:rgba(255,252,246,.3)!important}
+
+/* v25: single right bar with divider; more opaque */
+.side-r,.stage .side-r,#view .stage .side-r,.hbar .mn,[data-today]{background:rgba(255,252,246,.68)!important;-webkit-backdrop-filter:blur(10px) saturate(1.2)!important;backdrop-filter:blur(10px) saturate(1.2)!important;box-shadow:0 6px 18px -10px rgba(40,30,20,.3),inset 0 0 0 1px rgba(255,255,255,.7)!important}
+#view .stage .side-r,#view .stage .side-r:not(.sl2){top:50%!important;transform:translateY(-50%)!important}
+.side-r .sep{display:block!important;width:26px;height:1.5px;border-radius:1px;background:rgba(45,58,107,.18);margin:5px 0!important;flex:none}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><clipPath id="blobclip" clipPathUnits="objectBoundingBox"><path d="M0.30 0.10 C0.42 0.00 0.62 -0.02 0.78 0.07 C0.94 0.16 1.03 0.36 0.98 0.55 C0.93 0.74 0.78 0.86 0.62 0.94 C0.48 1.00 0.28 0.99 0.15 0.88 C0.02 0.77 -0.02 0.58 0.03 0.42 C0.07 0.28 0.18 0.18 0.30 0.10 Z"/></clipPath></defs></svg><div class="bgroom" id="bgroom" aria-hidden="true"><i class="bl"></i><i class="bsun"></i><i class="bcl c1"></i><i class="bcl c2"></i><i class="bst"></i><i class="bsh"></i></div>
@@ -1408,7 +1413,7 @@ function split(){const r=document.querySelector('.stage .side-r:not(.sl2)');if(!
 const k=key(S.off);const w=r.querySelector('[data-a=worn]'),l=r.querySelector('[data-a=laundry]');if(!w||!l)return;
 const L=document.createElement('div');L.className='side side-r sl2';L.setAttribute('role','group');L.setAttribute('aria-label','Outfit actions');
 const f=document.createElement('button');f.className='act2';f.dataset.a='fav';f.setAttribute('aria-label','Favourite look');f.title='Favourite look';f.setAttribute('aria-pressed',String(!!S.fav[k]));f.innerHTML='<span class="ci">'+HEART+'</span>';
-L.append(l,w,f);r.after(L);const sp=r.querySelector('.sep');if(sp)sp.remove()}
+r.prepend(l,w,f)}
 let menu=document.getElementById('vmenu');if(!menu){menu=document.createElement('div');menu.id='vmenu';menu.setAttribute('role','menu');document.body.appendChild(menu)}
 const NAMES={daily:'Daily',weekly:'Weekly',monthly:'Monthly'};
 function viewbtn(){const m=document.querySelector('.hbar .mn');if(!m)return;
