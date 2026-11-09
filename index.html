@@ -687,6 +687,25 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
 .room2 .wfl{left:0;right:0;top:84%;bottom:0;background:repeating-linear-gradient(90deg,rgba(110,60,20,.10) 0 1px,transparent 1px 34px),linear-gradient(#CFA46C,#B98A52)}
 .room2 .rug{left:6%;right:6%;top:93%;bottom:-4%;clip-path:polygon(5% 0,95% 0,100% 100%,0 100%);
  background:radial-gradient(ellipse,rgba(250,225,190,.55) 0 2.5px,transparent 3px) 0 0/20px 12px,linear-gradient(#D9A187,#C98D72);box-shadow:inset 0 0 0 4px rgba(232,201,164,.8);opacity:.85}
+
+/* ===== calendar view buttons: vertical capsule under the layers capsule ===== */
+:root{--ph:clamp(300px,calc(var(--ah) - 253px - var(--hp) - var(--navh) + 96px),720px)}
+.sheet #seg{position:absolute!important;left:auto!important;right:16px!important;top:calc(max(0px,min(calc(var(--ph) / 2 - var(--lh) / 2),calc(var(--ph) - var(--lh) - var(--sh) + 15px))) + var(--lh) + 15px)!important;z-index:6;width:48px;display:flex!important;flex-direction:column!important;align-items:center;gap:2px!important;padding:5px 3px!important;border-radius:22px!important;background:#F6F2EC!important;border:0!important;box-shadow:0 10px 24px rgba(38,26,18,.16),0 1px 3px rgba(38,26,18,.12)!important}
+.sheet #seg .temp{display:none!important}
+.sheet #seg button{width:42px!important;height:40px!important;border-radius:18px!important;background:none!important;color:#1F3552!important;display:grid;place-items:center;padding:0}
+.sheet #seg button[aria-pressed=true]{background:#BF6A1E!important;color:#fff!important;box-shadow:0 5px 12px rgba(191,106,30,.4)}
+.sheet #seg button svg{width:22px!important;height:22px!important}
+
+/* room props only in the daily view */
+.app:not([data-view=daily]) .pegs,.app:not([data-view=daily]) .pouf{display:none!important}
+.app:not([data-view=daily]) #pchip{bottom:64px!important}
+
+:root{--lh:231px;--sh:134px}
+.stage .side-r{top:max(0px,min(calc(50% - var(--lh) / 2),calc(100% - var(--lh) - var(--sh) + 15px)))!important;transform:none!important}
+@media (max-height:600px){:root{--lh:199px;--sh:116px}
+ .side-r .tab,.side-r .act2,.side-r .act2 .ci,.sheet #seg button{height:34px!important}}
+
+@media (max-height:700px){.pouf{transform:scale(.72);transform-origin:0 100%}#pchip{bottom:101px!important}}
 </style></head>
 <body>
 <main class="app" id="app" data-scene="rainy">
@@ -713,12 +732,13 @@ nav div{box-shadow:0 -8px 24px rgba(38,26,18,.08)!important;border-top:0!importa
 </div>
 </div>
 
-<div class="vs" id="seg" role="group" aria-label="Plan view"><div class="temp"><b id="t" role="button" tabindex="0" title="Preview other weather (demo)">19°</b><span class="tinfo" id="ti"></span></div><button data-v="daily" aria-pressed="true" aria-label="Daily" title="Daily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M8 3v4M16 3v4"/><rect class="f" x="9.5" y="11.5" width="5" height="5" rx="1.4"/></svg></button><button data-v="weekly" aria-pressed="false" aria-label="Weekly" title="Weekly"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M8 3v4M16 3v4"/><rect class="f" x="6.5" y="12" width="11" height="3.6" rx="1.6"/></svg></button><button data-v="monthly" aria-pressed="false" aria-label="Monthly" title="Monthly"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M8 3v4M16 3v4"/><g class="f"><circle cx="7.6" cy="12.2" r="1.1"/><circle cx="10.5" cy="12.2" r="1.1"/><circle cx="13.5" cy="12.2" r="1.1"/><circle cx="16.4" cy="12.2" r="1.1"/><circle cx="7.6" cy="14.8" r="1.1"/><circle cx="10.5" cy="14.8" r="1.1"/><circle cx="13.5" cy="14.8" r="1.1"/><circle cx="16.4" cy="14.8" r="1.1"/><circle cx="7.6" cy="17.4" r="1.1"/><circle cx="10.5" cy="17.4" r="1.1"/><circle cx="13.5" cy="17.4" r="1.1"/><circle cx="16.4" cy="17.4" r="1.1"/></g></svg></button></div>
+
 </header>
 <section class="sheet">
 <div id="pchip"><button id="pico" aria-label="Pico, tap to say hi"></button><button id="pbub" class="pbub" aria-label="Tag this day"><b><i id="pd"></i><span id="pt"></span></b><span id="ps"></span></button></div>
 <svg class="pegs" width="96" height="44" viewBox="0 0 96 44" aria-hidden="true"><defs><linearGradient id="br" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9A6428"/><stop offset=".4" stop-color="#F0CB8E"/><stop offset="1" stop-color="#B07A2C"/></linearGradient><radialGradient id="bb" cx=".35" cy=".3"><stop offset="0" stop-color="#FBE3B0"/><stop offset="1" stop-color="#B07A2C"/></radialGradient></defs><g transform="translate(8 0)"><ellipse cx="13" cy="39" rx="9" ry="2.6" fill="rgba(38,26,18,.14)"/><path d="M13 8 V25 A6.5 6.5 0 0 0 26 25 V19" fill="none" stroke="#7A4E1A" stroke-width="4.6" stroke-linecap="round"/><path d="M13 8 V25 A6.5 6.5 0 0 0 26 25 V19" fill="none" stroke="url(#br)" stroke-width="3.2" stroke-linecap="round"/><circle cx="26" cy="17.2" r="3" fill="url(#bb)" stroke="#7A4E1A" stroke-width=".6"/><circle cx="13" cy="7" r="6.4" fill="url(#br)" stroke="#7A4E1A" stroke-width=".7"/><circle cx="13" cy="7" r="3.2" fill="none" stroke="#7A4E1A" stroke-width=".6" opacity=".7"/><circle cx="13" cy="7" r="1.2" fill="#7A4E1A"/></g><g transform="translate(52 0)"><ellipse cx="13" cy="39" rx="9" ry="2.6" fill="rgba(38,26,18,.14)"/><path d="M13 8 V25 A6.5 6.5 0 0 0 26 25 V19" fill="none" stroke="#7A4E1A" stroke-width="4.6" stroke-linecap="round"/><path d="M13 8 V25 A6.5 6.5 0 0 0 26 25 V19" fill="none" stroke="url(#br)" stroke-width="3.2" stroke-linecap="round"/><circle cx="26" cy="17.2" r="3" fill="url(#bb)" stroke="#7A4E1A" stroke-width=".6"/><circle cx="13" cy="7" r="6.4" fill="url(#br)" stroke="#7A4E1A" stroke-width=".7"/><circle cx="13" cy="7" r="3.2" fill="none" stroke="#7A4E1A" stroke-width=".6" opacity=".7"/><circle cx="13" cy="7" r="1.2" fill="#7A4E1A"/></g></svg>
 <div class="pouf" aria-hidden="true"><i class="sh"></i><i class="bd"></i><i class="tp"></i></div>
+<div class="vs" id="seg" role="group" aria-label="Plan view"><div class="temp"><b id="t" role="button" tabindex="0" title="Preview other weather (demo)">19°</b><span class="tinfo" id="ti"></span></div><button data-v="daily" aria-pressed="true" aria-label="Daily" title="Daily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M8 3v4M16 3v4"/><rect class="f" x="9.5" y="11.5" width="5" height="5" rx="1.4"/></svg></button><button data-v="weekly" aria-pressed="false" aria-label="Weekly" title="Weekly"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M8 3v4M16 3v4"/><rect class="f" x="6.5" y="12" width="11" height="3.6" rx="1.6"/></svg></button><button data-v="monthly" aria-pressed="false" aria-label="Monthly" title="Monthly"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M8 3v4M16 3v4"/><g class="f"><circle cx="7.6" cy="12.2" r="1.1"/><circle cx="10.5" cy="12.2" r="1.1"/><circle cx="13.5" cy="12.2" r="1.1"/><circle cx="16.4" cy="12.2" r="1.1"/><circle cx="7.6" cy="14.8" r="1.1"/><circle cx="10.5" cy="14.8" r="1.1"/><circle cx="13.5" cy="14.8" r="1.1"/><circle cx="16.4" cy="14.8" r="1.1"/><circle cx="7.6" cy="17.4" r="1.1"/><circle cx="10.5" cy="17.4" r="1.1"/><circle cx="13.5" cy="17.4" r="1.1"/><circle cx="16.4" cy="17.4" r="1.1"/></g></svg></button></div>
 <div id="view"></div>
 <div class="pager" id="pager" role="group" aria-label="Swipe left or right to change the day"></div>
 </section>
@@ -744,7 +764,7 @@ const planned=o=>o===0||o<0||((day(o).getDate()%3)!==0);
 function mini(o){if(!planned(o))return'<div class="mini empty"></div>';const l=(day(o).getDate()%3)+1;return`<div class="mini"><span style="background:${items[0].c}"></span><span style="background:${l>1?items[l-1].c:'#2F4380'}"></span><span style="background:#2F4380"></span></div>`}
 function fig(l){return `<img class="me" src="assets/me.webp" alt="You, wearing the planned outfit" draggable="false">`}
 function render(){
-app.dataset.scene=S.scene;const t=tips[S.scene];
+app.dataset.scene=S.scene;app.dataset.view=S.view;const t=tips[S.scene];
 $('#t').textContent=t[1]+'°';$('#ti').textContent=({sunny:'☀️',rainy:'🌧️',night:'🌙'})[S.scene]||'☀️';$('#ti').title=t[2]+' · H '+t[4]+'° · L '+t[5]+'°';wave();
 
 document.querySelectorAll('#seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===S.view));
