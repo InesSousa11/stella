@@ -872,6 +872,18 @@ html,body{background:#F5EEE0!important}
 .bgroom .pc{border-radius:999px 999px 3px 3px!important}
 .bgroom .pa,.bgroom .pb{height:calc(var(--ph) * .78 + 26px)!important}
 @media (max-width:359px){.bgroom .pc{border-radius:999px 999px 3px 3px!important}.bgroom .mir,.bgroom .mirg{border-radius:999px 999px 0 0!important}}
+
+/* v20: quieter room so the outfit reads first */
+.bgroom .mir{background:
+ linear-gradient(115deg,rgba(255,255,255,0) 18%,rgba(255,255,255,.32) 24%,rgba(255,255,255,0) 30%),
+ linear-gradient(90deg,transparent 12%,rgba(150,180,220,.10) 14% 26%,transparent 28% 72%,rgba(150,180,220,.10) 74% 86%,transparent 88%),
+ linear-gradient(180deg,rgba(255,255,255,.25),rgba(255,255,255,0) 30%),
+ linear-gradient(180deg,#E6EAE9,#EEF0EC 45%,#E9E5DA)!important;
+ box-shadow:0 0 0 4px #E4D5BA,0 0 0 5px rgba(130,100,60,.2),inset 0 0 12px rgba(31,53,82,.10),0 12px 18px -4px rgba(90,60,30,.18)!important}
+.bgroom .mirg{opacity:.2}
+.bgroom .pl{border-color:rgba(150,115,70,.16)!important;box-shadow:none!important}
+.bgroom .wnd{box-shadow:0 0 0 1px rgba(130,100,60,.25),0 0 8px var(--wg,rgba(255,236,190,.2)),inset 0 0 6px rgba(80,50,20,.25)!important}
+.bgroom .wnd .g{opacity:.9}
 </style></head>
 <body>
 <div class="bgroom" id="bgroom" aria-hidden="true"><i class="bw"></i><i class="shL"></i><i class="shR"></i><i class="pl pc"></i><i class="pl pa"></i><i class="pl pb"></i><i class="mirg"></i><i class="mir"></i><div class="wnd wl2"><i class="g"></i></div><div class="wnd wr2"><i class="g"></i></div><i class="fl"></i><i class="rg"></i><i class="fsh"></i></div>
