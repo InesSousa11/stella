@@ -1185,6 +1185,12 @@ nav div,#nav,nav{background:rgba(255,252,246,.68)!important;-webkit-backdrop-fil
 .hbar .mn,[data-today]{background:rgba(255,252,246,.68)!important}
 
 #pager [data-today],.pager button[data-today]{background:rgba(255,252,246,.68)!important}
+
+/* v27: everything lower, shorter bottom bar */
+nav div{padding-top:8px!important;padding-bottom:max(6px,calc(env(safe-area-inset-bottom,0px) - 12px))!important}
+:root{--st:calc(68px + var(--hp));--ph:clamp(280px,calc(var(--ah) - var(--navh) - var(--hp) - var(--ib) - 76px),720px)}
+.hero,.hero.open{height:calc(68px + var(--hp))!important}
+.hbar{margin-top:8px}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><clipPath id="blobclip" clipPathUnits="objectBoundingBox"><path d="M0.30 0.10 C0.42 0.00 0.62 -0.02 0.78 0.07 C0.94 0.16 1.03 0.36 0.98 0.55 C0.93 0.74 0.78 0.86 0.62 0.94 C0.48 1.00 0.28 0.99 0.15 0.88 C0.02 0.77 -0.02 0.58 0.03 0.42 C0.07 0.28 0.18 0.18 0.30 0.10 Z"/></clipPath></defs></svg><div class="bgroom" id="bgroom" aria-hidden="true"><i class="bl"></i><i class="bsun"></i><i class="bcl c1"></i><i class="bcl c2"></i><i class="bst"></i><i class="bsh"></i></div>
