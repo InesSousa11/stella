@@ -99,7 +99,7 @@ nav.tabs::after{content:"";position:absolute;left:0;right:0;top:100%;height:200p
 .sq.on{background:var(--olive-tint);border-color:var(--olive-tint)}
 .sq.on svg{stroke:var(--olive-ink)}
 /* nav */
-nav.tabs{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,460px);background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:8px max(8px,env(safe-area-inset-right,0px)) max(8px,calc(env(safe-area-inset-bottom,0px) - 16px)) max(8px,env(safe-area-inset-left,0px));z-index:20}
+nav.tabs{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,460px);background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:8px max(8px,env(safe-area-inset-right,0px)) max(8px,calc(env(safe-area-inset-bottom,0px) - 16px)) max(8px,env(safe-area-inset-left,0px));z-index:20}
 nav.tabs button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:500;color:var(--muted);padding:4px 0}
 nav.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 nav.tabs i{width:4px;height:4px;border-radius:2px;display:block}
@@ -185,6 +185,47 @@ nav.tabs .on i{background:var(--clay)}
 .pairs button{width:64px;height:64px;border-radius:16px;background:var(--oat);display:grid;place-items:center}
 .linkbtn{font-size:13px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;align-self:center;padding:8px}
 .linkbtn.warn{color:var(--clay-ink)}
+/* looks */
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px}
+.chips::-webkit-scrollbar{display:none}
+.chip{height:36px;padding:0 14px;border-radius:18px;border:1px solid var(--edge);background:var(--card);font-size:14px;color:var(--muted);white-space:nowrap;flex-shrink:0}
+.chip.on{background:var(--ink);border-color:var(--ink);color:var(--linen)}
+.lgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.lcard{display:flex;flex-direction:column;gap:8px;text-align:left;position:relative;min-width:0}
+.lcard .im{position:relative;aspect-ratio:3/4;max-width:100%;border-radius:22px;background:var(--oat);overflow:hidden;display:grid;place-items:center}
+.lcard .im img{position:absolute;inset:8px 0 0;width:100%;height:calc(100% - 8px);object-fit:contain;object-position:50% 100%}
+.lcard .flat{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;align-items:center;padding:14px}
+.lcard .nm{font-family:var(--serif);font-size:18px;font-weight:600;line-height:1.15}
+.lcard .mt{font-size:12px;color:var(--muted);margin-top:-4px}
+.lcard .hb{position:absolute;right:8px;top:8px;width:36px;height:36px;border-radius:18px;background:var(--card);display:grid;place-items:center}
+.lcard .hb svg{width:16px;height:16px;stroke:var(--clay);stroke-width:1.6;fill:none;stroke-linejoin:round}
+.lcard .hb.on svg{fill:var(--clay)}
+.lcard .onme{position:absolute;left:8px;top:8px;height:24px;padding:0 9px;border-radius:12px;background:var(--card);font-size:11px;font-weight:500;color:var(--clay-ink);display:flex;align-items:center}
+.trycard{border-radius:22px;background:var(--card);border:1px solid var(--line);padding:14px;display:flex;gap:14px;align-items:center;text-align:left;width:100%}
+.trycard .ti{width:52px;height:52px;border-radius:16px;background:#F3E3DA;display:grid;place-items:center;flex-shrink:0}
+.trycard .ti svg{width:24px;height:24px;fill:none;stroke:var(--clay-ink);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.vers{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:2px 20px}
+.vers::-webkit-scrollbar{display:none}
+.ver{flex-shrink:0;width:84px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--muted);text-align:center}
+.ver span.t{width:72px;height:72px;border-radius:18px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center}
+.ver.on span.t{border:1.5px solid var(--clay)}
+.ver.on{color:var(--clay-ink);font-weight:500}
+.seg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));background:var(--oat);border-radius:14px;padding:4px;gap:4px}
+.seg button{height:40px;border-radius:11px;font-size:14px;color:var(--muted)}
+.seg button.on{background:var(--card);color:var(--ink);font-weight:500;box-shadow:0 1px 2px rgba(43,36,32,.08)}
+.dropzone{border:1.5px dashed var(--taupe);border-radius:18px;padding:16px;display:flex;align-items:center;gap:12px;font-size:14px;color:var(--muted);cursor:pointer;background:var(--linen)}
+.dropzone img{width:56px;height:56px;object-fit:cover;border-radius:12px}
+.tryhero{position:relative;border-radius:28px;background:var(--oat);overflow:hidden;flex:1 1 auto;min-height:360px}
+.tryhero .ph{top:16px;height:calc(100% - 20px)}
+.waiting{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px;align-content:center}
+.waiting .prod{border-radius:18px;background:var(--card);display:grid;place-items:center;aspect-ratio:3/4;max-width:100%;overflow:hidden}
+.waiting .prod img{width:100%;height:100%;object-fit:cover}
+.waiting .with{display:flex;flex-wrap:wrap;gap:6px;align-content:center;justify-content:center}
+.waiting .msg{grid-column:1/-1;text-align:center;font-size:13px;color:var(--muted)}
+.btnlink{text-decoration:none}
+.wl .tile0 img{width:100%;height:100%;object-fit:cover;border-radius:18px}
+.sec{display:flex;flex-direction:column;gap:10px;padding:14px 0;border-top:1px solid var(--line)}
+.sec h3{font-size:20px}
 /* sheet & toast */
 .scrim{position:fixed;inset:0;background:rgba(43,36,32,.32);z-index:40;display:flex;align-items:flex-end;justify-content:center;animation:fade .2s var(--ease)}
 .sheet{width:min(100%,460px);background:var(--card);border-radius:28px 28px 0 0;padding:10px max(20px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px;max-height:88%;overflow-y:auto;animation:up .3s var(--ease)}
@@ -214,6 +255,7 @@ nav.tabs .on i{background:var(--clay)}
   <nav class="tabs" id="tabs" aria-label="Main">
     <button data-go="today"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v8.5a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H5.5A1.5 1.5 0 0 1 4 19.5z"/></svg>Today<i></i></button>
     <button data-go="plan"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="3.5"/><path d="M4 10.5h16M8.5 3v4M15.5 3v4"/></svg>Plan<i></i></button>
+    <button data-go="looks"><svg viewBox="0 0 24 24"><path d="M12 20.5S4.5 16 4.5 9.8A4.1 4.1 0 0 1 12 7.6a4.1 4.1 0 0 1 7.5 2.2c0 6.2-7.5 10.7-7.5 10.7z"/></svg>Looks<i></i></button>
     <button data-go="wardrobe"><svg viewBox="0 0 24 24"><path d="M12 7.5V6.2a2.2 2.2 0 1 0-2.2-2.2"/><path d="M12 7.5l8.3 6.1a1.2 1.2 0 0 1-.7 2.2H4.4a1.2 1.2 0 0 1-.7-2.2z"/></svg>Wardrobe<i></i></button>
     <button data-go="create"><svg viewBox="0 0 24 24"><path d="M12 3l2.3 6.2L21 12l-6.7 2.8L12 21l-2.3-6.2L3 12l6.7-2.8z"/></svg>Create<i></i></button>
   </nav>
@@ -248,7 +290,8 @@ const I={
   search:'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/>',
   laundry:'<rect x="4.5" y="2.5" width="15" height="19" rx="3"/><path d="M4.5 7.5h15"/><circle cx="12" cy="14.2" r="4"/>',
   check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',suitcase:'<rect x="6" y="7" width="12" height="13" rx="2.5"/><path d="M9 7V5h6v2M9 20v1.5M15 20v1.5"/>',
-  warn:'<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/>'
+  warn:'<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/>',
+  sparkle:'<path d="M12 3l2.3 6.2L21 12l-6.7 2.8L12 21l-2.3-6.2L3 12l6.7-2.8z"/>',link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',camera:'<path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'
 };
 const ic=(k,cls)=>'<svg viewBox="0 0 24 24" aria-hidden="true"'+(cls?' class="'+cls+'"':'')+'>'+I[k]+'</svg>';
 
@@ -275,7 +318,15 @@ function shape(k,c){
   }
   return'';
 }
-function g(it,w,h,style){const v=VB[it.kind]||[100,100];return`<svg class="g" viewBox="0 0 ${v[0]} ${v[1]}" style="width:${w}px;height:${h}px;${style||''}" aria-hidden="true">${shape(it.kind,it.color)}</svg>`}
+function g(it,w,h,style){if(it.img&&IMG[it.img])return`<img class="g" src="${IMG[it.img]}" alt="" style="width:${w}px;height:${h}px;object-fit:contain;${style||''}">`;const v=VB[it.kind]||[100,100];return`<svg class="g" viewBox="0 0 ${v[0]} ${v[1]}" style="width:${w}px;height:${h}px;${style||''}" aria-hidden="true">${shape(it.kind,it.color)}</svg>`}
+
+/* ---------- image store (photos you add stay on this device) ---------- */
+const IMG={};let DB=null;
+function idb(){return new Promise(res=>{try{const r=indexedDB.open('dresmi',1);r.onupgradeneeded=()=>r.result.createObjectStore('img');r.onsuccess=()=>{DB=r.result;res(DB)};r.onerror=()=>res(null)}catch(e){res(null)}})}
+async function imgPut(key,data){IMG[key]=data;try{const db=DB||await idb();if(db)db.transaction('img','readwrite').objectStore('img').put(data,key)}catch(e){}}
+async function imgDel(key){delete IMG[key];try{const db=DB||await idb();if(db)db.transaction('img','readwrite').objectStore('img').delete(key)}catch(e){}}
+async function imgLoadAll(){try{const db=await idb();if(!db)return;const rq=db.transaction('img').objectStore('img').openCursor();rq.onsuccess=()=>{const c=rq.result;if(c){IMG[c.key]=c.value;c.continue()}else if(Object.keys(IMG).length)render()}}catch(e){}}
+function readImage(file,max){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL(/png|webp/.test(file.type)?'image/png':'image/jpeg',.84))};im.onerror=rej;im.src=fr.result};fr.onerror=rej;fr.readAsDataURL(file)})}
 
 /* ---------- data ---------- */
 const CATS=[['outer','Outerwear','Coats'],['top','Tops','Tops'],['dress','Dresses','Dresses'],['bottom','Bottoms','Bottoms'],['shoes','Shoes','Shoes'],['bag','Bags','Bags']];
@@ -322,6 +373,7 @@ function seed(){
 let S;
 try{S=JSON.parse(localStorage.getItem('stella-c'))}catch(e){S=null}
 if(!S||S.v!==2)S=seed();
+S.wish=S.wish||[];S.profile=S.profile||{};
 function save(){try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}}
 const byId=id=>S.items.find(i=>i.id===id);
 
@@ -427,10 +479,10 @@ function stack(ids){
 }
 
 /* ---------- state & routing ---------- */
-let V={hide:{},screen:'today',stack:[],plan:{ym:TODAY.slice(0,7),sel:TODAY,filter:'all'},ward:{cat:'all',q:''},dr:null,piece:null};
+let V={hide:{},looksF:null,look:null,wishId:null,trySrc:'link',screen:'today',stack:[],plan:{ym:TODAY.slice(0,7),sel:TODAY,filter:'all'},ward:{cat:'all',q:''},dr:null,piece:null};
 function go(screen,opts){if(screen!==V.screen)V.stack.push(V.screen);V.screen=screen;Object.assign(V,opts||{});render(true)}
 function back(){V.screen=V.stack.pop()||'today';render(true)}
-function toast(t){const e=document.createElement('div');e.className='toast';e.setAttribute('role','status');e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2200)}
+function toast(t){document.querySelectorAll('.toast').forEach(x=>x.remove());const e=document.createElement('div');e.className='toast';e.setAttribute('role','status');e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2200)}
 function nextOpen(){for(let i=1;i<30;i++){const d=add(TODAY,i);const L=S.looks[d];if(!L||!L.items||!L.items.length)return d}return add(TODAY,1)}
 function openDressing(ds,preset){
   const base=preset||lookFor(ds).ids;V.dr={date:ds,ids:base.slice(),tab:'top',hist:[]};
@@ -499,8 +551,17 @@ function scPlan(){
   <p class="note" style="margin:-6px 4px 0">Dresmi fills empty days using the forecast, your plans and what is clean, and avoids repeating pieces from one day to the next. Days you planned yourself stay as they are.</p>`;
 }
 
+function scWishlist(){
+  const W=S.wish.filter(w=>w.status!=='passed'&&w.status!=='bought').sort((a,b)=>(a.status==='trying')-(b.status==='trying')||b.added-a.added);
+  const rows=W.map(w=>{const wi=wishItem(w),im=w.tryImg&&IMG[w.tryImg]||w.prod&&IMG[w.prod];
+    return`<div class="item wl"><button class="tile0" data-wish="${w.id}" aria-label="Open ${esc(w.name)}">${im?`<img src="${im}" alt="">`:g(wi,64,72,'position:static')}</button>
+      <button class="meta" data-wish="${w.id}" style="text-align:left"><span class="nm">${esc(w.name)}</span><span class="sub">${[w.store,w.price].filter(Boolean).map(esc).join(' · ')||'From a photo'}</span>
+      <span class="tags">${w.status==='trying'?'<span class="tag clay">Deciding</span>':'<span class="tag olive">On your wishlist</span>'}${w.tryImg?'<span class="tag">Seen on you</span>':''}</span></button>
+      ${w.url?`<a class="fav" href="${esc(w.url)}" target="_blank" rel="noopener" aria-label="Open ${esc(w.name)} in the store">${ic('link')}</a>`:''}</div>`}).join('');
+  return`<div class="list">${rows||'<div class="empty"><h3>Your wishlist is empty</h3>Try on a piece from a store and keep the ones you love here.</div>'}</div>`;
+}
 function scWardrobe(){
-  const Wd=V.ward,q=Wd.q.trim().toLowerCase();
+  const Wd=V.ward,q=Wd.q.trim().toLowerCase();Wd.mode=Wd.mode||'mine';
   let list=S.items.filter(i=>(Wd.cat==='all'||i.cat===Wd.cat||(Wd.cat==='fav'&&i.fav))&&(!q||(i.name+' '+i.colorName+' '+i.fabric+' '+i.place).toLowerCase().includes(q)));
   const wash=S.items.filter(i=>i.laundry).length;
   const tabs=[['all','All'],['fav','Favourites'],...CATS.map(c=>[c[0],c[2]])];
@@ -513,10 +574,11 @@ function scWardrobe(){
   return`
   <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-top:8px">
     <div><div class="eyebrow">${S.items.length} pieces · ${wash} in the wash</div><h1 class="h-xl" style="margin-top:2px">My <i class="it">wardrobe</i></h1></div>
-    <button class="fab" data-act="add-piece" aria-label="Add a piece">${ic('plus')}</button></div>
-  <label class="search" for="q">${ic('search')}<span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search wardrobe</span><input id="q" type="search" placeholder="Search by colour, fabric, place" value="${esc(Wd.q)}" autocomplete="off"></label>
+    <button class="fab" data-act="${Wd.mode==='wish'?'try-new':'add-piece'}" aria-label="${Wd.mode==='wish'?'Try on a new piece':'Add a piece'}">${ic('plus')}</button></div>
+  <div class="seg" role="tablist" aria-label="Wardrobe or wishlist"><button role="tab" aria-selected="${Wd.mode==='mine'}" class="${Wd.mode==='mine'?'on':''}" data-wmode="mine">My pieces</button><button role="tab" aria-selected="${Wd.mode==='wish'}" class="${Wd.mode==='wish'?'on':''}" data-wmode="wish">Wishlist${S.wish.filter(w=>w.status==='wish'||w.status==='trying').length?' · '+S.wish.filter(w=>w.status==='wish'||w.status==='trying').length:''}</button></div>
+  ${Wd.mode==='wish'?scWishlist():`<label class="search" for="q">${ic('search')}<span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search wardrobe</span><input id="q" type="search" placeholder="Search by colour, fabric, place" value="${esc(Wd.q)}" autocomplete="off"></label>
   <div class="utabs" role="tablist" aria-label="Category">${tabs.map(t=>`<button role="tab" aria-selected="${Wd.cat===t[0]}" class="${Wd.cat===t[0]?'on':''}" data-cat="${t[0]}">${t[1]}</button>`).join('')}</div>
-  <div class="list">${rows||`<div class="empty"><h3>Nothing here yet</h3>${q?'No pieces match “'+esc(Wd.q)+'”.':'Add your first piece with the + button.'}</div>`}</div>`;
+  <div class="list">${rows||`<div class="empty"><h3>Nothing here yet</h3>${q?'No pieces match “'+esc(Wd.q)+'”.':'Add your first piece with the + button.'}</div>`}</div>`}`;
 }
 
 function scDressing(){
@@ -539,7 +601,7 @@ function scDressing(){
   <p class="note" style="margin:-6px 4px 0">${esc(c.why)}</p>
   <div class="utabs" role="tablist" aria-label="Layer" style="justify-content:space-between">${tabs.map(t=>`<button role="tab" aria-selected="${D.tab===t[0]}" class="${D.tab===t[0]?'on':''}" data-layer="${t[0]}">${t[1]}</button>`).join('')}</div>
   <div class="tiles">${tiles}</div>
-  <div class="sticky"><button class="btn" style="width:100%" data-act="save-look">Save look for ${esc(rel(D.date).replace('Today','today').replace('Tomorrow','tomorrow'))}</button></div>`;
+  <div class="sticky row"><button class="sq ${isFavKey(keyOf(D.ids))?'on':''}" data-favlook="${esc(keyOf(D.ids))}" aria-pressed="${isFavKey(keyOf(D.ids))}" aria-label="Save to your looks">${ic('heart')}</button><button class="btn" data-act="save-look">Save look for ${esc(rel(D.date).replace('Today','today').replace('Tomorrow','tomorrow'))}</button></div>`;
 }
 
 function scPiece(){
@@ -570,18 +632,152 @@ function scPiece(){
   <button class="linkbtn ${V.confirmDel?'warn':''}" data-act="del-piece">${V.confirmDel?'Tap again to remove '+esc(i.name):'Remove from wardrobe'}</button>`;
 }
 
+
+/* ---------- looks: every outfit, grouped so versions (other shoes, other bag) sit under one card ---------- */
+const keyOf=ids=>ids.slice().sort().join(',');
+const isFavKey=k=>S.favLooks.includes(k);
+function allLooks(){
+  const m=new Map();
+  const addL=(ids,src)=>{ids=ids.filter(id=>byId(id));if(ids.length<2)return;const k=keyOf(ids);if(!m.has(k))m.set(k,{key:k,ids:ids.slice(),src:new Set()});m.get(k).src.add(src)};
+  PHOTOS.forEach(p=>addL(p.items,'photo'));
+  S.favLooks.forEach(k=>addL(k.split(','),'fav'));
+  Object.keys(S.looks).sort().reverse().forEach(d=>{const L=S.looks[d];if(L.items&&L.items.length&&(L.worn||!L.auto))addL(L.items,L.worn?'worn':'planned')});
+  const grp=new Map();
+  m.forEach(l=>{l.photo=!!photoFor(l.ids);l.fav=isFavKey(l.key);const base=l.ids.filter(id=>!['shoes','bag'].includes(byId(id).cat)).sort().join(',');if(!grp.has(base))grp.set(base,[]);grp.get(base).push(l)});
+  const sc=l=>(l.photo?4:0)+(l.fav?2:0)+(l.src.has('worn')?1:0);
+  return[...grp.entries()].map(([base,vs])=>{vs.sort((a,b)=>sc(b)-sc(a));return{base,variants:vs,main:vs[0],fav:vs.some(v=>v.fav),photo:vs.some(v=>v.photo)}});
+}
+function versionsNote(G){const n=c=>new Set(G.variants.map(v=>(v.ids.map(byId).find(i=>i.cat===c)||{}).id)).size;const a=[];if(n('shoes')>1)a.push(n('shoes')+' shoe options');if(n('bag')>1)a.push(n('bag')+' bags');return a.join(' · ')}
+function lookThumb(ids){const p=photoFor(ids);if(p){const src=imageFor(p,ids);if(src)return`<img src="${esc(src)}" alt="">`}
+  const s=slots(ids);return`<span class="flat">${['outer','dress','top','bottom','shoes'].filter(k=>s[k]).map(k=>g(s[k],k==='shoes'?56:58,k==='shoes'?40:70,'position:static')).join('')}</span>`}
+function scLooks(){
+  const L=allLooks(),hasFav=L.some(x=>x.fav);if(!V.looksF)V.looksF=hasFav?'fav':'all';
+  const w=wx(TODAY),F=V.looksF;
+  const list=L.filter(G=>F==='all'||(F==='fav'&&G.fav)||(F==='onme'&&G.photo)||(F==='today'&&G.main.ids.every(id=>avail(byId(id)))&&check(G.main.ids,w).ok));
+  const chip=(k,t)=>`<button class="chip ${F===k?'on':''}" data-lf="${k}" aria-pressed="${F===k}">${t}</button>`;
+  const cards=list.map(G=>{const l=G.variants.find(v=>v.fav)||G.main,t=titleOf(l.ids),vn=versionsNote(G);
+    return`<div class="lcard"><button class="im" data-look="${esc(G.base)}" aria-label="Open look: ${esc(t.join(' '))}">${lookThumb(l.ids)}</button>
+      ${G.photo?'<span class="onme">On you</span>':''}
+      <button class="hb ${l.fav?'on':''}" data-favlook="${esc(l.key)}" aria-pressed="${l.fav}" aria-label="${l.fav?'Remove from favourites':'Add to favourites'}">${ic('heart')}</button>
+      <span class="nm">${esc(t[0])} <i class="it">${esc(t[1])}</i></span><span class="mt">${vn||esc(G.main.src.has('worn')?'Worn before':G.photo?'Ready to wear':'Saved look')}</span></div>`}).join('');
+  return`
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-top:8px">
+    <div><div class="eyebrow">${L.length} look${L.length===1?'':'s'} · ${L.filter(x=>x.fav).length} favourite${L.filter(x=>x.fav).length===1?'':'s'}</div><h1 class="h-xl" style="margin-top:2px">Your <i class="it">looks</i></h1></div></div>
+  <button class="trycard" data-act="try-new"><span class="ti">${ic('sparkle')}</span><span style="flex:1;min-width:0"><b style="font-weight:500;display:block">Try on something new</b><span class="note">Paste a store link or add a photo and see it on you before you buy.</span></span><span class="chev">${ic('right')}</span></button>
+  <div class="chips" role="group" aria-label="Filter looks">${chip('fav','Favourites')}${chip('all','All')}${chip('onme','On you')}${chip('today','Good for today')}</div>
+  ${cards?`<div class="lgrid">${cards}</div>`:`<div class="empty"><h3>${F==='fav'?'No favourites yet':'Nothing here yet'}</h3>${F==='fav'?'Tap the heart on any look, on Today or here, and it will be kept in this list.':'Looks you plan, wear or save show up here.'}</div>`}`;
+}
+function heroFor(ids,hk,extra){
+  const p=photoFor(ids),hid=(V.hide[hk]||[]).filter(id=>ids.includes(id));let vis=ids.filter(id=>!hid.includes(id)),img=p&&imageFor(p,vis);
+  if(p&&!img){V.hide[hk]=[];vis=ids.slice();img=imageFor(p,ids)}
+  let chips='';if(p)ids.forEach(id=>{const on=vis.includes(id),nv=on?vis.filter(x=>x!==id):vis.concat(id);if(!imageFor(p,nv))return;const it=byId(id);
+    chips+=`<button class="layer ${on?'on':''}" data-layer-t="${id}" data-hk="${esc(hk)}" aria-pressed="${on}" aria-label="${on?'Take off':'Put on'} the ${esc(it.name)}"><span class="box"></span>${esc(KNAME[it.kind]||it.name)}</button>`});
+  return{vis,html:`<div class="hero ${p?'photo':''}">${extra.cover?`<button class="cover" data-act="${extra.cover}" aria-label="Open in the dressing room">`:'<div class="cover">'}${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:flatlay(ids)}${extra.cover?'</button>':'</div>'}
+    ${extra.top||''}${chips?`<div class="layers" role="group" aria-label="Layers" style="${extra.top?'':'top:14px'}">${chips}</div>`:p?'':'<span class="pill">Photo of this look coming soon</span>'}</div>`};
+}
+function scLook(){
+  const G=allLooks().find(x=>x.base===V.look.base);if(!G){V.screen='looks';return scLooks()}
+  let l=G.variants.find(v=>v.key===V.look.key)||G.variants.find(v=>v.fav)||G.main;V.look.key=l.key;
+  const h=heroFor(l.ids,'L'+l.key,{cover:'look-dress',top:`<button class="heart topR ${l.fav?'on':''}" data-favlook="${esc(l.key)}" aria-pressed="${l.fav}" aria-label="${l.fav?'Remove from favourites':'Add to favourites'}">${ic('heart')}</button>`});
+  const t=titleOf(h.vis),c=check(l.ids,wx(TODAY));
+  const diff=v=>{const o=v.ids.map(byId).filter(i=>i.cat==='shoes'||i.cat==='bag');return o.length?o:v.ids.map(byId).slice(-1)};
+  const vers=G.variants.length>1?`<div><div class="flabel" style="margin-bottom:8px">Versions</div><div class="vers">${G.variants.map(v=>{const d=diff(v);return`<button class="ver ${v.key===l.key?'on':''}" data-ver="${esc(v.key)}" aria-pressed="${v.key===l.key}"><span class="t">${g(d[0],52,40,'position:static')}</span>${esc(d.map(i=>i.short).join(' + '))}</button>`}).join('')}</div></div>`:'';
+  return`
+  <div class="top"><button class="ib" data-act="back" aria-label="Back">${ic('back')}</button><h1 class="h-l">Look</h1><button class="ib" data-act="look-dress" aria-label="Make a new version in the dressing room">${ic('sparkle')}</button></div>
+  ${h.html}
+  <div><h2 class="h-m" style="font-size:24px">${esc(t[0])} <i class="it">${esc(t[1])}</i></h2>
+    <div class="note" style="margin-top:2px">${l.photo?'On you':'Photo coming soon'} · ${c.ok?'good for today':esc(c.t.replace('\n',' ').toLowerCase())+' today'}</div></div>
+  ${vers}
+  <div class="row"><button class="btn" data-act="look-plan">Plan it for a day</button><button class="sq" data-act="look-today" aria-label="Wear it today">${ic('check')}</button></div>`;
+}
+
+/* ---------- try-on & wishlist ---------- */
+const CATKEY=[[/coat|jacket|trench|blazer|parka|puffer|cardigan/,'outer'],[/dress|jumpsuit/,'dress'],[/trouser|pant|jean|skirt|short|legging|chino/,'bottom'],[/shoe|boot|sandal|loafer|sneaker|trainer|heel|flat|mule|pump|mary/,'shoes'],[/bag|tote|clutch|purse|backpack/,'bag']];
+const KINDKEY=[[/trench/,'trench'],[/blazer|jacket/,'blazer'],[/coat|parka|puffer/,'coat'],[/knit|jumper|sweater|cardigan|pullover/,'knit'],[/cami|silk top|tank|vest/,'cami'],[/jean/,'jeans'],[/skirt/,'skirt'],[/boot/,'boots'],[/sandal/,'sandals'],[/tote/,'tote']];
+function guessCat(n){n=n.toLowerCase();for(const[r,c]of CATKEY)if(r.test(n))return c;return'top'}
+function guessKind(n,cat){n=n.toLowerCase();for(const[r,k]of KINDKEY)if(r.test(n)&&KINDS[cat].includes(k))return k;return KINDS[cat][0]}
+function nameFromUrl(u){try{const x=new URL(u);let seg=x.pathname.split('/').filter(Boolean).reverse().find(p=>/[a-z]{3,}/i.test(p.replace(/\.(html?|aspx?)$/,'')))||'';seg=decodeURIComponent(seg).replace(/\.(html?|aspx?)$/,'').replace(/[-_+.]+/g,' ').replace(/^(product|products|p|item|shop)\s+/i,'').replace(/\b[a-z]{0,4}\d{4,}\w*\b/gi,'').replace(/\s+/g,' ').trim();return seg?seg.charAt(0).toUpperCase()+seg.slice(1):''}catch(e){return''}}
+function hostOf(u){try{return new URL(u).hostname.replace(/^www\.|^m\./,'')}catch(e){return''}}
+const wishById=id=>S.wish.find(w=>w.id===id);
+function wishItem(w){return{id:w.id,name:w.name,short:w.name.toLowerCase(),cat:w.cat,kind:w.kind,color:w.color,colorName:'',fabric:'',warm:[-10,40],img:w.prod}}
+function styleWith(w){const base=suggest(TODAY,'work').map(byId).filter(i=>i&&i.cat!==w.cat&&!(w.cat==='dress'&&(i.cat==='top'||i.cat==='bottom'))&&!((w.cat==='top'||w.cat==='bottom')&&i.cat==='dress'));return base.map(i=>i.id)}
+function scTry(){
+  const w=wishById(V.wishId);if(!w){V.screen='looks';return scLooks()}
+  const wi=wishItem(w),withI=w.with.map(byId).filter(Boolean);
+  const hero=w.tryImg&&IMG[w.tryImg]?`<div class="tryhero"><img class="ph" src="${IMG[w.tryImg]}" alt="You wearing the ${esc(w.name)}"></div>`
+   :`<div class="tryhero"><div class="waiting"><div class="prod">${w.prod&&IMG[w.prod]?`<img src="${IMG[w.prod]}" alt="${esc(w.name)}">`:g(wi,110,130,'position:static')}</div>
+      <div class="with">${withI.map(i=>g(i,54,58,'position:static')).join('')}</div>
+      <p class="msg">Your try-on image appears here once it is ready.</p>
+      <label class="btn ghost" style="grid-column:1/-1;height:46px;font-size:14px">${ic('plus')}Add try-on image<input type="file" accept="image/*" data-file="try" hidden></label></div></div>`;
+  const st=w.status;
+  return`
+  <div class="top"><button class="ib" data-act="back" aria-label="Back">${ic('back')}</button><h1 class="h-l">Try <i class="it">on</i></h1>
+    ${w.tryImg?`<label class="ib" aria-label="Replace try-on image" style="cursor:pointer">${ic('swap')}<input type="file" accept="image/*" data-file="try" hidden></label>`:'<span style="width:44px"></span>'}</div>
+  ${hero}
+  <div><h2 class="h-m" style="font-size:24px">${esc(w.name)}</h2>
+    <div class="note" style="margin-top:2px">${[w.store,w.price].filter(Boolean).map(esc).join(' · ')||'Added from a photo'}${st==='wish'?' · on your wishlist':''}</div></div>
+  <div class="tags">${withI.map(i=>`<span class="tag">${esc(i.short)}</span>`).join('')}</div>
+  ${st==='trying'?`<div class="row"><button class="btn" data-act="wish-keep">${ic('heart')}Add to wishlist</button><button class="btn ghost" style="flex:.6" data-act="wish-pass">Not for me</button></div>`
+   :`<div class="row">${w.url?`<a class="btn btnlink" href="${esc(w.url)}" target="_blank" rel="noopener">Open in store</a>`:''}<button class="btn ${w.url?'ghost':''}" data-act="wish-bought">I bought it</button></div>
+     <button class="linkbtn" data-act="wish-remove">Remove from wishlist</button>`}`;
+}
+
 /* ---------- sheets ---------- */
 function sheet(html,onMount){const L=$('#layer');L.innerHTML=`<div class="scrim" data-act="close-sheet"><div class="sheet" role="dialog" aria-modal="true"><span class="grab"></span>${html}</div></div>`;onMount&&onMount(L)}
 function closeSheet(){$('#layer').innerHTML=''}
 function sheetSettings(){
-  sheet(`<h2 class="h-l">Settings</h2>
+  const P=S.profile,cal=P.calImported;
+  sheet(`<h2 class="h-l">Your <i class="it">profile</i></h2>
     <div class="field"><label for="s-name">Your name</label><input id="s-name" value="${esc(S.settings.name)}" maxlength="24"></div>
     <div class="field"><label for="s-city">City for weather</label><select id="s-city">${Object.keys(CITIES).map(c=>`<option ${c===S.settings.city?'selected':''}>${c}</option>`).join('')}</select></div>
-    <p class="note">${wLive?'Weather: live forecast from Open-Meteo for the next 16 days.':'Weather: seasonal estimates for '+esc(S.settings.city)+'. The live forecast could not load here.'}</p>
-    <p class="note" style="font-size:11px">Screen fit: ${esc(FIT.txt)}</p>
+    <p class="note">${wLive?'Live forecast from Open-Meteo for the next 16 days.':'Seasonal estimates for '+esc(S.settings.city)+'. The live forecast could not load here.'}</p>
     <button class="btn" data-act="save-settings">Save</button>
+    <div class="sec"><h3>Calendar</h3>
+      <p class="note">Dresmi reads your events so dinners, trips and meetings get the right look. Export your calendar as an .ics file (Google Calendar: Settings › Import &amp; export; Apple Calendar: File › Export) and add it here.</p>
+      <label class="btn ghost" style="height:48px;font-size:15px">${ic('plus')}Add calendar file (.ics)<input type="file" accept=".ics,text/calendar" data-file="ics" hidden></label>
+      ${cal?`<p class="note">Last added ${esc(cal.when)} · ${cal.n} plan${cal.n===1?'':'s'} for the next 3 months.</p>`:''}</div>
+    <div class="sec"><h3>Account</h3>
+      <p class="note">Not signed in. Your wardrobe, looks and photos are saved on this device. With a Dresmi account they will sync between your phone and computer, and your Google, Apple or Outlook calendar will stay connected on its own.</p>
+      <button class="btn ghost" style="height:48px;font-size:15px;opacity:.55" aria-disabled="true" data-act="account-soon">Sign in · coming soon</button></div>
+    <p class="note" style="font-size:11px">Screen fit: ${esc(FIT.txt)}</p>
     <button class="linkbtn ${V.confirmReset?'warn':''}" data-act="reset">${V.confirmReset?'Tap again to erase everything and restore the sample wardrobe':'Restore sample wardrobe'}</button>`);
 }
+function sheetTry(){
+  const src=V.trySrc;
+  sheet(`<h2 class="h-l">Try something <i class="it">new</i></h2>
+    <div class="seg" role="tablist" aria-label="How to add the piece"><button role="tab" aria-selected="${src==='link'}" class="${src==='link'?'on':''}" data-trysrc="link">${'Store link'}</button><button role="tab" aria-selected="${src==='photo'}" class="${src==='photo'?'on':''}" data-trysrc="photo">Photo</button></div>
+    ${src==='link'?`<div class="field"><label for="t-url">Link to the piece</label><input id="t-url" type="url" inputmode="url" placeholder="https://www.store.com/…/linen-blazer" autocomplete="off"></div>
+      <p class="note">Copy the link from the store's website or app (Share › Copy link). Dresmi keeps it on your wishlist so you can buy it later.</p>`
+    :`<label class="dropzone" id="t-drop">${IMG._draft?`<img src="${IMG._draft}" alt="">`:ic('camera')}<span>${IMG._draft?'Photo added · tap to change':'Add a photo or screenshot of the piece'}</span><input type="file" accept="image/*" data-file="prod" hidden></label>`}
+    <div class="field"><label for="t-name">What is it?</label><input id="t-name" placeholder="Linen blend blazer" maxlength="50"></div>
+    <div class="two"><div class="field"><label for="t-cat">Category</label><select id="t-cat">${CATS.map(c=>`<option value="${c[0]}">${c[1]}</option>`).join('')}</select></div>
+      <div class="field"><label for="t-price">Price</label><input id="t-price" placeholder="€89" maxlength="12"></div></div>
+    <div class="field"><span class="flabel">Main colour</span><div class="sw" id="p-sw">${SW.map((x,k)=>`<button style="background:${x[0]}" data-sw="${k}" class="${k===(NP.ci||0)?'on':''}" aria-label="${x[1]}"></button>`).join('')}</div></div>
+    <p class="note" id="t-err" hidden></p>
+    <button class="btn" data-act="save-try">See it on me</button>`,()=>{
+      const u=$('#t-url');if(u)u.addEventListener('input',()=>{const n=nameFromUrl(u.value);if(n&&!$('#t-name').dataset.typed){$('#t-name').value=n;$('#t-cat').value=guessCat(n)}});
+      const nm=$('#t-name');nm.addEventListener('input',()=>{nm.dataset.typed='1';$('#t-cat').value=guessCat(nm.value)});
+    });
+}
+function sheetPlanLook(ids){
+  V.planIds=ids;
+  sheet(`<h2 class="h-l">Plan this <i class="it">look</i></h2>
+    <div class="field"><label for="pl-date">Day</label><input id="pl-date" type="date" min="${TODAY}" value="${nextOpen()}"></div>
+    <p class="note">If that day already has a look, this one replaces it.</p>
+    <button class="btn" data-act="plan-look-save">Plan it</button>`);
+}
+function parseICS(t){
+  t=t.replace(/\r?\n[ \t]/g,'');const ev=[];
+  t.split('BEGIN:VEVENT').slice(1).forEach(b=>{
+    const get=k=>{const m=b.match(new RegExp('^'+k+'[^:\\n]*:(.*)$','m'));return m?m[1].trim():''};
+    const ds=get('DTSTART'),sum=get('SUMMARY').replace(/\\,/g,',').replace(/\;/g,';').replace(/\\n/gi,' ');if(!ds||!sum)return;
+    const m=ds.match(/(\d{4})(\d{2})(\d{2})(T(\d{2})(\d{2}))?/);if(!m)return;
+    let date=m[1]+'-'+m[2]+'-'+m[3],time=m[4]?m[5]+':'+m[6]:'';
+    if(m[4]&&/Z$/.test(ds)){const d=new Date(Date.UTC(+m[1],m[2]-1,+m[3],+m[5],+m[6]));date=iso(d);time=pad(d.getHours())+':'+pad(d.getMinutes())}
+    ev.push({date,time,title:sum.slice(0,40)});
+  });return ev;
+}
+function typeOf(title,date){const t=title.toLowerCase();if(/dinner|drinks|party|date night|concert|theat|opera|gala|wedding|cocktail|birthday|bar\b/.test(t))return'evening';if(/flight|train|trip|airport|travel|hotel|holiday|vacation|férias|viagem/.test(t))return'travel';if(/meeting|office|work|interview|client|call|presentation|class|lecture|reunião|aula/.test(t))return'work';return dayType(date)}
 function sheetNotices(){
   const n=upcomingNeeds();const t=S.looks[add(TODAY,1)];
   sheet(`<h2 class="h-l">Coming <i class="it">up</i></h2>
@@ -618,11 +814,11 @@ function sheetPiece(){
 
 /* ---------- render ---------- */
 function render(scrollTop){
-  const sc=$('#screen'),f=({today:scToday,plan:scPlan,wardrobe:scWardrobe,dressing:scDressing,piece:scPiece})[V.screen];
+  const sc=$('#screen'),f=({today:scToday,plan:scPlan,looks:scLooks,look:scLook,wardrobe:scWardrobe,dressing:scDressing,piece:scPiece,try:scTry})[V.screen];
   const keep=document.activeElement&&document.activeElement.id==='q';
-  sc.innerHTML=f();sc.classList.toggle('noNav',V.screen==='dressing'||V.screen==='piece');
-  $('#tabs').hidden=V.screen==='dressing'||V.screen==='piece';
-  const tab={today:'today',plan:'plan',wardrobe:'wardrobe',dressing:'create',piece:'wardrobe'}[V.screen];
+  sc.innerHTML=f();const full=['dressing','piece','look','try'].includes(V.screen);sc.classList.toggle('noNav',full);
+  $('#tabs').hidden=full;
+  const tab={today:'today',plan:'plan',looks:'looks',look:'looks',try:'looks',wardrobe:'wardrobe',dressing:'create',piece:'wardrobe'}[V.screen];
   document.querySelectorAll('#tabs button').forEach(b=>{const on=b.dataset.go===tab;b.classList.toggle('on',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')});
   if(scrollTop)sc.scrollTop=0;
   const q=$('#q');if(q){q.addEventListener('input',e=>{V.ward.q=e.target.value;const p=e.target.selectionStart;render();const n=$('#q');n.focus();n.setSelectionRange(p,p)});if(keep)q.focus()}
@@ -630,7 +826,7 @@ function render(scrollTop){
 
 /* ---------- actions ---------- */
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-layer-t],[data-go],[data-act],[data-day],[data-filter],[data-cat],[data-piece],[data-fav],[data-layer],[data-pick],[data-sw]');if(!t)return;
+  const t=e.target.closest('[data-lf],[data-look],[data-favlook],[data-ver],[data-wmode],[data-wish],[data-trysrc],[data-layer-t],[data-go],[data-act],[data-day],[data-filter],[data-cat],[data-piece],[data-fav],[data-layer],[data-pick],[data-sw]');if(!t)return;
   const d=t.dataset;
   if(d.act!=='del-piece')V.confirmDel=false;
   if(d.act!=='reset')V.confirmReset=false;
@@ -641,6 +837,14 @@ document.addEventListener('click',e=>{
   if(d.piece){closeSheet();V.piece=d.piece;return go('piece')}
   if(d.fav){const i=byId(d.fav);i.fav=!i.fav;save();toast(i.fav?'Added to favourites':'Removed from favourites');return render()}
   if(d.layer){V.dr.tab=d.layer;return render()}
+  if(d.lf){V.looksF=d.lf;return render()}
+  if(d.look){V.look={base:d.look,key:null};return go('look')}
+  if(d.ver){V.look.key=d.ver;return render()}
+  if(d.favlook){const k=d.favlook,x=S.favLooks.indexOf(k);x>=0?S.favLooks.splice(x,1):S.favLooks.push(k);save();toast(x>=0?'Removed from favourites':'Saved to your looks');return render()}
+  if(d.wmode){V.ward.mode=d.wmode;return render()}
+  if(d.wish){V.wishId=d.wish;return go('try')}
+  if(d.trysrc){V.trySrc=d.trysrc;return sheetTry()}
+  if(d.layerT&&d.hk){const h=V.hide[d.hk]=V.hide[d.hk]||[];const x=h.indexOf(d.layerT);x>=0?h.splice(x,1):h.push(d.layerT);return render()}
   if(d.layerT){const h=V.hide[TODAY]=V.hide[TODAY]||[];const x=h.indexOf(d.layerT);x>=0?h.splice(x,1):h.push(d.layerT);return render()}
   if(d.sw){NP.color=SW[+d.sw][0];NP.ci=+d.sw;document.querySelectorAll('#p-sw button').forEach(b=>b.classList.toggle('on',b===t));return}
   if(d.pick){
@@ -668,6 +872,24 @@ document.addEventListener('click',e=>{
     case'month':{const[y,m]=V.plan.ym.split('-').map(Number);const n=new Date(y,m-1+(+d.d),1);V.plan.ym=n.getFullYear()+'-'+pad(n.getMonth()+1);return render()}
     case'plan-range':{let to;if(d.n==='month'){const[y,m]=V.plan.ym.split('-').map(Number);to=y+'-'+pad(m)+'-'+pad(new Date(y,m,0).getDate())}else to=add(TODAY,6);const from=V.plan.ym>TODAY.slice(0,7)&&d.n==='month'?V.plan.ym+'-01':TODAY;if(to<TODAY)return toast('That month is over');const n=planRange(from,to);toast(n?'Planned '+n+' day'+(n===1?'':'s'):'Every day already has a look');return render()}
     case'add-event':return sheetEvent();
+    case'try-new':delete IMG._draft;NP.ci=0;NP.color=SW[0][0];return sheetTry();
+    case'save-try':{const nm=$('#t-name').value.trim(),url=$('#t-url')?$('#t-url').value.trim():'',err=$('#t-err');
+      if(V.trySrc==='link'&&!/^https?:\/\/\S+\.\S+/.test(url)){err.textContent='Paste the full link to the piece, starting with https://';err.hidden=false;return}
+      if(V.trySrc==='photo'&&!IMG._draft){err.textContent='Add a photo of the piece first.';err.hidden=false;return}
+      if(!nm){err.textContent='Give the piece a name.';err.hidden=false;return $('#t-name').focus()}
+      const cat=$('#t-cat').value,w={id:'w'+Date.now(),name:nm,cat,kind:guessKind(nm,cat),color:NP.color,price:$('#t-price').value.trim(),url:V.trySrc==='link'?url:'',store:V.trySrc==='link'?hostOf(url):'',prod:null,tryImg:null,status:'trying',added:Date.now()};
+      if(V.trySrc==='photo'&&IMG._draft){w.prod='p'+w.id;imgPut(w.prod,IMG._draft);delete IMG._draft}
+      w.with=styleWith(w);S.wish.unshift(w);save();closeSheet();V.wishId=w.id;return go('try')}
+    case'wish-keep':{const w=wishById(V.wishId);w.status='wish';save();toast('Added to your wishlist');return render()}
+    case'wish-pass':{const w=wishById(V.wishId);w.status='passed';save();toast('Removed. It won’t show again');return back()}
+    case'wish-remove':{const w=wishById(V.wishId);w.status='passed';save();toast('Removed from your wishlist');return back()}
+    case'wish-bought':{const w=wishById(V.wishId);w.status='bought';const it={id:'i'+Date.now(),name:w.name,short:w.name.toLowerCase(),cat:w.cat,kind:w.kind,color:w.color,colorName:SW.find(x=>x[0]===w.color)?SW.find(x=>x[0]===w.color)[1]:'',fabric:'—',warm:w.cat==='outer'?[0,18]:[8,28],rain:false,care:'—',place:'Wardrobe',worn:0,last:null,laundry:false,img:w.prod||null};
+      S.items.unshift(it);save();toast(w.name+' is now in your wardrobe');V.stack=[];V.ward.mode='mine';V.piece=it.id;V.screen='piece';return render(true)}
+    case'look-dress':{const G=allLooks().find(x=>x.base===V.look.base);return openDressing(nextOpen(),(G.variants.find(v=>v.key===V.look.key)||G.main).ids.slice())}
+    case'look-plan':{const G=allLooks().find(x=>x.base===V.look.base);return sheetPlanLook((G.variants.find(v=>v.key===V.look.key)||G.main).ids.slice())}
+    case'look-today':{const G=allLooks().find(x=>x.base===V.look.base),ids=(G.variants.find(v=>v.key===V.look.key)||G.main).ids.slice(),L=S.looks[TODAY];if(L&&L.worn)return toast('Today’s look is already logged as worn');S.looks[TODAY]=Object.assign(L||{type:dayType(TODAY)},{items:ids,auto:false});save();toast('This is your look for today');V.stack=[];V.screen='today';return render(true)}
+    case'plan-look-save':{const dt=$('#pl-date').value;if(!dt||dt<TODAY)return toast('Pick today or a later day');S.looks[dt]=Object.assign(S.looks[dt]||{type:dayType(dt)},{items:V.planIds,auto:false});save();closeSheet();toast('Planned for '+rel(dt).toLowerCase());return render()}
+    case'account-soon':return toast('Accounts are coming soon');
     case'save-event':{const ti=$('#e-title').value.trim(),dt=$('#e-date').value;if(!ti){$('#e-err').hidden=false;return $('#e-title').focus()}
       const L=S.looks[dt]=Object.assign(S.looks[dt]||{items:[]},{title:ti,time:$('#e-time').value,type:$('#e-type').value});save();closeSheet();V.plan.sel=dt;V.plan.ym=dt.slice(0,7);toast('Added '+ti+' on '+rel(dt));return render()}
     case'add-piece':return sheetPiece();
@@ -684,6 +906,16 @@ document.addEventListener('click',e=>{
     case'save-settings':{const nm=$('#s-name').value.trim()||S.settings.name,c=$('#s-city').value,changed=c!==S.settings.city;S.settings.name=nm;S.settings.city=c;save();closeSheet();if(changed){W={};wLive=false;loadWeather()}toast('Settings saved');return render()}
     case'reset':{if(!V.confirmReset){V.confirmReset=true;return sheetSettings()}S=seed();save();V.confirmReset=false;closeSheet();toast('Sample wardrobe restored');V.stack=[];V.screen='today';return render(true)}
   }
+});
+document.addEventListener('change',async e=>{
+  const inp=e.target.closest('[data-file]');if(!inp||!inp.files||!inp.files[0])return;const f=inp.files[0],kind=inp.dataset.file;
+  try{
+    if(kind==='ics'){const ev=parseICS(await f.text()),lim=add(TODAY,92);let n=0;
+      ev.filter(x=>x.date>=TODAY&&x.date<=lim).sort((a,b)=>a.date<b.date?-1:1).forEach(x=>{const L=S.looks[x.date];if(L&&L.title)return;S.looks[x.date]=Object.assign(L||{items:[]},{title:x.title,time:x.time,type:typeOf(x.title,x.date),fromCal:true});n++});
+      S.profile.calImported={when:rel(TODAY).toLowerCase(),n};save();closeSheet();toast(n?'Added '+n+' plan'+(n===1?'':'s')+' from your calendar':'No upcoming events found in that file');return render()}
+    if(kind==='prod'){IMG._draft=await readImage(f,900);const keep={u:$('#t-name')&&$('#t-name').value,p:$('#t-price')&&$('#t-price').value,c:$('#t-cat')&&$('#t-cat').value};sheetTry();$('#t-name').value=keep.u||'';$('#t-price').value=keep.p||'';if(keep.c)$('#t-cat').value=keep.c;return}
+    if(kind==='try'){const w=wishById(V.wishId);if(!w)return;const k='t'+w.id;await imgPut(k,await readImage(f,1100));w.tryImg=k;save();toast('Try-on image added');return render()}
+  }catch(err){toast('That file could not be read. Try another one.')}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#layer').innerHTML)closeSheet()});
 /* fit the app to the real screen: iOS home-screen apps can report a viewport shorter than the screen */
@@ -702,6 +934,7 @@ fitH();addEventListener('resize',fitH);addEventListener('orientationchange',()=>
 render(true);
 loadWeather();
 loadPhotos();
+imgLoadAll();
 })();
 </script>
 
