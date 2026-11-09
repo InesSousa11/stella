@@ -1225,7 +1225,8 @@ nav div{padding-bottom:max(18px,env(safe-area-inset-bottom,0px))!important}
 #pager i.lt.c::after{content:"";width:11px;height:2px;border-radius:2px;background:#BF6A1E;margin-top:1px}
 #pager i.lt.t:not(.c){color:#BF6A1E!important;opacity:1!important;background:none!important}
 #pager i.lt.c{background:none!important}
-#pager{gap:14px!important;height:auto!important}
+#pager{gap:11px!important;height:auto!important}
+#pager i,#pager i.lt{transition:none!important}
 @keyframes nl{from{transform:translateX(28px)}}@keyframes nr{from{transform:translateX(-28px)}}
 </style></head>
 <body>
@@ -1593,12 +1594,12 @@ setTimeout(ctr,350);setTimeout(ctr,900);setTimeout(ctr,1600);try{new MutationObs
 })();
 
 ;(function(){
-const L=['M','T','W','T','F','S','S'];
+const L=['S','M','T','W','T','F','S'];
 function letters(){try{
  const el=document.querySelector('#pager');if(!el||S.view!=='daily')return;
  const b=new Date();b.setHours(12,0,0,0);
  const d=new Date(b);d.setDate(d.getDate()+S.off);
- const wi=x=>(x.getDay()+6)%7,mon=x=>{const m=new Date(x);m.setDate(m.getDate()-wi(m));return m.getTime()};
+ const wi=x=>x.getDay(),mon=x=>{const m=new Date(x);m.setDate(m.getDate()-wi(m));return m.getTime()};
  const sel=wi(d),sameWeek=mon(d)===mon(b),td=wi(b);
  el.querySelectorAll('i').forEach((i,k)=>{if(i.classList.contains('lt'))return;
   i.className='lt'+(k===sel?' c':'')+(sameWeek&&k===td?' t':'');i.textContent=L[k]});
