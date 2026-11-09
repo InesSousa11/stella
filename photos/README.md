@@ -1,6 +1,6 @@
 # Outfit photos
 
-Stella shows a photo of the outfit when one exists for the exact set of pieces in a look.
+Dresmi shows a photo of the outfit when one exists for the exact set of pieces in a look.
 
 Add photos to this folder and list them in `index.json`, one entry per look:
 
