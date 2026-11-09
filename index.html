@@ -1411,7 +1411,7 @@ try{wxui()}catch(e){}
 const W={sunny:['18 km/h','64%','10%'],rainy:['24 km/h','86%','85%'],night:['9 km/h','72%','5%']};
 const IC=['<svg viewBox="0 0 24 24"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/></svg>','<svg viewBox="0 0 24 24"><path d="M8 3c2.5 3.2 4 5.4 4 7.6a4 4 0 0 1-8 0C4 8.4 5.5 6.2 8 3zM17 10c1.8 2.3 3 4 3 5.6a3 3 0 0 1-6 0c0-1.6 1.2-3.3 3-5.6z"/></svg>','<svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 18 0H3zM12 12v6a2 2 0 0 0 4 0"/></svg>'];
 function info(){let e=document.getElementById('info');if(!e){e=document.createElement('div');e.id='info';document.body.appendChild(e)}
-const t=document.getElementById('t').textContent;const m=(document.getElementById('ti').title||'').match(/H\s*(-?\d+)°.*?L\s*(-?\d+)°/)||[0,'–','–'];const w=W[S.scene];
+const t=document.getElementById('t').textContent;const m=(document.getElementById('ti').title||'').match(/H\s*(-?\d+)°.*?L\s*(-?\d+)°/)||[0,'–','–'];const w=W[S.scene]||W.rainy;
 e.style.display=S.view==='daily'?'block':'none';
 e.innerHTML=`<div class="r1"><div class="big">${t}</div><div class="hl"><b>${m[1]}°</b><i>${m[2]}°</i></div></div><div class="r2">${[0,1,2].map(i=>`<div class="c">${IC[i]}<span>${w[i]}</span></div>`).join('')}</div>`}
 const _r8=render;render=function(){_r8();info()};info();
@@ -1471,8 +1471,9 @@ render();
 
 (function(){
 const PBASE={sunny:[0,0,0,5,5,5,10,10],rainy:[35,50,70,85,60,90,70,40],night:[5,5,5,5,10,10,5,5]};
-function PRECIP(o){const b=PBASE[S.scene];return b.map((p,i)=>Math.max(0,Math.min(100,Math.round(p+Math.sin(o*2.1+i*1.1)*(S.scene==='rainy'?12:8)+(S.scene==='sunny'?4:0)))))}
-function tempsFor(o){if(o<-7||o>7)return null;const b=WT[S.scene],sh=Math.round(Math.sin(o*1.7)*3);return b.map((t,i)=>t+sh+Math.round(Math.sin(o*2.3+i*1.3)*1.2))}
+window.PBASE=PBASE;
+function PRECIP(o){const b=PBASE[S.wx||S.scene];return b.map((p,i)=>Math.max(0,Math.min(100,Math.round(p+Math.sin(o*2.1+i*1.1)*(/rain|snow|hail/.test(S.wx||S.scene)?12:8)+((S.wx||S.scene)==='sunny'?4:0)))))}
+function tempsFor(o){if(o<-7||o>7)return null;const b=WT[S.wx||S.scene],sh=Math.round(Math.sin(o*1.7)*3);return b.map((t,i)=>t+sh+Math.round(Math.sin(o*2.3+i*1.3)*1.2))}
 const sp=(X,Y)=>{const m=X.length;let d=`M${X[0]} ${Y[0]}`;for(let i=0;i<m-1;i++){const p0=i?i-1:0,p3=i+2<m?i+2:m-1,k=.18;d+=` C${X[i]+(X[i+1]-X[p0])*k} ${Y[i]+(Y[i+1]-Y[p0])*k} ${X[i+1]-(X[p3]-X[i])*k} ${Y[i+1]-(Y[p3]-Y[i])*k} ${X[i+1]} ${Y[i+1]}`}return d};
 let CW=390;
 function curve(){const e=document.getElementById('info');if(!e)return;
@@ -1503,4 +1504,40 @@ Vw.addEventListener('pointermove',e=>{if(S.view==='daily'&&lock)cv(dx,false)});
 Vw.addEventListener('pointerup',()=>{if(lock&&S.view==='daily'&&!committed)cv(0,true);committed=false});
 Vw.addEventListener('pointercancel',()=>{if(S.view==='daily')cv(0,true);committed=false});
 const _r=render;render=function(){_r();curve()};addEventListener('resize',curve);render()})();
+
+(function(){
+// ===== 10 weather blob designs (light pastel) =====
+const NAMES={sunny:'Sunny',night:'Clear night',cloudy:'Cloudy',mostly:'Mostly cloudy',hazy:'Hazy',rainy:'Rainy',heavyrain:'Heavy rain',snow:'Snow',heavysnow:'Heavy snow',hail:'Hail'};
+const ORDER=['sunny','night','cloudy','mostly','hazy','rainy','heavyrain','snow','heavysnow','hail'];
+const CORE={sunny:'sunny',night:'night',cloudy:'sunny',mostly:'sunny',hazy:'sunny',rainy:'rainy',heavyrain:'rainy',snow:'rainy',heavysnow:'rainy',hail:'rainy'};
+window.WX_ORDER=ORDER;window.WX_NAMES=NAMES;
+Object.assign(WT,{cloudy:[15,14,14,16,18,18,16,15],mostly:[16,15,15,17,19,19,17,16],hazy:[20,19,19,22,25,25,22,20],heavyrain:[14,14,14,15,16,16,15,14],snow:[2,1,0,1,3,3,2,1],heavysnow:[-1,-2,-2,-1,1,1,0,-1],hail:[4,3,3,4,6,6,5,4]});
+Object.assign(PBASE,{cloudy:[5,5,10,10,15,15,10,5],mostly:[10,15,20,25,25,20,15,10],hazy:[0,0,0,5,5,5,0,0],heavyrain:[70,80,90,95,85,95,90,75],snow:[40,50,60,70,60,55,50,45],heavysnow:[75,85,90,95,90,85,90,80],hail:[30,40,55,70,60,50,45,35]});
+const B='M0.30 0.10 C0.42 0.00 0.62 -0.02 0.78 0.07 C0.94 0.16 1.03 0.36 0.98 0.55 C0.93 0.74 0.78 0.86 0.62 0.94 C0.48 1.00 0.28 0.99 0.15 0.88 C0.02 0.77 -0.02 0.58 0.03 0.42 C0.07 0.28 0.18 0.18 0.30 0.10Z';
+const hd='<svg viewBox="0 0 390 330" preserveAspectRatio="xMidYMin meet" xmlns="http://www.w3.org/2000/svg">';
+const gr=(id,a,b)=>`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>`;
+const blob=f=>`<g transform="translate(34 24) scale(322 290)"><path d="${B}" fill="${f}"/></g>`;
+const clip=id=>`<clipPath id="${id}"><path d="${B}" transform="translate(34 24) scale(322 290)"/></clipPath>`;
+const dash=c=>`<path d="M14 262 C20 170 70 96 150 70 S300 40 372 112" fill="none" stroke="${c}" stroke-width="1.6" stroke-dasharray="4 5" stroke-linecap="round"/>`;
+const rnd=(i,k)=>{const v=Math.sin(i*12.9898+k*78.233)*43758.5453;return v-Math.floor(v)};
+const cl=(x,y,k,f,sh)=>`<g transform="translate(${x} ${y}) scale(${k})"><path d="M0 40 Q-6 24 12 22 Q14 2 36 7 Q50 -7 68 9 Q90 7 90 29 Q90 40 76 40Z" fill="${sh}" transform="translate(0 7)" opacity=".5"/><path d="M0 40 Q-6 24 12 22 Q14 2 36 7 Q50 -7 68 9 Q90 7 90 29 Q90 40 76 40Z" fill="${f}"/></g>`;
+const bank=(f,sh,y=0)=>`<g transform="translate(0 ${y})"><path d="M150 84 C146 52 182 40 206 54 C216 22 266 18 286 46 C306 30 348 40 350 72 C380 74 386 110 356 116 L170 116 C150 116 140 100 150 84Z" fill="${sh}" transform="translate(0 8)" opacity=".55"/><path d="M150 84 C146 52 182 40 206 54 C216 22 266 18 286 46 C306 30 348 40 350 72 C380 74 386 110 356 116 L170 116 C150 116 140 100 150 84Z" fill="${f}"/></g>`;
+const sp=(x,y,r,f)=>`<path d="M${x} ${y-r}Q${x} ${y} ${x+r} ${y}Q${x} ${y} ${x} ${y+r}Q${x} ${y} ${x-r} ${y}Q${x} ${y} ${x} ${y-r}Z" fill="${f}"/>`;
+const ring=(x,y,r,c)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="${c}" stroke-width="1.6"/>`;
+const hex=(x,y,r,f,o)=>`<path d="${[0,1,2,3,4,5].map(i=>{const a=Math.PI/3*i+Math.PI/6;return (i?'L':'M')+(x+r*Math.cos(a)).toFixed(1)+' '+(y+r*Math.sin(a)).toFixed(1)}).join('')}Z" fill="${f}" opacity="${o}"/>`;
+const streaks=(n,c,len,sw,o)=>Array.from({length:n},(_,i)=>{const x=40+rnd(i,1)*320,y=30+rnd(i,2)*250;return `<path d="M${x.toFixed(0)} ${y.toFixed(0)} l${(-len*.38).toFixed(1)} ${len}" stroke="${c}" stroke-width="${sw}" stroke-linecap="round" opacity="${o}"/>`}).join('');
+const flakes=(n,big,o)=>Array.from({length:n},(_,i)=>{const x=46+rnd(i,3)*300,y=36+rnd(i,4)*260,r=1.6+rnd(i,5)*(big?6:3.4);return `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${r.toFixed(1)}" fill="#fff" opacity="${(o*(.55+rnd(i,6)*.45)).toFixed(2)}"/>`}).join('');
+const A2={
+cloudy:hd+`<defs>${gr('ca','#E8F0FA','#CEDEEF')}</defs>${dash('#8FAAD0')}${blob('url(#ca)')}${bank('#fff','#B6C9E6')}${cl(14,150,.95,'#fff','#B6C9E6')}${cl(262,206,.7,'#fff','#B6C9E6')}${cl(120,258,.55,'#F6FAFF','#B6C9E6')}${ring(40,70,5,'#8FAAD0')}${ring(358,214,4,'#8FAAD0')}${sp(72,34,7,'#9DB6DB')}${sp(352,284,6,'#9DB6DB')}</svg>`,
+mostly:hd+`<defs>${gr('ma','#E0E8F4','#C7D5E9')}</defs>${dash('#8FA6CC')}${blob('url(#ma)')}<circle cx="304" cy="70" r="46" fill="#FFF1C4" opacity=".7"/><circle cx="304" cy="70" r="32" fill="#FFE08E"/>${bank('#fff','#B3C4E2',10)}${cl(10,132,1,'#fff','#B3C4E2')}${cl(270,212,.66,'#F8FBFF','#B3C4E2')}${cl(60,262,.5,'#fff','#B3C4E2')}${ring(40,64,5,'#8FA6CC')}${ring(358,214,4,'#8FA6CC')}${sp(86,30,7,'#F5C86A')}${sp(350,284,6,'#9DB1D6')}</svg>`,
+hazy:hd+`<defs>${gr('ha','#FFEED8','#F8D5B0')}${clip('hzc')}</defs>${dash('#E7A670')}${blob('url(#ha)')}<circle cx="318" cy="74" r="56" fill="#FFF3D6" opacity=".55"/><circle cx="318" cy="74" r="34" fill="#FFE3B0"/><g clip-path="url(#hzc)"><path d="M0 170 C70 140 130 200 210 168 S330 150 390 176 L390 330 L0 330Z" fill="#fff" opacity=".3"/><path d="M0 214 C80 184 140 244 220 210 S340 196 390 220 L390 330 L0 330Z" fill="#fff" opacity=".28"/><path d="M0 258 C90 232 150 284 230 254 S340 244 390 262 L390 330 L0 330Z" fill="#fff" opacity=".26"/></g>${ring(40,72,5,'#E7A670')}${sp(76,36,7,'#F3B77E')}${sp(350,284,6,'#F3B77E')}${ring(358,210,4,'#E7A670')}</svg>`,
+heavyrain:hd+`<defs>${gr('ra','#DCDFF4','#B8C0E5')}</defs>${dash('#8794D2')}${blob('url(#ra)')}${streaks(44,'#7F8DCB',30,2,.6)}${bank('#C9CEEA','#98A3D6',-6)}${cl(8,112,.9,'#CFD3EE','#98A3D6')}${cl(262,196,.62,'#CFD3EE','#98A3D6')}${ring(40,70,5,'#8794D2')}${sp(78,30,7,'#98A3D6')}${sp(350,284,6,'#98A3D6')}</svg>`,
+snow:hd+`<defs>${gr('sa','#E5F5FC','#C9E8F6')}</defs>${dash('#82BCD9')}${blob('url(#sa)')}${flakes(34,false,.95)}${cl(250,24,.95,'#fff','#A9D3E8')}${cl(12,126,.78,'#fff','#A9D3E8')}${ring(40,64,5,'#82BCD9')}${ring(358,214,4,'#82BCD9')}${sp(80,30,7,'#9CCBE3')}${sp(350,284,6,'#9CCBE3')}</svg>`,
+heavysnow:hd+`<defs>${gr('ha2','#D8E9F9','#BAD5F1')}</defs>${dash('#86A9D8')}${blob('url(#ha2)')}${flakes(70,true,.95)}${Array.from({length:7},(_,i)=>`<circle cx="${60+rnd(i,9)*270}" cy="${50+rnd(i,8)*230}" r="${9+rnd(i,7)*8}" fill="#fff" opacity=".25"/>`).join('')}${bank('#EAF2FC','#A9C4E8',-8)}${cl(10,130,.8,'#EAF2FC','#A9C4E8')}${ring(40,70,5,'#86A9D8')}${sp(350,284,6,'#9DB9E3')}</svg>`,
+hail:hd+`<defs>${gr('ia','#DCE1F2','#BFC9E5')}</defs>${dash('#8F9DCF')}${blob('url(#ia)')}${Array.from({length:30},(_,i)=>{const x=50+rnd(i,3)*300,y=50+rnd(i,4)*240,r=3+rnd(i,5)*6;return i%3?hex(x,y,r,'#fff',.9):`<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(r*.5).toFixed(1)}" fill="#fff" opacity=".8"/>`}).join('')}${bank('#CBD2EA','#9AA7D6',-6)}${cl(8,118,.85,'#D2D8EE','#9AA7D6')}${ring(40,70,5,'#8F9DCF')}${sp(78,30,7,'#9AA7D6')}${sp(350,284,6,'#9AA7D6')}</svg>`};
+const wx=()=>S.wx||S.scene;
+const _p=render;render=function(){_p();try{const a=A2[wx()];if(a){const d=document.querySelector('#bgroom .bb');if(d)d.innerHTML=a}}catch(e){}};
+// demo: tap the figure to preview the next weather type
+document.addEventListener('click',e=>{if(S.view!=='daily')return;if(!e.target.closest('.photo'))return;const i=(ORDER.indexOf(wx())+1)%ORDER.length;S.wx=ORDER[i];S.scene=CORE[S.wx];render();try{toast('Weather preview: '+NAMES[S.wx])}catch(_){}});
+render()})();
 </script></body></html>
