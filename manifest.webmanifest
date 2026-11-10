@@ -1,1 +1,15 @@
-{"name":"Stella","short_name":"Stella","start_url":"./index.html","display":"standalone","background_color":"#FFF6EA","theme_color":"#6F86B5","icons":[{"src":"assets/icon-192.png","sizes":"192x192","type":"image/png"},{"src":"assets/icon-512.png","sizes":"512x512","type":"image/png"}]}
+{
+  "name": "Dresmi",
+  "short_name": "Dresmi",
+  "description": "Your outfit for the day, planned for the weather and your plans.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F6F1EA",
+  "theme_color": "#F6F1EA",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

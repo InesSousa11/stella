@@ -4,6 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="icons/splash-402x874.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="icons/splash-393x852.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="icons/splash-430x932.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="icons/splash-440x956.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="icons/splash-390x844.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="icons/splash-428x926.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="icons/splash-375x812.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash-414x896.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash-375x667.png">
 <style>
 /* standalone hosting: the app owns the whole screen; its height is measured in script (--appH) */
 html,body{margin:0;height:var(--appH,100dvh);min-height:100%;overflow:hidden;background:#F6F1EA}
@@ -194,6 +206,20 @@ nav.tabs .on i{background:var(--clay)}
 .pairs button{width:64px;height:64px;border-radius:16px;background:var(--oat);display:grid;place-items:center}
 .linkbtn{font-size:13px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;align-self:center;padding:8px}
 .linkbtn.warn{color:var(--clay-ink)}
+/* week strip */
+.week{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:-4px -20px 0;padding:2px 20px;scroll-snap-type:x proximity}
+.week::-webkit-scrollbar{display:none}
+.wday{flex:0 0 52px;height:74px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;scroll-snap-align:start;transition:background .25s var(--ease),color .25s var(--ease)}
+.wday small{font-size:11px;color:var(--muted);letter-spacing:.04em}
+.wday b{font-size:18px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.1}
+.wday span{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.wday i{width:4px;height:4px;border-radius:2px;margin-top:2px}
+.wday i.on{background:var(--clay)}
+.wday.on{background:var(--ink);color:var(--linen)}
+.wday.on small,.wday.on span{color:#D9CFC3}
+.wday.on i.on{background:var(--linen)}
+.hero.slide{animation:slideIn .35s var(--ease)}
+@keyframes slideIn{from{opacity:.2;transform:translateX(var(--sx,24px))}}
 /* feel */
 .feel{border-radius:20px;background:var(--card);border:1px solid var(--line);padding:12px 14px;display:flex;flex-direction:column;gap:10px}
 .feel .q{font-family:var(--serif);font-size:19px;font-weight:600;line-height:1.15}
@@ -517,7 +543,7 @@ function openDressing(ds,preset){
 
 /* ---------- screens ---------- */
 function scToday(){
-  const ds=TODAY,w=wx(ds),{ids,planned,L}=lookFor(ds),c=check(ids,w),s=slots(ids);
+  const ds=V.day&&V.day>=TODAY?V.day:TODAY,isT=ds===TODAY,w=wx(ds),{ids,planned,L}=lookFor(ds),c=check(ids,w),s=slots(ids);
   const hr=new Date().getHours(),greet=hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
   const favKey=ids.slice().sort().join(','),isFav=S.favLooks.includes(favKey),worn=L&&L.worn;
   const notes=upcomingNeeds().length,p=photoFor(ids);
@@ -527,24 +553,31 @@ function scToday(){
   const layers=['outer','top','dress','bottom'].filter(k=>s[k]&&vis.includes(s[k].id)).length;
   let chips='';
   if(p)ids.forEach(id=>{const on=vis.includes(id),nv=on?vis.filter(x=>x!==id):vis.concat(id);if(!imageFor(p,nv))return;const it=byId(id);
-    chips+=`<button class="layer ${on?'on':''}" data-layer-t="${id}" aria-pressed="${on}" aria-label="${on?'Take off':'Put on'} the ${esc(it.name)}"><span class="box"></span>${esc(KNAME[it.kind]||it.name)}</button>`});
+    chips+=`<button class="layer ${on?'on':''}" data-layer-t="${id}" data-hk="${ds}" aria-pressed="${on}" aria-label="${on?'Take off':'Put on'} the ${esc(it.name)}"><span class="box"></span>${esc(KNAME[it.kind]||it.name)}</button>`});
   const wpill=`<span class="pill topL">${ic(wIcon(w))}<span>${w.max}° · ${esc(word(w))}${w.est?' · estimate':''}</span></span>`;
   return`
   <div class="top"><button class="ib" data-act="settings" aria-label="Your profile">${USER||avatarSrc()?avatarHTML(''):ic('menu')}</button><div class="wordmark">DRESMI</div><button class="ib" data-act="notices" aria-label="Upcoming plans">${ic('bell')}${notes?'<span class="dot"></span>':''}</button></div>
-  <div><div class="eyebrow">${esc(longD(ds))}</div><h1 class="h-xl" style="margin-top:2px;font-size:34px">${greet}, <i class="it">${esc(S.settings.name)}</i></h1></div>
-  ${(()=>{const fd=feelDue();if(!fd)return'';const FL=S.looks[fd],ft=titleOf(FL.items);return`<div class="feel"><span class="q">How did ${fd===TODAY?'today’s':'yesterday’s'} look feel?<small>${esc(ft.join(' '))}</small></span>
+  <div><div class="eyebrow">${esc(longD(ds))}</div><h1 class="h-xl" style="margin-top:2px;font-size:34px">${isT?greet+', <i class="it">'+esc(S.settings.name)+'</i>':esc(ds===add(TODAY,1)?'Tomorrow':DOW[parse(ds).getDay()])+(L&&L.title?', <i class="it">'+esc(L.title.toLowerCase())+'</i>':'')}</h1></div>
+  ${weekStrip(ds)}
+  ${(()=>{const fd=isT&&feelDue();if(!fd)return'';const FL=S.looks[fd],ft=titleOf(FL.items);return`<div class="feel"><span class="q">How did ${fd===TODAY?'today’s':'yesterday’s'} look feel?<small>${esc(ft.join(' '))}</small></span>
     <div class="opts"><button data-feel="cold" data-date="${fd}">Too cold</button><button data-feel="ok" data-date="${fd}">Just right</button><button data-feel="warm" data-date="${fd}">Too warm</button></div></div>`})()}
-  <div class="hero ${p?'photo':''}">
-    <button class="cover" data-act="dress-today" aria-label="Open today's look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:flatlay(ids)}</button>
+  <div class="hero ${p?'photo':''}" data-swipe="1">
+    <button class="cover" data-act="dress-day" data-date="${ds}" aria-label="Open this look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:flatlay(ids)}</button>
     ${wpill}
     <button class="heart topR ${isFav?'on':''}" data-act="fav-look" aria-label="${isFav?'Remove from saved looks':'Save this look'}" aria-pressed="${isFav}">${ic('heart')}</button>
     ${chips?`<div class="layers" role="group" aria-label="Layers">${chips}</div>`:p?'':'<span class="pill">Photo of this look coming soon</span>'}
   </div>
   <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px">
     <div style="min-width:0"><h2 class="h-m" style="font-size:24px">${esc(t[0])} ${t[1]?'<i class="it">'+esc(t[1])+'</i>':''}</h2>
-    <div class="note" style="margin-top:2px">${planned?(L.auto?'Planned by Dresmi':'Planned'):'Suggested for today'}${L&&L.title?' · '+esc(L.title):''} · ${c.ok?(w.rain>=50?'rain-ready':'weather match'):esc(c.t.replace('\n',' ').toLowerCase())} · ${layers} layer${layers===1?'':'s'}</div></div></div>
-  <div class="row">${worn?`<button class="btn done" data-act="unwear">${ic('check')}Worn today · undo</button>`:`<button class="btn" data-act="wear">Wear this look</button>`}
+    <div class="note" style="margin-top:2px">${planned?(L.auto?'Planned by Dresmi':'Planned'):isT?'Suggested for today':'Suggestion'}${L&&L.title?' · '+esc(L.title):''} · ${c.ok?(w.rain>=50?'rain-ready':'weather match'):esc(c.t.replace('\n',' ').toLowerCase())} · ${layers} layer${layers===1?'':'s'}</div></div></div>
+  <div class="row">${isT?(worn?`<button class="btn done" data-act="unwear">${ic('check')}Worn today · undo</button>`:`<button class="btn" data-act="wear">Wear this look</button>`)
+      :planned&&!L.auto?`<button class="btn ghost" data-act="dress-day" data-date="${ds}">Change this look</button>`:`<button class="btn" data-act="keep-day" data-date="${ds}">Keep this look</button>`}
     <button class="sq" data-act="shuffle" aria-label="Suggest another look">${ic('swap')}</button></div>`;
+}
+function weekStrip(sel){
+  let h='';for(let i=0;i<14;i++){const d=add(TODAY,i),w=wx(d),L=S.looks[d],dd=parse(d),has=L&&((L.items&&L.items.length&&!L.auto)||L.title);
+    h+=`<button class="wday ${d===sel?'on':''}" data-dayv="${d}" aria-pressed="${d===sel}" aria-label="${esc(longD(d))}, ${w.max} degrees${L&&L.title?', '+esc(L.title):''}"><small>${i===0?'Today':DOW[dd.getDay()].slice(0,3)}</small><b>${dd.getDate()}</b><span>${w.max}°</span><i class="${has?'on':''}"></i></button>`}
+  return`<div class="week" role="group" aria-label="Choose a day">${h}</div>`;
 }
 function upcomingNeeds(){const r=[];for(let i=0;i<14;i++){const d=add(TODAY,i),L=S.looks[d];if(L&&L.title&&(!L.items||!L.items.length))r.push(d)}return r}
 
@@ -944,17 +977,18 @@ function render(scrollTop){
 
 /* ---------- actions ---------- */
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-feel],[data-lf],[data-look],[data-favlook],[data-ver],[data-wmode],[data-wish],[data-trysrc],[data-layer-t],[data-go],[data-act],[data-day],[data-filter],[data-cat],[data-piece],[data-fav],[data-layer],[data-pick],[data-sw]');if(!t)return;
+  const t=e.target.closest('[data-dayv],[data-feel],[data-lf],[data-look],[data-favlook],[data-ver],[data-wmode],[data-wish],[data-trysrc],[data-layer-t],[data-go],[data-act],[data-day],[data-filter],[data-cat],[data-piece],[data-fav],[data-layer],[data-pick],[data-sw]');if(!t)return;
   const d=t.dataset;
   if(d.act!=='del-piece')V.confirmDel=false;
   if(d.act!=='reset')V.confirmReset=false;
-  if(d.go){if(d.go==='create')return openDressing(nextOpen());V.stack=[];V.screen=d.go;return render(true)}
+  if(d.go){if(d.go==='create')return openDressing(nextOpen());if(d.go==='today'&&V.screen==='today'&&V.day&&V.day!==TODAY){V.day=TODAY;return render(true)}V.stack=[];V.screen=d.go;return render(true)}
   if(d.day){V.plan.sel=d.day;return render()}
   if(d.filter){V.plan.filter=d.filter;return render()}
   if(d.cat){V.ward.cat=d.cat;return render()}
   if(d.piece){closeSheet();V.piece=d.piece;return go('piece')}
   if(d.fav){const i=byId(d.fav);i.fav=!i.fav;save();toast(i.fav?'Added to favourites':'Removed from favourites');return render()}
   if(d.layer){V.dr.tab=d.layer;return render()}
+  if(d.dayv){return setDay(d.dayv)}
   if(d.feel){const L=S.looks[d.date],w=wx(d.date);L.feel=d.feel;L.feltAt={max:w.max,min:w.min};
     (L.items||[]).map(byId).filter(i=>i&&['outer','top','dress'].includes(i.cat)).forEach(i=>{if(d.feel==='warm')i.feelWarm=i.feelWarm==null?w.max:Math.min(i.feelWarm,w.max);if(d.feel==='cold')i.feelCold=i.feelCold==null?w.max:Math.max(i.feelCold,w.max)});
     save();toast(d.feel==='ok'?'Noted. Dresmi will keep dressing you like this':d.feel==='cold'?'Noted. Warmer looks from now on':'Noted. Lighter looks from now on');return render()}
@@ -986,10 +1020,11 @@ document.addEventListener('click',e=>{
     case'dress-today':return openDressing(TODAY);
     case'dress-day':closeSheet();return openDressing(d.date);
     case'open-day':return openDressing(V.plan.sel<TODAY?TODAY:V.plan.sel);
-    case'fav-look':{const k=lookFor(TODAY).ids.slice().sort().join(',');const x=S.favLooks.indexOf(k);x>=0?S.favLooks.splice(x,1):S.favLooks.push(k);save();toast(x>=0?'Removed from saved looks':'Look saved');return render()}
+    case'fav-look':{const k=lookFor(V.day||TODAY).ids.slice().sort().join(',');const x=S.favLooks.indexOf(k);x>=0?S.favLooks.splice(x,1):S.favLooks.push(k);save();toast(x>=0?'Removed from saved looks':'Look saved');return render()}
     case'wear':{const all=lookFor(TODAY).ids,hid=V.hide[TODAY]||[],ids=all.filter(id=>!hid.includes(id));const L=S.looks[TODAY]=Object.assign(S.looks[TODAY]||{},{items:ids,worn:true});L.type=L.type||'work';const washed=[];ids.forEach(id=>{const i=byId(id);i.worn++;i.prevLast=i.last;i.last=TODAY;i.prevSince=i.since||0;i.prevLaundry=!!i.laundry;i.since=(i.since||0)+1;const n=washEvery(i);if(n&&i.since>=n){i.laundry=true;washed.push(i.short)}});save();toast(washed.length?'Logged · '+washed.join(', ')+(washed.length>1?' go':' goes')+' to the laundry':'Logged as worn today');return render()}
     case'unwear':{const L=S.looks[TODAY];if(L){L.worn=false;L.items.forEach(id=>{const i=byId(id);if(i){i.worn=Math.max(0,i.worn-1);i.last=i.prevLast||null;i.since=i.prevSince||0;i.laundry=!!i.prevLaundry}})}save();return render()}
-    case'shuffle':{const L=S.looks[TODAY];if(L&&L.worn)return toast('Undo “worn” first to change today’s look');if(L&&L.items&&L.items.length){L.items=[]}S.shuffle[TODAY]=(S.shuffle[TODAY]||0)+1;save();return render()}
+    case'shuffle':{const ds=V.day||TODAY,L=S.looks[ds];if(L&&L.worn)return toast('Undo “worn” first to change today’s look');if(L&&L.items&&L.items.length){L.items=[]}S.shuffle[ds]=(S.shuffle[ds]||0)+1;save();return render()}
+    case'keep-day':{const ds=d.date,L=S.looks[ds];S.looks[ds]=Object.assign(L||{type:dayType(ds)},{items:lookFor(ds).ids.slice(),auto:false});save();toast('Planned for '+rel(ds).toLowerCase());return render()}
     case'month':{const[y,m]=V.plan.ym.split('-').map(Number);const n=new Date(y,m-1+(+d.d),1);V.plan.ym=n.getFullYear()+'-'+pad(n.getMonth()+1);return render()}
     case'plan-range':{let to;if(d.n==='month'){const[y,m]=V.plan.ym.split('-').map(Number);to=y+'-'+pad(m)+'-'+pad(new Date(y,m,0).getDate())}else to=add(TODAY,6);const from=V.plan.ym>TODAY.slice(0,7)&&d.n==='month'?V.plan.ym+'-01':TODAY;if(to<TODAY)return toast('That month is over');const n=planRange(from,to);toast(n?'Planned '+n+' day'+(n===1?'':'s'):'Every day already has a look');return render()}
     case'add-event':return sheetEvent();
@@ -1055,6 +1090,14 @@ document.addEventListener('change',async e=>{
     if(kind==='try'){const w=wishById(V.wishId);if(!w)return;const k='t'+w.id;await imgPut(k,await readImage(f,1100));w.tryImg=k;save();toast('Try-on image added');return render()}
   }catch(err){toast('That file could not be read. Try another one.')}
 });
+function setDay(d,dir){const prev=V.day||TODAY;if(d<TODAY||d>add(TODAY,13))return;V.day=d;render();
+  const h=$('.hero');if(h){h.style.setProperty('--sx',(dir||(d>prev?1:-1))*28+'px');h.classList.remove('slide');void h.offsetWidth;h.classList.add('slide')}
+  const b=$('.wday.on');if(b)b.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'})}
+let SW0=null;
+document.addEventListener('touchstart',e=>{const h=e.target.closest('[data-swipe]');SW0=h&&V.screen==='today'?{x:e.touches[0].clientX,y:e.touches[0].clientY}:null},{passive:true});
+document.addEventListener('touchend',e=>{if(!SW0)return;const t=e.changedTouches[0],dx=t.clientX-SW0.x,dy=t.clientY-SW0.y;SW0=null;
+  if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5){V.swiped=Date.now();setDay(add(V.day||TODAY,dx<0?1:-1),dx<0?1:-1)}},{passive:true});
+document.addEventListener('click',e=>{if(V.swiped&&Date.now()-V.swiped<400&&e.target.closest('[data-swipe]')){e.stopPropagation();e.preventDefault()}},true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#layer').innerHTML)closeSheet()});
 /* fit the app to the real screen: iOS home-screen apps can report a viewport shorter than the screen */
 let FIT={txt:'measuring'};
