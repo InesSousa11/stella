@@ -262,6 +262,7 @@ nav.tabs .on i{background:var(--clay)}
 </div>
 <div id="layer"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.1/dist/umd/supabase.js"></script>
 <script>
 (function(){
 'use strict';
@@ -374,7 +375,7 @@ let S;
 try{S=JSON.parse(localStorage.getItem('stella-c'))}catch(e){S=null}
 if(!S||S.v!==2)S=seed();
 S.wish=S.wish||[];S.profile=S.profile||{};
-function save(){try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}}
+function save(){S.updatedAt=Date.now();try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}if(typeof schedulePush==='function')schedulePush()}
 const byId=id=>S.items.find(i=>i.id===id);
 
 /* ---------- weather ---------- */
@@ -722,9 +723,46 @@ function scTry(){
      <button class="linkbtn" data-act="wish-remove">Remove from wishlist</button>`}`;
 }
 
+/* ---------- account & sync (Supabase) ---------- */
+const SB_URL='https://zduqrhqvxzahqfzhtyhu.supabase.co',SB_KEY='sb_publishable_q5VzqhT99DKXgknZrA9VZQ_m1a7rJws';
+let sb=null,USER=null,SYNC={state:'idle',at:null,err:''},pushT=null;
+function refreshSheet(){if(V.sheetOpen==='settings'){const sc=$('.sheet')&&$('.sheet').scrollTop;sheetSettings();if($('.sheet'))$('.sheet').scrollTop=sc||0}}
+function sbInit(){try{if(!window.supabase||!window.supabase.createClient)return;
+  sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  sb.auth.onAuthStateChange((ev,session)=>{const was=USER&&USER.id;USER=session&&session.user||null;if(USER&&USER.id!==was)setTimeout(pull,0);if(!USER)SYNC={state:'idle'};refreshSheet()});
+}catch(e){sb=null}}
+const refKeys=()=>[...S.items.map(i=>i.img),...S.wish.map(w=>w.prod),...S.wish.map(w=>w.tryImg)].filter(Boolean);
+function schedulePush(){if(!sb||!USER)return;clearTimeout(pushT);pushT=setTimeout(push,1500)}
+async function uploadImgs(){S.cloud=S.cloud||[];for(const k of refKeys()){if(S.cloud.includes(k)||!IMG[k])continue;const blob=await (await fetch(IMG[k])).blob();const{error}=await sb.storage.from('photos').upload(USER.id+'/'+k,blob,{upsert:true,contentType:blob.type});if(error)throw error;S.cloud.push(k)}}
+async function downloadImgs(){for(const k of refKeys()){if(IMG[k])continue;try{const{data,error}=await sb.storage.from('photos').download(USER.id+'/'+k);if(error||!data)continue;const url=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(data)});await imgPut(k,url)}catch(e){}}}
+async function push(){if(!sb||!USER)return;SYNC={state:'syncing'};refreshSheet();
+  try{await uploadImgs();S.syncedUser=USER.id;const{error}=await sb.from('wardrobes').upsert({user_id:USER.id,data:S,updated_at:new Date(S.updatedAt||Date.now()).toISOString()});if(error)throw error;
+    try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}SYNC={state:'ok',at:Date.now()}}
+  catch(e){SYNC={state:'err',err:e.message||String(e)}}refreshSheet()}
+async function pull(){if(!sb||!USER)return;SYNC={state:'syncing'};refreshSheet();
+  try{const{data,error}=await sb.from('wardrobes').select('data,updated_at').eq('user_id',USER.id).maybeSingle();if(error)throw error;
+    const remoteT=data?new Date(data.updated_at).getTime():0,firstHere=S.syncedUser!==USER.id;
+    if(data&&data.data&&(firstHere||remoteT>(S.updatedAt||0))){S=data.data;S.wish=S.wish||[];S.profile=S.profile||{};S.syncedUser=USER.id;try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}
+      await downloadImgs();SYNC={state:'ok',at:Date.now()};render(true);if(firstHere)toast('Your wardrobe is loaded from your account')}
+    else{await push();return}
+  }catch(e){SYNC={state:'err',err:e.message||String(e)}}refreshSheet()}
+function accountHTML(){
+  if(!sb)return`<div class="sec"><h3>Account</h3><p class="note">Accounts work in the Dresmi app at your web address. This preview can’t reach the account service.</p></div>`;
+  if(!USER)return`<div class="sec"><h3>Account</h3>
+    <p class="note">Sign in to keep your wardrobe, looks and photos in sync between your phone and computer.</p>
+    <div class="field"><label for="a-email">Email</label><input id="a-email" type="email" autocomplete="email" inputmode="email"></div>
+    <div class="field"><label for="a-pass">Password</label><input id="a-pass" type="password" autocomplete="current-password" minlength="8"></div>
+    <p class="note" id="a-msg" role="status" hidden></p>
+    <div class="two"><button class="btn" style="height:48px;font-size:15px" data-act="acct-signin">Sign in</button><button class="btn ghost" style="height:48px;font-size:15px" data-act="acct-signup">Create account</button></div></div>`;
+  const st=SYNC.state==='syncing'?'Syncing…':SYNC.state==='err'?'Sync failed: '+esc(SYNC.err):SYNC.at?'Synced at '+new Date(SYNC.at).toTimeString().slice(0,5):'Not synced yet';
+  return`<div class="sec"><h3>Account</h3>
+    <p class="note">Signed in as <b style="font-weight:500;color:var(--ink)">${esc(USER.email)}</b><br>${st}</p>
+    <div class="two"><button class="btn ghost" style="height:48px;font-size:15px" data-act="acct-sync">Sync now</button><button class="btn ghost" style="height:48px;font-size:15px" data-act="acct-signout">Sign out</button></div></div>`;
+}
+
 /* ---------- sheets ---------- */
-function sheet(html,onMount){const L=$('#layer');L.innerHTML=`<div class="scrim" data-act="close-sheet"><div class="sheet" role="dialog" aria-modal="true"><span class="grab"></span>${html}</div></div>`;onMount&&onMount(L)}
-function closeSheet(){$('#layer').innerHTML=''}
+function sheet(html,onMount){V.sheetOpen=html.includes('Your <i class="it">profile')?'settings':'other';const L=$('#layer');L.innerHTML=`<div class="scrim" data-act="close-sheet"><div class="sheet" role="dialog" aria-modal="true"><span class="grab"></span>${html}</div></div>`;onMount&&onMount(L)}
+function closeSheet(){V.sheetOpen=null;$('#layer').innerHTML=''}
 function sheetSettings(){
   const P=S.profile,cal=P.calImported;
   sheet(`<h2 class="h-l">Your <i class="it">profile</i></h2>
@@ -736,9 +774,7 @@ function sheetSettings(){
       <p class="note">Dresmi reads your events so dinners, trips and meetings get the right look. Export your calendar as an .ics file (Google Calendar: Settings › Import &amp; export; Apple Calendar: File › Export) and add it here.</p>
       <label class="btn ghost" style="height:48px;font-size:15px">${ic('plus')}Add calendar file (.ics)<input type="file" accept=".ics,text/calendar" data-file="ics" hidden></label>
       ${cal?`<p class="note">Last added ${esc(cal.when)} · ${cal.n} plan${cal.n===1?'':'s'} for the next 3 months.</p>`:''}</div>
-    <div class="sec"><h3>Account</h3>
-      <p class="note">Not signed in. Your wardrobe, looks and photos are saved on this device. With a Dresmi account they will sync between your phone and computer, and your Google, Apple or Outlook calendar will stay connected on its own.</p>
-      <button class="btn ghost" style="height:48px;font-size:15px;opacity:.55" aria-disabled="true" data-act="account-soon">Sign in · coming soon</button></div>
+    ${accountHTML()}
     <p class="note" style="font-size:11px">Screen fit: ${esc(FIT.txt)}</p>
     <button class="linkbtn ${V.confirmReset?'warn':''}" data-act="reset">${V.confirmReset?'Tap again to erase everything and restore the sample wardrobe':'Restore sample wardrobe'}</button>`);
 }
@@ -889,7 +925,17 @@ document.addEventListener('click',e=>{
     case'look-plan':{const G=allLooks().find(x=>x.base===V.look.base);return sheetPlanLook((G.variants.find(v=>v.key===V.look.key)||G.main).ids.slice())}
     case'look-today':{const G=allLooks().find(x=>x.base===V.look.base),ids=(G.variants.find(v=>v.key===V.look.key)||G.main).ids.slice(),L=S.looks[TODAY];if(L&&L.worn)return toast('Today’s look is already logged as worn');S.looks[TODAY]=Object.assign(L||{type:dayType(TODAY)},{items:ids,auto:false});save();toast('This is your look for today');V.stack=[];V.screen='today';return render(true)}
     case'plan-look-save':{const dt=$('#pl-date').value;if(!dt||dt<TODAY)return toast('Pick today or a later day');S.looks[dt]=Object.assign(S.looks[dt]||{type:dayType(dt)},{items:V.planIds,auto:false});save();closeSheet();toast('Planned for '+rel(dt).toLowerCase());return render()}
-    case'account-soon':return toast('Accounts are coming soon');
+    case'acct-signin':case'acct-signup':{const em=$('#a-email').value.trim(),pw=$('#a-pass').value,msg=$('#a-msg');
+      if(!/^\S+@\S+\.\S+$/.test(em)){msg.textContent='Enter your email address.';msg.hidden=false;return}
+      if(pw.length<8){msg.textContent='Use a password with at least 8 characters.';msg.hidden=false;return}
+      msg.textContent=d.act==='acct-signup'?'Creating your account…':'Signing in…';msg.hidden=false;
+      (async()=>{try{
+        if(d.act==='acct-signup'){const{data,error}=await sb.auth.signUp({email:em,password:pw,options:{emailRedirectTo:location.origin+location.pathname}});if(error)throw error;
+          msg.textContent=data.session?'Account created. You are signed in.':'Check your email and tap the confirmation link, then sign in here.'}
+        else{const{error}=await sb.auth.signInWithPassword({email:em,password:pw});if(error)throw error}
+      }catch(err){msg.textContent=/confirm/i.test(err.message)?'Confirm your email first: tap the link in the email we sent.':/invalid/i.test(err.message)?'That email and password don’t match.':err.message}})();return}
+    case'acct-signout':(async()=>{try{await push();await sb.auth.signOut()}catch(e){}toast('Signed out. Your wardrobe stays on this device')})();return;
+    case'acct-sync':pull();return;
     case'save-event':{const ti=$('#e-title').value.trim(),dt=$('#e-date').value;if(!ti){$('#e-err').hidden=false;return $('#e-title').focus()}
       const L=S.looks[dt]=Object.assign(S.looks[dt]||{items:[]},{title:ti,time:$('#e-time').value,type:$('#e-type').value});save();closeSheet();V.plan.sel=dt;V.plan.ym=dt.slice(0,7);toast('Added '+ti+' on '+rel(dt));return render()}
     case'add-piece':return sheetPiece();
@@ -935,6 +981,7 @@ render(true);
 loadWeather();
 loadPhotos();
 imgLoadAll();
+sbInit();
 })();
 </script>
 
