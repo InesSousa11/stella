@@ -232,6 +232,42 @@ nav.tabs .on i{background:var(--clay)}
 .pc span{font-size:13px;line-height:1.25}
 .pc small{font-size:11px;color:var(--muted)}
 .lookmeta{font-size:13px;color:var(--muted);margin-top:-8px}
+/* transitions */
+@keyframes inR{from{opacity:0;transform:translateX(26px)}}
+@keyframes inL{from{opacity:0;transform:translateX(-26px)}}
+@keyframes inF{from{opacity:0}}
+.an-r{animation:inR .32s var(--ease)}.an-l{animation:inL .32s var(--ease)}.an-f{animation:inF .25s var(--ease)}
+.ph.fade{animation:inF .35s var(--ease)}
+#ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translate(-50%,-60px);z-index:30;background:var(--card);border:1px solid var(--line);border-radius:18px;height:36px;padding:0 14px;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);transition:transform .2s var(--ease);pointer-events:none}
+#ptr svg{width:16px;height:16px;fill:none;stroke:var(--clay-ink);stroke-width:1.8;stroke-linecap:round}
+#ptr.spin svg{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* stats */
+.stat{border-radius:22px;background:var(--card);border:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:10px}
+.stat h3{font-size:19px}
+.big{font-family:var(--serif);font-size:44px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.big small{font-family:var(--sans);font-size:14px;font-weight:400;color:var(--muted);margin-left:6px}
+.bar{height:10px;border-radius:5px;background:var(--oat);overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted)}
+.leg span{display:flex;align-items:center;gap:6px}.leg b{width:10px;height:10px;border-radius:5px;display:block;box-shadow:inset 0 0 0 1px rgba(43,36,32,.12)}
+.rank{display:flex;align-items:center;gap:12px;padding:6px 0;text-align:left;width:100%}
+.rank .im{width:44px;height:44px;border-radius:14px;background:var(--oat);display:grid;place-items:center;flex-shrink:0}
+.rank .n{flex:1;min-width:0;font-size:14px}.rank .v{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* welcome */
+.ob{display:flex;flex-direction:column;gap:18px;min-height:100%;padding-top:20px}
+.ob .dots{display:flex;gap:6px;justify-content:center}.ob .dots i{width:6px;height:6px;border-radius:3px;background:var(--edge)}.ob .dots i.on{width:18px;background:var(--clay)}
+.ob .hello{font-family:var(--serif);font-size:44px;font-weight:600;line-height:1.02;text-wrap:balance}
+.ob .end{margin-top:auto;display:flex;flex-direction:column;gap:10px;padding-bottom:8px}
+.ob .btn,.ob .gbtn{flex:none}
+.basics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.basic{border-radius:18px;border:1px solid var(--line);background:var(--card);padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;text-align:center;min-width:0}
+.basic.on{border:1.5px solid var(--clay);background:#FBF1EC}
+.basic .t{height:52px;display:grid;place-items:center}
+.choice{border-radius:20px;border:1px solid var(--line);background:var(--card);padding:16px;text-align:left;display:flex;gap:14px;align-items:center;width:100%}
+.choice.on{border:1.5px solid var(--clay)}
+.choice .thumb svg{width:24px;height:24px;fill:none;stroke:var(--clay-ink);stroke-width:1.5;stroke-linecap:round}
+.choice b{display:block;font-weight:500}
 /* splash */
 #splash{position:fixed;inset:0;z-index:100;background:var(--linen);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:opacity .6s var(--ease)}
 #splash b{font-family:var(--serif);font-weight:600;font-size:26px;letter-spacing:.42em;padding-left:.42em;color:var(--ink)}
@@ -451,7 +487,9 @@ function seed(){
 }
 let S;
 try{S=JSON.parse(localStorage.getItem('stella-c'))}catch(e){S=null}
+const FRESH=!S;
 if(!S||S.v!==2)S=seed();
+if(FRESH)S.onboarded=false;else if(S.onboarded==null)S.onboarded=true;
 S.trips=S.trips||{};
 S.wish=S.wish||[];S.profile=S.profile||{};
 function save(){S.updatedAt=Date.now();try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}if(typeof schedulePush==='function')schedulePush()}
@@ -571,8 +609,8 @@ function stack(ids){
 
 /* ---------- state & routing ---------- */
 let V={hide:{},looksF:null,look:null,wishId:null,trySrc:'link',screen:'today',stack:[],plan:{ym:TODAY.slice(0,7),sel:TODAY,filter:'all'},ward:{cat:'all',q:''},dr:null,piece:null};
-function go(screen,opts){if(screen!==V.screen)V.stack.push(V.screen);V.screen=screen;Object.assign(V,opts||{});render(true)}
-function back(){V.screen=V.stack.pop()||'today';render(true)}
+function go(screen,opts){if(screen!==V.screen)V.stack.push(V.screen);V.screen=screen;Object.assign(V,opts||{});V.anim='r';render(true)}
+function back(){V.screen=V.stack.pop()||'today';V.anim='l';render(true)}
 function toast(t){document.querySelectorAll('.toast').forEach(x=>x.remove());const e=document.createElement('div');e.className='toast';e.setAttribute('role','status');e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2200)}
 function nextOpen(){for(let i=1;i<30;i++){const d=add(TODAY,i);const L=S.looks[d];if(!L||!L.items||!L.items.length)return d}return add(TODAY,1)}
 function openDressing(ds,preset){
@@ -601,6 +639,7 @@ function scToday(){
   <div><div class="daynav"><span class="eyebrow">${esc(longD(ds))}</span>${isT?'':`<button class="backtoday" data-act="to-today">${ic('left')}Back to today</button>`}</div>
     <h1 class="h-xl" style="margin-top:2px;font-size:34px">${isT?greet+', <i class="it">'+esc(S.settings.name)+'</i>':L&&L.title?esc(L.title):esc(dayLine(w))}</h1></div>
   ${weekStrip(ds)}
+  ${S.items.length<4?`<button class="trycard" data-go="wardrobe"><span class="ti">${ic('plus')}</span><span style="flex:1;min-width:0"><b style="font-weight:500;display:block">Add a few more pieces</b><span class="note">With a top, a bottom and shoes Dresmi can start dressing you.</span></span><span class="chev">${ic('right')}</span></button>`:''}
   ${(()=>{const fd=isT&&feelDue();if(!fd)return'';const FL=S.looks[fd],ft=titleOf(FL.items);return`<div class="feel"><span class="q">How did ${fd===TODAY?'today’s':'yesterday’s'} look feel?<small>${esc(ft.join(' '))}</small></span>
     <div class="opts"><button data-feel="cold" data-date="${fd}">Too cold</button><button data-feel="ok" data-date="${fd}">Just right</button><button data-feel="warm" data-date="${fd}">Too warm</button></div></div>`})()}
   <div class="hero ${p?'photo':''}" data-swipe="1">
@@ -734,7 +773,8 @@ function scPiece(){
     <div><span>Fabric · care</span><span>${esc(i.fabric)} · ${esc(i.care)}</span></div>
     ${['shoes','bag'].includes(i.cat)?'':`<div style="align-items:center"><span>To the laundry after</span><span style="display:flex;align-items:center;gap:6px"><button class="chev" style="width:32px;height:32px" data-act="wash-step" data-d="-1" aria-label="Fewer wears">−</button>${washEvery(i)?washEvery(i)+' wear'+(washEvery(i)===1?'':'s')+(i.laundry?'':' · '+(i.since||0)+' so far'):'Never'}<button class="chev" style="width:32px;height:32px" data-act="wash-step" data-d="1" aria-label="More wears">+</button></span></div>`}
     ${i.feelWarm!=null||i.feelCold!=null?`<div><span>You told us</span><span>${[i.feelWarm!=null?'too warm at '+i.feelWarm+'°':'',i.feelCold!=null?'too cold at '+i.feelCold+'°':''].filter(Boolean).join(' · ')}</span></div>`:''}
-    <div><span>Kept in</span><span>${esc(i.place)}</span></div></div>
+    <div><span>Kept in</span><span>${esc(i.place)}</span></div>
+    <div style="align-items:center"><span>Price</span><span><button class="linkbtn" style="padding:0;color:var(--ink);text-decoration-color:var(--edge)" data-act="price">${i.price?'€'+i.price+(i.worn?' · €'+(i.price/Math.max(1,i.worn)).toFixed(2)+' a wear':''):'Add'}</button></span></div></div>
   <div><h2 class="h-m" style="font-size:20px;margin-bottom:10px">Pairs <i class="it">well</i> with</h2>
     <div class="pairs">${pairs.map(p=>`<button data-piece="${p.id}" aria-label="${esc(p.name)}">${g(p,40,44,'position:static')}</button>`).join('')}</div></div>
   <div class="row" style="margin-top:4px"><button class="btn" data-act="plan-piece">Plan it for a day</button>
@@ -773,6 +813,7 @@ function scLooks(){
   return`
   <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-top:8px">
     <div><div class="eyebrow">${L.length} look${L.length===1?'':'s'} · ${L.filter(x=>x.fav).length} favourite${L.filter(x=>x.fav).length===1?'':'s'}</div><h1 class="h-xl" style="margin-top:2px">Your <i class="it">looks</i></h1></div></div>
+  <button class="trycard" data-act="stats"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V5M19 20v-6"/></svg></span><span style="flex:1;min-width:0"><b style="font-weight:500;display:block">Your style</b><span class="note">What you wear most, your colours and cost per wear.</span></span><span class="chev">${ic('right')}</span></button>
   <button class="trycard" data-act="try-new"><span class="ti">${ic('sparkle')}</span><span style="flex:1;min-width:0"><b style="font-weight:500;display:block">Try on something new</b><span class="note">Paste a store link or add a photo and see it on you before you buy.</span></span><span class="chev">${ic('right')}</span></button>
   <div class="chips" role="group" aria-label="Filter looks">${chip('fav','Favourites')}${chip('all','All')}${chip('onme','On you')}${chip('today','Good for today')}</div>
   ${cards?`<div class="lgrid">${cards}</div>`:`<div class="empty"><h3>${F==='fav'?'No favourites yet':'Nothing here yet'}</h3>${F==='fav'?'Tap the heart on any look, on Today or here, and it will be kept in this list.':'Looks you plan, wear or save show up here.'}</div>`}`;
@@ -830,6 +871,58 @@ function scTry(){
   ${st==='trying'?`<div class="row"><button class="btn" data-act="wish-keep">${ic('heart')}Add to wishlist</button><button class="btn ghost" style="flex:.6" data-act="wish-pass">Not for me</button></div>`
    :`<div class="row">${w.url?`<a class="btn btnlink" href="${esc(w.url)}" target="_blank" rel="noopener">Open in store</a>`:''}<button class="btn ${w.url?'ghost':''}" data-act="wish-bought">I bought it</button></div>
      <button class="linkbtn" data-act="wish-remove">Remove from wishlist</button>`}`;
+}
+
+/* ---------- style stats ---------- */
+function scStats(){
+  const worn=Object.keys(S.looks).filter(d=>d<=TODAY&&S.looks[d].worn).sort(),last30=worn.filter(d=>d>=add(TODAY,-30));
+  const used=new Set();last30.forEach(d=>S.looks[d].items.forEach(id=>used.add(id)));
+  const own=S.items.filter(i=>!i.stored),pct=own.length?Math.round([...used].filter(id=>own.some(i=>i.id===id)).length/own.length*100):0;
+  const cnt={};worn.forEach(d=>S.looks[d].items.forEach(id=>cnt[id]=(cnt[id]||0)+1));
+  const top=Object.keys(cnt).map(byId).filter(Boolean).sort((a,b)=>cnt[b.id]-cnt[a.id]).slice(0,4);
+  const col={};worn.forEach(d=>S.looks[d].items.map(byId).filter(i=>i&&i.cat!=='bag'&&i.cat!=='shoes').forEach(i=>{const k=i.colorName||'Other';col[k]=col[k]||{n:0,c:i.color};col[k].n++}));
+  const colTot=Object.values(col).reduce((a,x)=>a+x.n,0),cols=Object.entries(col).sort((a,b)=>b[1].n-a[1].n).slice(0,6);
+  const priced=S.items.filter(i=>i.price>0),cpw=priced.map(i=>({i,v:i.price/Math.max(1,i.worn)})).sort((a,b)=>a.v-b.v);
+  const feels=Object.values(S.looks).map(L=>L.feel).filter(Boolean),ok=feels.length?Math.round(feels.filter(f=>f==='ok').length/feels.length*100):null;
+  const unworn=S.items.filter(forgotten);
+  const eur=v=>'€'+(v>=10?Math.round(v):v.toFixed(2));
+  return`
+  <div class="top"><button class="ib" data-act="back" aria-label="Back">${ic('back')}</button><h1 class="h-l">Your <i class="it">style</i></h1><span style="width:44px"></span></div>
+  <div class="stat"><span class="eyebrow">Wardrobe in use · last 30 days</span><div class="big">${pct}%<small>${used.size} of ${own.length} pieces worn</small></div><div class="bar"><i style="width:${pct}%;background:var(--clay)"></i></div>
+    ${unworn.length?`<button class="linkbtn" style="align-self:flex-start;padding:2px 0" data-act="see-forgot">${unworn.length} piece${unworn.length===1?'':'s'} not worn lately</button>`:''}</div>
+  <div class="stat"><h3>Colours you <i class="it">wear</i></h3>${colTot?`<div class="bar">${cols.map(([k,x])=>`<i style="width:${x.n/colTot*100}%;background:${x.c}"></i>`).join('')}</div>
+    <div class="leg">${cols.map(([k,x])=>`<span><b style="background:${x.c}"></b>${esc(k)} ${Math.round(x.n/colTot*100)}%</span>`).join('')}</div>`:'<p class="note">Log a few looks with “Wear this look” and your colours show up here.</p>'}</div>
+  <div class="stat"><h3>Most <i class="it">worn</i></h3>${top.length?top.map(i=>`<button class="rank" data-piece="${i.id}"><span class="im">${g(i,32,34,'position:static')}</span><span class="n">${esc(i.name)}</span><span class="v">${cnt[i.id]}×</span></button>`).join(''):'<p class="note">Nothing logged yet.</p>'}</div>
+  <div class="stat"><h3>Cost per <i class="it">wear</i></h3>${cpw.length?`${cpw.slice(0,3).map(x=>`<button class="rank" data-piece="${x.i.id}"><span class="im">${g(x.i,32,34,'position:static')}</span><span class="n">${esc(x.i.name)}</span><span class="v">${eur(x.v)} a wear</span></button>`).join('')}
+    ${cpw.length>3?`<p class="note">Highest: ${esc(cpw[cpw.length-1].i.name)} at ${eur(cpw[cpw.length-1].v)} a wear.</p>`:''}`:'<p class="note">Add what you paid on a piece (open it, then Price) and Dresmi shows what each wear costs you.</p>'}</div>
+  <div class="stat"><h3>Comfort</h3>${ok!=null?`<div class="big">${ok}%<small>of rated looks felt just right</small></div>`:'<p class="note">Rate your looks at the end of the day and this shows how well Dresmi dresses you for the weather.</p>'}</div>`;
+}
+function sheetPrice(){const i=byId(V.piece);sheet(`<h2 class="h-l">What did you <i class="it">pay</i>?</h2>
+  <div class="field"><label for="pr-v">Price in euros</label><input id="pr-v" type="number" inputmode="decimal" min="0" step="0.01" value="${i.price||''}" placeholder="89"></div>
+  <button class="btn" data-act="price-save">Save</button>`,()=>setTimeout(()=>$('#pr-v').focus(),50))}
+
+/* ---------- welcome ---------- */
+const BASICS=[['White shirt','top','shirt','#F3ECE1',[10,30]],['Grey knit','top','knit','#B9B2A6',[4,16]],['Black top','top','cami','#2B2420',[14,30]],['Blue jeans','bottom','jeans','#4A5A78',[0,26]],['Black trousers','bottom','trousers','#2B2420',[0,24]],['Midi skirt','bottom','skirt','#B88A62',[12,26]],['Black dress','dress','dress','#2B2420',[14,30]],['Trench coat','outer','trench','#D8C3A2',[10,20],1],['Wool coat','outer','coat','#C49A72',[-5,15],1],['Blazer','outer','blazer','#CDB79A',[16,27]],['Loafers','shoes','loafers','#2B2420',[0,28]],['Ankle boots','shoes','boots','#4A3426',[-5,18],1],['Sandals','shoes','sandals','#C9A989',[22,40]],['Tote bag','bag','tote','#B8875E',[-10,40]],['Shoulder bag','bag','bag','#2B2420',[-10,40]]];
+function scWelcome(){
+  const st=V.ob||0,dots=`<div class="dots">${[0,1,2,3].map(i=>`<i class="${i===st?'on':''}"></i>`).join('')}</div>`;
+  if(st===0)return`<div class="ob">${dots}<div style="margin-top:8vh"><div class="wordmark" style="text-align:left;padding:0">DRESMI</div></div>
+    <div class="hello">Get dressed for your day, <i class="it">every day</i>.</div>
+    <p class="note" style="font-size:15px;max-width:34ch">Dresmi plans your outfits from what you own, the weather and what’s in your calendar, and shows them on you.</p>
+    <div class="end"><button class="btn" data-ob="1">Get started</button><button class="btn ghost" data-act="ob-signin">I already have an account</button></div></div>`;
+  if(st===1)return`<div class="ob">${dots}<div class="hello" style="font-size:36px">First, <i class="it">you</i>.</div>
+    <div class="field"><label for="ob-name">Your name</label><input id="ob-name" value="${esc(V.obName||'')}" maxlength="24" autocomplete="given-name"></div>
+    <div class="field"><label for="ob-city">Where you live, for the weather</label><select id="ob-city">${Object.keys(CITIES).map(c=>`<option ${c===(V.obCity||'Lisbon')?'selected':''}>${c}</option>`).join('')}</select></div>
+    <div class="end"><button class="btn" data-act="ob-me">Continue</button></div></div>`;
+  if(st===2)return`<div class="ob">${dots}<div class="hello" style="font-size:36px">Your <i class="it">wardrobe</i></div>
+    <button class="choice ${V.obW==='sample'?'on':''}" data-obw="sample"><span class="thumb">${g({kind:'coat',color:'#C49A72'},34,44,'position:static')}</span><span><b>Explore with a sample wardrobe</b><span class="note">20 example pieces and plans. You can clear them later.</span></span></button>
+    <button class="choice ${V.obW==='own'?'on':''}" data-obw="own"><span class="thumb">${ic('plus')}</span><span><b>Start with my own clothes</b><span class="note">Tick what you have now and add the rest later.</span></span></button>
+    ${V.obW==='own'?`<div class="flabel">Tap what you own</div><div class="basics">${BASICS.map((b,k)=>`<button class="basic ${(V.obPick||[]).includes(k)?'on':''}" data-basic="${k}" aria-pressed="${(V.obPick||[]).includes(k)}"><span class="t">${g({kind:b[2],color:b[3]},44,46,'position:static')}</span>${esc(b[0])}</button>`).join('')}</div>`:''}
+    <div class="end"><button class="btn" data-act="ob-ward">Continue</button></div></div>`;
+  return`<div class="ob">${dots}<div class="hello" style="font-size:36px">Your <i class="it">plans</i></div>
+    <p class="note" style="font-size:15px">Connect your calendar so dinners, trips and meetings get the right look. Dresmi only reads it.</p>
+    ${sb?`<button class="gbtn" data-act="ob-google">${GICON}Sign in with Google and connect my calendar</button>`:''}
+    <label class="btn ghost" style="height:50px;font-size:15px">${ic('plus')}Add a calendar file (.ics)<input type="file" accept=".ics,text/calendar" data-file="ics" hidden></label>
+    <div class="end"><button class="btn" data-act="ob-done">${S.profile.calImported||(S.profile.gcal&&S.profile.gcal.connected)?'Finish':'Skip for now'}</button></div></div>`;
 }
 
 /* ---------- trips & packing ---------- */
@@ -926,7 +1019,7 @@ async function push(){if(!sb||!USER)return;SYNC={state:'syncing'};refreshSheet()
 async function pull(){if(!sb||!USER)return;SYNC={state:'syncing'};refreshSheet();
   try{const{data,error}=await sb.from('wardrobes').select('data,updated_at').eq('user_id',USER.id).maybeSingle();if(error)throw error;
     const remoteT=data?new Date(data.updated_at).getTime():0,firstHere=S.syncedUser!==USER.id;
-    if(data&&data.data&&(firstHere||remoteT>(S.updatedAt||0))){S=data.data;S.wish=S.wish||[];S.profile=S.profile||{};S.syncedUser=USER.id;try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}
+    if(data&&data.data&&(firstHere||remoteT>(S.updatedAt||0))){S=data.data;S.wish=S.wish||[];S.profile=S.profile||{};S.trips=S.trips||{};if(S.onboarded==null)S.onboarded=true;if(V.screen==='welcome'&&S.onboarded){V.screen='today';closeSheet()}S.syncedUser=USER.id;try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}
       await downloadImgs();SYNC={state:'ok',at:Date.now()};render(true);if(firstHere)toast('Your wardrobe is loaded from your account')}
     else{await push();return}
   }catch(e){SYNC={state:'err',err:e.message||String(e)}}refreshSheet()}
@@ -1068,7 +1161,7 @@ function sheetPiece(){
     <div class="two"><div class="field"><label for="p-cat">Category</label><select id="p-cat">${CATS.map(c=>`<option value="${c[0]}" ${c[0]==='top'?'selected':''}>${c[1]}</option>`).join('')}</select></div>
     <div class="field"><label for="p-kind">Shape</label><select id="p-kind">${kinds('top')}</select></div></div>
     <div class="field"><span class="flabel">Colour</span><div class="sw" id="p-sw">${SW.map((s,k)=>`<button style="background:${s[0]}" data-sw="${k}" class="${k===0?'on':''}" aria-label="${s[1]}"></button>`).join('')}</div></div>
-    <div class="field"><label for="p-fab">Fabric</label><input id="p-fab" placeholder="Wool" maxlength="30"></div>
+    <div class="two"><div class="field"><label for="p-fab">Fabric</label><input id="p-fab" placeholder="Wool" maxlength="30"></div><div class="field"><label for="p-price">Price (€)</label><input id="p-price" type="number" inputmode="decimal" min="0" placeholder="Optional"></div></div>
     <div class="two"><div class="field"><label for="p-min">Wear from (°C)</label><input id="p-min" type="number" value="8" inputmode="numeric"></div>
     <div class="field"><label for="p-max">Up to (°C)</label><input id="p-max" type="number" value="20" inputmode="numeric"></div></div>
     <label class="check"><input type="checkbox" id="p-rain"> Fine in the rain</label>
@@ -1081,11 +1174,12 @@ function sheetPiece(){
 
 /* ---------- render ---------- */
 function render(scrollTop){
-  const sc=$('#screen'),f=({today:scToday,plan:scPlan,looks:scLooks,look:scLook,wardrobe:scWardrobe,dressing:scDressing,piece:scPiece,try:scTry,trip:scTrip})[V.screen];
+  const sc=$('#screen'),f=({today:scToday,plan:scPlan,looks:scLooks,look:scLook,wardrobe:scWardrobe,dressing:scDressing,piece:scPiece,try:scTry,trip:scTrip,stats:scStats,welcome:scWelcome})[V.screen];
   const keep=document.activeElement&&document.activeElement.id==='q';
-  sc.innerHTML=f();const full=['dressing','piece','look','try','trip'].includes(V.screen);sc.classList.toggle('noNav',full);
+  sc.innerHTML=f();sc.classList.remove('an-r','an-l','an-f');if(V.anim){void sc.offsetWidth;sc.classList.add('an-'+V.anim);V.anim=null}
+  const full=['dressing','piece','look','try','trip','stats','welcome'].includes(V.screen);sc.classList.toggle('noNav',full);
   $('#tabs').hidden=full;
-  const tab={trip:'plan',today:'today',plan:'plan',looks:'looks',look:'looks',try:'looks',wardrobe:'wardrobe',dressing:'create',piece:'wardrobe'}[V.screen];
+  const tab={stats:'looks',welcome:'',trip:'plan',today:'today',plan:'plan',looks:'looks',look:'looks',try:'looks',wardrobe:'wardrobe',dressing:'create',piece:'wardrobe'}[V.screen];
   document.querySelectorAll('#tabs button').forEach(b=>{const on=b.dataset.go===tab;b.classList.toggle('on',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')});
   if(scrollTop)sc.scrollTop=0;
   const q=$('#q');if(q){q.addEventListener('input',e=>{V.ward.q=e.target.value;const p=e.target.selectionStart;render();const n=$('#q');n.focus();n.setSelectionRange(p,p)});if(keep)q.focus()}
@@ -1093,11 +1187,11 @@ function render(scrollTop){
 
 /* ---------- actions ---------- */
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-pack],[data-dayv],[data-feel],[data-lf],[data-look],[data-favlook],[data-ver],[data-wmode],[data-wish],[data-trysrc],[data-layer-t],[data-go],[data-act],[data-day],[data-filter],[data-cat],[data-piece],[data-fav],[data-layer],[data-pick],[data-sw]');if(!t)return;
+  const t=e.target.closest('[data-ob],[data-obw],[data-basic],[data-pack],[data-dayv],[data-feel],[data-lf],[data-look],[data-favlook],[data-ver],[data-wmode],[data-wish],[data-trysrc],[data-layer-t],[data-go],[data-act],[data-day],[data-filter],[data-cat],[data-piece],[data-fav],[data-layer],[data-pick],[data-sw]');if(!t)return;
   const d=t.dataset;
   if(d.act!=='del-piece')V.confirmDel=false;
   if(d.act!=='reset')V.confirmReset=false;
-  if(d.go){if(d.go==='create')return openDressing(nextOpen());if(d.go==='today'&&V.screen==='today'&&V.day&&V.day!==TODAY){return goToday()}V.stack=[];V.screen=d.go;return render(true)}
+  if(d.go){if(d.go==='create')return openDressing(nextOpen());if(d.go==='today'&&V.screen==='today'&&V.day&&V.day!==TODAY){return goToday()}V.stack=[];V.screen=d.go;V.anim='f';return render(true)}
   if(d.day){V.plan.sel=d.day;return render()}
   if(d.filter){V.plan.filter=d.filter;return render()}
   if(d.cat){V.ward.cat=d.cat;return render()}
@@ -1105,6 +1199,9 @@ document.addEventListener('click',e=>{
   if(d.fav){const i=byId(d.fav);i.fav=!i.fav;save();toast(i.fav?'Added to favourites':'Removed from favourites');return render()}
   if(d.layer){V.dr.tab=d.layer;return render()}
   if(d.dayv){return setDay(d.dayv)}
+  if(d.ob){V.ob=+d.ob;V.anim='r';return render(true)}
+  if(d.obw){V.obW=d.obw;return render()}
+  if(d.basic){const p=V.obPick=V.obPick||[],k=+d.basic,x=p.indexOf(k);x>=0?p.splice(x,1):p.push(k);return render()}
   if(d.pack){const tr=S.trips[V.trip];tr.packed[d.pack]=!tr.packed[d.pack];save();return render()}
   if(d.feel){const L=S.looks[d.date],w=wx(d.date);L.feel=d.feel;L.feltAt={max:w.max,min:w.min};
     (L.items||[]).map(byId).filter(i=>i&&['outer','top','dress'].includes(i.cat)).forEach(i=>{if(d.feel==='warm')i.feelWarm=i.feelWarm==null?w.max:Math.min(i.feelWarm,w.max);if(d.feel==='cold')i.feelCold=i.feelCold==null?w.max:Math.max(i.feelCold,w.max)});
@@ -1116,7 +1213,7 @@ document.addEventListener('click',e=>{
   if(d.wmode){V.ward.mode=d.wmode;return render()}
   if(d.wish){V.wishId=d.wish;return go('try')}
   if(d.trysrc){V.trySrc=d.trysrc;return sheetTry()}
-  if(d.layerT&&d.hk){const h=V.hide[d.hk]=V.hide[d.hk]||[];const x=h.indexOf(d.layerT);x>=0?h.splice(x,1):h.push(d.layerT);return render()}
+  if(d.layerT&&d.hk){const h=V.hide[d.hk]=V.hide[d.hk]||[];const x=h.indexOf(d.layerT);x>=0?h.splice(x,1):h.push(d.layerT);const k=$('#screen').scrollTop;render();$('#screen').scrollTop=k;const im=$('.hero .ph');if(im)im.classList.add('fade');return}
   if(d.layerT){const h=V.hide[TODAY]=V.hide[TODAY]||[];const x=h.indexOf(d.layerT);x>=0?h.splice(x,1):h.push(d.layerT);return render()}
   if(d.sw){NP.color=SW[+d.sw][0];NP.ci=+d.sw;document.querySelectorAll('#p-sw button').forEach(b=>b.classList.toggle('on',b===t));return}
   if(d.pick){
@@ -1142,6 +1239,17 @@ document.addEventListener('click',e=>{
     case'unwear':{const L=S.looks[TODAY];if(L){L.worn=false;L.items.forEach(id=>{const i=byId(id);if(i){i.worn=Math.max(0,i.worn-1);i.last=i.prevLast||null;i.since=i.prevSince||0;i.laundry=!!i.prevLaundry}})}save();return render()}
     case'shuffle':{const ds=V.day||TODAY,L=S.looks[ds];if(L&&L.worn)return toast('Undo “worn” first to change today’s look');if(L&&L.items&&L.items.length){L.items=[]}S.shuffle[ds]=(S.shuffle[ds]||0)+1;save();return render()}
     case'to-today':return goToday();
+    case'stats':return go('stats');
+    case'see-forgot':V.stack=[];V.screen='wardrobe';V.ward.mode='mine';V.ward.cat='forgot';V.anim='f';return render(true);
+    case'price':return sheetPrice();
+    case'price-save':{const i=byId(V.piece),v=parseFloat($('#pr-v').value);i.price=v>0?Math.round(v*100)/100:0;save();closeSheet();return render()}
+    case'ob-signin':V.obAfter=true;return sheetSettings();
+    case'ob-me':{V.obName=$('#ob-name').value.trim();V.obCity=$('#ob-city').value;if(!V.obName){$('#ob-name').focus();return toast('Tell us your name')}V.ob=2;V.anim='r';return render(true)}
+    case'ob-ward':{if(!V.obW)return toast('Pick one of the two options');
+      if(V.obW==='own'){const now=Date.now();S.items=(V.obPick||[]).map((k,n)=>{const b=BASICS[k];return{id:'i'+(now+n),name:b[0],short:b[0].toLowerCase(),cat:b[1],kind:b[2],color:b[3],colorName:(SW.find(x=>x[0]===b[3])||['',''])[1],fabric:'—',warm:b[4],rain:!!b[5],care:'—',place:'Wardrobe',worn:0,last:null,laundry:false}});S.looks={};S.favLooks=[];S.trips={};PHOTOS=[]}
+      V.ob=3;V.anim='r';return render(true)}
+    case'ob-google':{try{localStorage.setItem('dresmi-gcal','1')}catch(e){}finishOb(true);return sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname,scopes:GCAL_SCOPE,queryParams:{prompt:'consent',access_type:'offline'}}})}
+    case'ob-done':return finishOb();
     case'open-trip':return openTrip(d.date);
     case'trip-edit':return sheetTrip();
     case'trip-replan':{const tr=S.trips[V.trip];Object.keys(S.looks).forEach(x=>{if(S.looks[x].trip===tr.id&&S.looks[x].auto)S.looks[x].items=[]});planTrip(tr);save();toast('Outfits planned again');return render()}
@@ -1193,7 +1301,7 @@ document.addEventListener('click',e=>{
     case'add-piece':return sheetPiece();
     case'save-piece':{const nm=$('#p-name').value.trim();if(!nm){$('#p-err').hidden=false;return $('#p-name').focus()}
       let mn=parseInt($('#p-min').value,10),mx=parseInt($('#p-max').value,10);if(isNaN(mn))mn=0;if(isNaN(mx))mx=30;if(mn>mx)[mn,mx]=[mx,mn];
-      const it={id:'i'+Date.now(),name:nm,short:nm.toLowerCase(),cat:$('#p-cat').value,kind:$('#p-kind').value,color:NP.color,colorName:SW[NP.ci||0][1],fabric:$('#p-fab').value.trim()||'—',warm:[mn,mx],rain:$('#p-rain').checked,care:'—',place:'Wardrobe',worn:0,last:null,laundry:false};
+      const it={price:parseFloat($('#p-price').value)||0,id:'i'+Date.now(),name:nm,short:nm.toLowerCase(),cat:$('#p-cat').value,kind:$('#p-kind').value,color:NP.color,colorName:SW[NP.ci||0][1],fabric:$('#p-fab').value.trim()||'—',warm:[mn,mx],rain:$('#p-rain').checked,care:'—',place:'Wardrobe',worn:0,last:null,laundry:false};
       S.items.unshift(it);save();closeSheet();toast('Added '+nm);V.ward.cat='all';V.ward.q='';return render(true)}
     case'undo':{const D=V.dr;if(D.hist.length)D.ids=D.hist.pop();return render()}
     case'drdate':{const D=V.dr;const nd=add(D.date,+d.d);if(nd<TODAY)return toast('You can only plan from today on');D.date=nd;D.ids=lookFor(nd).ids.slice();D.hist=[];return render()}
@@ -1216,12 +1324,22 @@ document.addEventListener('change',async e=>{
     if(kind==='try'){const w=wishById(V.wishId);if(!w)return;const k='t'+w.id;await imgPut(k,await readImage(f,1100));w.tryImg=k;save();toast('Try-on image added');return render()}
   }catch(err){toast('That file could not be read. Try another one.')}
 });
+function finishOb(quiet){S.settings.name=V.obName||S.settings.name;const cityChanged=V.obCity&&V.obCity!==S.settings.city;if(V.obCity)S.settings.city=V.obCity;S.onboarded=true;save();if(cityChanged){W={};loadWeather()}
+  if(!quiet){V.stack=[];V.screen='today';V.anim='f';render(true);toast('Welcome to Dresmi, '+S.settings.name)}}
 function setDay(d,dir){const prev=V.day||TODAY;if(d>add(TODAY,13))d=add(TODAY,13);if(d<TODAY)d=TODAY;if(d===prev)return;
   const wkChange=Math.floor(gap(TODAY,d)/7)!==Math.floor(gap(TODAY,prev)/7);V.day=d;const keep=$('#screen').scrollTop;render();$('#screen').scrollTop=keep;
   const dd=dir||(d>prev?1:-1),h=$('.hero');if(h){h.style.setProperty('--sx',dd*28+'px');h.classList.remove('slide');void h.offsetWidth;h.classList.add('slide')}
   const wk=$('.week');if(wk&&wkChange){wk.style.setProperty('--sx',dd*40+'px');wk.classList.add('slide')}}
 let TT=null;
 function goToday(){clearTimeout(TT);const step=()=>{const cur=V.day||TODAY;if(cur<=TODAY){V.day=TODAY;return}setDay(add(cur,-1),-1);TT=setTimeout(step,gap(TODAY,V.day)>1?110:160)};$('#screen').scrollTo({top:0,behavior:'smooth'});step()}
+let PT=null;
+function ptrEl(){let e=$('#ptr');if(!e){e=document.createElement('div');e.id='ptr';e.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v4.2h-4.2"/></svg><span>Pull to refresh</span>';document.body.appendChild(e)}return e}
+document.addEventListener('touchstart',e=>{const sc=$('#screen');PT=(V.screen==='today'&&sc.scrollTop<=0&&!e.target.closest('[data-swipe],.week'))?{y:e.touches[0].clientY,d:0}:null},{passive:true});
+document.addEventListener('touchmove',e=>{if(!PT)return;PT.d=e.touches[0].clientY-PT.y;if(PT.d<=0)return;const el=ptrEl(),p=Math.min(PT.d,110);el.style.transform='translate(-50%,'+(p-60)+'px)';el.querySelector('span').textContent=PT.d>80?'Release to refresh':'Pull to refresh'},{passive:true});
+document.addEventListener('touchend',()=>{if(!PT)return;const go=PT.d>80;PT=null;const el=$('#ptr');if(!el)return;
+  if(!go){el.style.transform='';return}
+  el.classList.add('spin');el.querySelector('span').textContent='Updating…';el.style.transform='translate(-50%,10px)';
+  Promise.all([loadWeather(),USER?pull():null,GTOKEN&&Date.now()-GTOKEN_AT<50*60e3?gcalImport(GTOKEN):null]).finally(()=>{setTimeout(()=>{el.classList.remove('spin');el.style.transform='';render()},400)})},{passive:true});
 let SW0=null;
 document.addEventListener('touchstart',e=>{const h=e.target.closest('[data-swipe],.week');SW0=h&&V.screen==='today'?{x:e.touches[0].clientX,y:e.touches[0].clientY}:null},{passive:true});
 document.addEventListener('touchend',e=>{if(!SW0)return;const t=e.changedTouches[0],dx=t.clientX-SW0.x,dy=t.clientY-SW0.y;SW0=null;
@@ -1241,6 +1359,7 @@ function fitH(){
   FIT={txt:`viewport ${ih}px · visible ${vh}px · screen ${sh}px · ${app?'home-screen app':'browser'}${fix?' · stretched to screen':''}`};
 }
 fitH();addEventListener('resize',fitH);addEventListener('orientationchange',()=>setTimeout(fitH,250));if(window.visualViewport)visualViewport.addEventListener('resize',fitH);
+if(!S.onboarded)V.screen='welcome';
 render(true);
 setTimeout(()=>{const sp=$('#splash');if(sp){sp.classList.add('out');setTimeout(()=>sp.remove(),700)}},1700);
 loadWeather();
