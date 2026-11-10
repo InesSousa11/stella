@@ -739,6 +739,8 @@ function refreshSheet(){if(V.sheetOpen==='settings'){const sc=$('.sheet')&&$('.s
 function sbInit(){try{if(!window.supabase||!window.supabase.createClient)return;
   sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   sb.auth.onAuthStateChange((ev,session)=>{const was=USER&&USER.id;USER=session&&session.user||null;if(USER&&USER.id!==was){setTimeout(pull,0);GRAV=null;gravatar()}if(!USER){SYNC={state:'idle'};GRAV=null}render();refreshSheet()});
+  /* refresh the user so a Google account linked elsewhere brings its photo here too */
+  sb.auth.getUser().then(({data})=>{if(data&&data.user){USER=data.user;render();refreshSheet()}}).catch(()=>{});
 }catch(e){sb=null}}
 const refKeys=()=>[S.profile&&S.profile.photo,...S.items.map(i=>i.img),...S.wish.map(w=>w.prod),...S.wish.map(w=>w.tryImg)].filter(Boolean);
 function schedulePush(){if(!sb||!USER)return;clearTimeout(pushT);pushT=setTimeout(push,1500)}
@@ -755,7 +757,7 @@ async function pull(){if(!sb||!USER)return;SYNC={state:'syncing'};refreshSheet()
       await downloadImgs();SYNC={state:'ok',at:Date.now()};render(true);if(firstHere)toast('Your wardrobe is loaded from your account')}
     else{await push();return}
   }catch(e){SYNC={state:'err',err:e.message||String(e)}}refreshSheet()}
-const GOOGLE_READY=false; /* switch on once Google sign-in is enabled in Supabase */
+const GOOGLE_READY=true; /* switch on once Google sign-in is enabled in Supabase */
 let GRAV=null;
 async function gravatar(){try{if(!USER||!crypto.subtle)return;const h=[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(USER.email.trim().toLowerCase())))].map(b=>b.toString(16).padStart(2,'0')).join('');
   const url='https://gravatar.com/avatar/'+h+'?s=200&d=404';const im=new Image();im.onload=()=>{GRAV=url;render();refreshSheet()};im.src=url}catch(e){}}
