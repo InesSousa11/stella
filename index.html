@@ -46,6 +46,15 @@ i.it{font-style:italic;font-weight:500;color:var(--clay-ink)}
 .top{display:flex;justify-content:space-between;align-items:center;margin:0 -8px}
 .ib{width:44px;height:44px;display:grid;place-items:center;border-radius:22px;position:relative;flex-shrink:0}
 .ib.soft{background:var(--card)}
+.av{width:38px;height:38px;border-radius:19px;overflow:hidden;display:grid;place-items:center;background:var(--oat);color:var(--clay-ink);font-family:var(--serif);font-size:19px;font-weight:600;box-shadow:0 0 0 1.5px var(--card),0 0 0 2.5px var(--edge)}
+.av img{width:100%;height:100%;object-fit:cover;display:block}
+.av.lg{width:72px;height:72px;border-radius:36px;font-size:32px}
+.me{display:flex;align-items:center;gap:14px}
+.me .t{flex:1;min-width:0}
+.me .t b{display:block;font-family:var(--serif);font-size:24px;font-weight:600;line-height:1.1}
+.me .t span{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.me label{font-size:13px;color:var(--clay-ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.gbtn{height:48px;border-radius:16px;border:1px solid var(--taupe);background:var(--card);display:flex;align-items:center;justify-content:center;gap:10px;font-size:15px;font-weight:500;width:100%}
 .ib.line{border:1px solid var(--edge);background:var(--card);border-radius:16px}
 .ib svg{width:22px;height:22px;fill:none;stroke:var(--ink);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .dot{position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:4px;background:var(--clay)}
@@ -506,7 +515,7 @@ function scToday(){
     chips+=`<button class="layer ${on?'on':''}" data-layer-t="${id}" aria-pressed="${on}" aria-label="${on?'Take off':'Put on'} the ${esc(it.name)}"><span class="box"></span>${esc(KNAME[it.kind]||it.name)}</button>`});
   const wpill=`<span class="pill topL">${ic(wIcon(w))}<span>${w.max}° · ${esc(word(w))}${w.est?' · estimate':''}</span></span>`;
   return`
-  <div class="top"><button class="ib" data-act="settings" aria-label="Settings">${ic('menu')}</button><div class="wordmark">DRESMI</div><button class="ib" data-act="notices" aria-label="Upcoming plans">${ic('bell')}${notes?'<span class="dot"></span>':''}</button></div>
+  <div class="top"><button class="ib" data-act="settings" aria-label="Your profile">${USER||avatarSrc()?avatarHTML(''):ic('menu')}</button><div class="wordmark">DRESMI</div><button class="ib" data-act="notices" aria-label="Upcoming plans">${ic('bell')}${notes?'<span class="dot"></span>':''}</button></div>
   <div><div class="eyebrow">${esc(longD(ds))}</div><h1 class="h-xl" style="margin-top:2px;font-size:34px">${greet}, <i class="it">${esc(S.settings.name)}</i></h1></div>
   <div class="hero ${p?'photo':''}">
     <button class="cover" data-act="dress-today" aria-label="Open today's look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:flatlay(ids)}</button>
@@ -729,9 +738,9 @@ let sb=null,USER=null,SYNC={state:'idle',at:null,err:''},pushT=null;
 function refreshSheet(){if(V.sheetOpen==='settings'){const sc=$('.sheet')&&$('.sheet').scrollTop;sheetSettings();if($('.sheet'))$('.sheet').scrollTop=sc||0}}
 function sbInit(){try{if(!window.supabase||!window.supabase.createClient)return;
   sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-  sb.auth.onAuthStateChange((ev,session)=>{const was=USER&&USER.id;USER=session&&session.user||null;if(USER&&USER.id!==was)setTimeout(pull,0);if(!USER)SYNC={state:'idle'};refreshSheet()});
+  sb.auth.onAuthStateChange((ev,session)=>{const was=USER&&USER.id;USER=session&&session.user||null;if(USER&&USER.id!==was){setTimeout(pull,0);GRAV=null;gravatar()}if(!USER){SYNC={state:'idle'};GRAV=null}render();refreshSheet()});
 }catch(e){sb=null}}
-const refKeys=()=>[...S.items.map(i=>i.img),...S.wish.map(w=>w.prod),...S.wish.map(w=>w.tryImg)].filter(Boolean);
+const refKeys=()=>[S.profile&&S.profile.photo,...S.items.map(i=>i.img),...S.wish.map(w=>w.prod),...S.wish.map(w=>w.tryImg)].filter(Boolean);
 function schedulePush(){if(!sb||!USER)return;clearTimeout(pushT);pushT=setTimeout(push,1500)}
 async function uploadImgs(){S.cloud=S.cloud||[];for(const k of refKeys()){if(S.cloud.includes(k)||!IMG[k])continue;const blob=await (await fetch(IMG[k])).blob();const{error}=await sb.storage.from('photos').upload(USER.id+'/'+k,blob,{upsert:true,contentType:blob.type});if(error)throw error;S.cloud.push(k)}}
 async function downloadImgs(){for(const k of refKeys()){if(IMG[k])continue;try{const{data,error}=await sb.storage.from('photos').download(USER.id+'/'+k);if(error||!data)continue;const url=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(data)});await imgPut(k,url)}catch(e){}}}
@@ -746,6 +755,18 @@ async function pull(){if(!sb||!USER)return;SYNC={state:'syncing'};refreshSheet()
       await downloadImgs();SYNC={state:'ok',at:Date.now()};render(true);if(firstHere)toast('Your wardrobe is loaded from your account')}
     else{await push();return}
   }catch(e){SYNC={state:'err',err:e.message||String(e)}}refreshSheet()}
+const GOOGLE_READY=false; /* switch on once Google sign-in is enabled in Supabase */
+let GRAV=null;
+async function gravatar(){try{if(!USER||!crypto.subtle)return;const h=[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(USER.email.trim().toLowerCase())))].map(b=>b.toString(16).padStart(2,'0')).join('');
+  const url='https://gravatar.com/avatar/'+h+'?s=200&d=404';const im=new Image();im.onload=()=>{GRAV=url;render();refreshSheet()};im.src=url}catch(e){}}
+function avatarSrc(){
+  if(S.profile.photo&&IMG[S.profile.photo])return IMG[S.profile.photo];
+  if(USER){const m=USER.user_metadata||{};let u=m.avatar_url||m.picture;
+    if(!u&&USER.identities)USER.identities.forEach(i=>{const d=i.identity_data||{};u=u||d.avatar_url||d.picture});
+    if(u)return u;if(GRAV)return GRAV}
+  return null}
+function avatarHTML(cls){const u=avatarSrc();return`<span class="av ${cls}">${u?`<img src="${esc(u)}" alt="" referrerpolicy="no-referrer">`:esc((S.settings.name||'?').charAt(0).toUpperCase())}</span>`}
+const GICON='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.2H12v4.2h5.9a5 5 0 0 1-2.2 3.3v2.7h3.5c2.1-1.9 3.3-4.7 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.5-2.7c-1 .7-2.3 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.7H2.1v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.7 14c-.2-.7-.4-1.4-.4-2.1s.1-1.4.4-2.1V7H2.1a11 11 0 0 0 0 9.9z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.3 1.7l3.1-3.1A11 11 0 0 0 2.1 7l3.6 2.8C6.6 7.3 9.1 5.4 12 5.4z"/></svg>';
 function accountHTML(){
   if(!sb)return`<div class="sec"><h3>Account</h3><p class="note">Accounts work in the Dresmi app at your web address. This preview can’t reach the account service.</p></div>`;
   if(!USER)return`<div class="sec"><h3>Account</h3>
@@ -753,10 +774,12 @@ function accountHTML(){
     <div class="field"><label for="a-email">Email</label><input id="a-email" type="email" autocomplete="email" inputmode="email"></div>
     <div class="field"><label for="a-pass">Password</label><input id="a-pass" type="password" autocomplete="current-password" minlength="8"></div>
     <p class="note" id="a-msg" role="status" hidden></p>
-    <div class="two"><button class="btn" style="height:48px;font-size:15px" data-act="acct-signin">Sign in</button><button class="btn ghost" style="height:48px;font-size:15px" data-act="acct-signup">Create account</button></div></div>`;
+    <div class="two"><button class="btn" style="height:48px;font-size:15px" data-act="acct-signin">Sign in</button><button class="btn ghost" style="height:48px;font-size:15px" data-act="acct-signup">Create account</button></div>
+    ${GOOGLE_READY?`<button class="gbtn" data-act="acct-google">${GICON}Continue with Google</button>`:''}</div>`;
   const st=SYNC.state==='syncing'?'Syncing…':SYNC.state==='err'?'Sync failed: '+esc(SYNC.err):SYNC.at?'Synced at '+new Date(SYNC.at).toTimeString().slice(0,5):'Not synced yet';
   return`<div class="sec"><h3>Account</h3>
     <p class="note">Signed in as <b style="font-weight:500;color:var(--ink)">${esc(USER.email)}</b><br>${st}</p>
+    ${GOOGLE_READY&&!(USER.identities||[]).some(i=>i.provider==='google')?`<button class="gbtn" data-act="acct-google">${GICON}Use my Google photo and calendar</button>`:''}
     <div class="two"><button class="btn ghost" style="height:48px;font-size:15px" data-act="acct-sync">Sync now</button><button class="btn ghost" style="height:48px;font-size:15px" data-act="acct-signout">Sign out</button></div></div>`;
 }
 
@@ -766,6 +789,8 @@ function closeSheet(){V.sheetOpen=null;$('#layer').innerHTML=''}
 function sheetSettings(){
   const P=S.profile,cal=P.calImported;
   sheet(`<h2 class="h-l">Your <i class="it">profile</i></h2>
+    <div class="me">${avatarHTML('lg')}<div class="t"><b>${esc(S.settings.name)}</b><span>${USER?esc(USER.email):'Not signed in'}</span>
+      <label>${S.profile.photo?'Change photo':'Add a photo'}<input type="file" accept="image/*" data-file="avatar" hidden></label></div></div>
     <div class="field"><label for="s-name">Your name</label><input id="s-name" value="${esc(S.settings.name)}" maxlength="24"></div>
     <div class="field"><label for="s-city">City for weather</label><select id="s-city">${Object.keys(CITIES).map(c=>`<option ${c===S.settings.city?'selected':''}>${c}</option>`).join('')}</select></div>
     <p class="note">${wLive?'Live forecast from Open-Meteo for the next 16 days.':'Seasonal estimates for '+esc(S.settings.city)+'. The live forecast could not load here.'}</p>
@@ -775,7 +800,6 @@ function sheetSettings(){
       <label class="btn ghost" style="height:48px;font-size:15px">${ic('plus')}Add calendar file (.ics)<input type="file" accept=".ics,text/calendar" data-file="ics" hidden></label>
       ${cal?`<p class="note">Last added ${esc(cal.when)} · ${cal.n} plan${cal.n===1?'':'s'} for the next 3 months.</p>`:''}</div>
     ${accountHTML()}
-    <p class="note" style="font-size:11px">Screen fit: ${esc(FIT.txt)}</p>
     <button class="linkbtn ${V.confirmReset?'warn':''}" data-act="reset">${V.confirmReset?'Tap again to erase everything and restore the sample wardrobe':'Restore sample wardrobe'}</button>`);
 }
 function sheetTry(){
@@ -936,6 +960,7 @@ document.addEventListener('click',e=>{
       }catch(err){msg.textContent=/confirm/i.test(err.message)?'Confirm your email first: tap the link in the email we sent.':/invalid/i.test(err.message)?'That email and password don’t match.':err.message}})();return}
     case'acct-signout':(async()=>{try{await push();await sb.auth.signOut()}catch(e){}toast('Signed out. Your wardrobe stays on this device')})();return;
     case'acct-sync':pull();return;
+    case'acct-google':sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});return;
     case'save-event':{const ti=$('#e-title').value.trim(),dt=$('#e-date').value;if(!ti){$('#e-err').hidden=false;return $('#e-title').focus()}
       const L=S.looks[dt]=Object.assign(S.looks[dt]||{items:[]},{title:ti,time:$('#e-time').value,type:$('#e-type').value});save();closeSheet();V.plan.sel=dt;V.plan.ym=dt.slice(0,7);toast('Added '+ti+' on '+rel(dt));return render()}
     case'add-piece':return sheetPiece();
@@ -960,6 +985,7 @@ document.addEventListener('change',async e=>{
       ev.filter(x=>x.date>=TODAY&&x.date<=lim).sort((a,b)=>a.date<b.date?-1:1).forEach(x=>{const L=S.looks[x.date];if(L&&L.title)return;S.looks[x.date]=Object.assign(L||{items:[]},{title:x.title,time:x.time,type:typeOf(x.title,x.date),fromCal:true});n++});
       S.profile.calImported={when:rel(TODAY).toLowerCase(),n};save();closeSheet();toast(n?'Added '+n+' plan'+(n===1?'':'s')+' from your calendar':'No upcoming events found in that file');return render()}
     if(kind==='prod'){IMG._draft=await readImage(f,900);const keep={u:$('#t-name')&&$('#t-name').value,p:$('#t-price')&&$('#t-price').value,c:$('#t-cat')&&$('#t-cat').value};sheetTry();$('#t-name').value=keep.u||'';$('#t-price').value=keep.p||'';if(keep.c)$('#t-cat').value=keep.c;return}
+    if(kind==='avatar'){const k='avatar';await imgPut(k,await readImage(f,400));S.profile.photo=k;S.cloud=(S.cloud||[]).filter(x=>x!==k);save();toast('Photo updated');render();return refreshSheet()}
     if(kind==='try'){const w=wishById(V.wishId);if(!w)return;const k='t'+w.id;await imgPut(k,await readImage(f,1100));w.tryImg=k;save();toast('Try-on image added');return render()}
   }catch(err){toast('That file could not be read. Try another one.')}
 });
