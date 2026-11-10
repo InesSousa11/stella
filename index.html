@@ -194,6 +194,13 @@ nav.tabs .on i{background:var(--clay)}
 .pairs button{width:64px;height:64px;border-radius:16px;background:var(--oat);display:grid;place-items:center}
 .linkbtn{font-size:13px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;align-self:center;padding:8px}
 .linkbtn.warn{color:var(--clay-ink)}
+/* feel */
+.feel{border-radius:20px;background:var(--card);border:1px solid var(--line);padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.feel .q{font-family:var(--serif);font-size:19px;font-weight:600;line-height:1.15}
+.feel small{display:block;font-family:var(--sans);font-size:12px;font-weight:400;color:var(--muted);margin-top:2px}
+.feel .opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.feel .opts button{height:40px;border-radius:12px;border:1px solid var(--edge);font-size:14px;background:var(--linen)}
+.feel .opts button:active{background:var(--oat)}
 /* looks */
 .chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px}
 .chips::-webkit-scrollbar{display:none}
@@ -428,15 +435,19 @@ async function loadPhotos(){try{const r=await fetch('photos/index.json',{cache:'
 function lastUseMap(ds){const m={};Object.keys(S.looks).forEach(d=>{if(d>=ds)return;const L=S.looks[d];(L.items||[]).forEach(id=>{if(!m[id]||m[id]<d)m[id]=d})});return m}
 const gap=(a,b)=>Math.round((parse(b)-parse(a))/864e5);
 const avail=i=>!i.laundry&&!i.stored;
+const WASH={shirt:1,cami:1,knit:3,trousers:3,jeans:5,skirt:3,dress:2,coat:15,trench:10,blazer:6};
+const washEvery=i=>i.washEvery!=null?i.washEvery:(WASH[i.kind]||0); /* 0 = never goes to the laundry by itself */
+const daysSince=d=>d?Math.round((parse(TODAY)-parse(d))/864e5):Infinity;
+const forgotten=i=>!i.stored&&!i.laundry&&daysSince(i.last)>=45;
 let LU={},LUD='';
 function pick(list,k){if(!list.length)return null;const sc=i=>LU[i.id]?Math.min(gap(LU[i.id],LUD),14):30;list.sort((a,b)=>sc(b)-sc(a)||(a.worn-b.worn));const top=list.filter(i=>sc(i)>=Math.min(3,sc(list[0])));return top[k%top.length]}
 function suggest(ds,type){
   LU=lastUseMap(ds);LUD=ds;
-  const w=wx(ds),feel=w.max-2,k=S.shuffle[ds]||0,A=S.items.filter(avail),ids=[];
+  const w=wx(ds),feel=w.max-2-feelBias(),k=S.shuffle[ds]||0,A=S.items.filter(avail),ids=[];
   /* prefer photographed looks that suit the day and were not worn recently */
   const pc=PHOTOS.filter(p=>p.items.every(id=>{const i=byId(id);return i&&avail(i)})&&check(p.items,w).ok&&(type!=='evening'||p.items.some(id=>byId(id).cat==='dress'||byId(id).kind==='cami'))&&p.items.every(id=>!LU[id]||gap(LU[id],ds)>=3||byId(id).cat==='bag'||byId(id).cat==='shoes'||byId(id).cat==='outer'));
   if(pc.length&&k%2===0)return pc[(k/2)%pc.length].items.slice();
-  const fits=(i,t)=>t>=i.warm[0]-1&&t<=i.warm[1]+2;
+  const fits=(i,t)=>t>=i.warm[0]-1&&t<=i.warm[1]+2&&!(i.feelWarm!=null&&t>=i.feelWarm-1)&&!(i.feelCold!=null&&t<=i.feelCold+1);
   let dress=null;
   if(type==='evening'&&feel>=13)dress=pick(A.filter(i=>i.cat==='dress'&&fits(i,feel)),k);
   if(dress)ids.push(dress.id);
@@ -462,6 +473,10 @@ function check(ids,w){
   if(w.max>=24&&s.outer&&s.outer.warm[1]<20)return{ok:false,t:'Too\nwarm',why:'It reaches '+w.max+'°. This coat will be too warm.'};
   return{ok:true,t:'Weather\nmatch',why:'Right for '+w.min+'–'+w.max+'°'+(w.rain>=50?' and rain':'')+'.'};
 }
+/* personal comfort: ratings shift the temperature Dresmi dresses you for */
+function feelBias(){const r=Object.keys(S.looks).sort().reverse().map(d=>S.looks[d].feel).filter(Boolean).slice(0,20);if(!r.length)return 0;
+  const m=r.reduce((a,f)=>a+(f==='cold'?1:f==='warm'?-1:0),0)/r.length;return Math.max(-3,Math.min(3,Math.round(m*4)))}
+function feelDue(){const hr=new Date().getHours();const cands=[];if(hr>=17)cands.push(TODAY);cands.push(add(TODAY,-1));return cands.find(d=>{const L=S.looks[d];return L&&L.worn&&!L.feel})}
 function dayType(ds){const d=parse(ds).getDay();return d===0||d===6?'weekend':'work'}
 function planRange(from,to){let n=0;for(let d=from;d<=to;d=add(d,1)){const L=S.looks[d];if(L&&((L.items&&L.items.length)||L.worn))continue;const t=(L&&L.type)||dayType(d);S.looks[d]=Object.assign(L||{},{type:t,items:suggest(d,t),auto:true});n++}save();return n}
 function lookFor(ds){const L=S.looks[ds];if(L&&L.items&&L.items.length)return{ids:L.items,planned:true,L};return{ids:suggest(ds,L&&L.type),planned:false,L}}
@@ -517,6 +532,8 @@ function scToday(){
   return`
   <div class="top"><button class="ib" data-act="settings" aria-label="Your profile">${USER||avatarSrc()?avatarHTML(''):ic('menu')}</button><div class="wordmark">DRESMI</div><button class="ib" data-act="notices" aria-label="Upcoming plans">${ic('bell')}${notes?'<span class="dot"></span>':''}</button></div>
   <div><div class="eyebrow">${esc(longD(ds))}</div><h1 class="h-xl" style="margin-top:2px;font-size:34px">${greet}, <i class="it">${esc(S.settings.name)}</i></h1></div>
+  ${(()=>{const fd=feelDue();if(!fd)return'';const FL=S.looks[fd],ft=titleOf(FL.items);return`<div class="feel"><span class="q">How did ${fd===TODAY?'today’s':'yesterday’s'} look feel?<small>${esc(ft.join(' '))}</small></span>
+    <div class="opts"><button data-feel="cold" data-date="${fd}">Too cold</button><button data-feel="ok" data-date="${fd}">Just right</button><button data-feel="warm" data-date="${fd}">Too warm</button></div></div>`})()}
   <div class="hero ${p?'photo':''}">
     <button class="cover" data-act="dress-today" aria-label="Open today's look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:flatlay(ids)}</button>
     ${wpill}
@@ -572,12 +589,13 @@ function scWishlist(){
 }
 function scWardrobe(){
   const Wd=V.ward,q=Wd.q.trim().toLowerCase();Wd.mode=Wd.mode||'mine';
-  let list=S.items.filter(i=>(Wd.cat==='all'||i.cat===Wd.cat||(Wd.cat==='fav'&&i.fav))&&(!q||(i.name+' '+i.colorName+' '+i.fabric+' '+i.place).toLowerCase().includes(q)));
+  let list=S.items.filter(i=>(Wd.cat==='all'||i.cat===Wd.cat||(Wd.cat==='fav'&&i.fav)||(Wd.cat==='wash'&&i.laundry)||(Wd.cat==='forgot'&&forgotten(i)))&&(!q||(i.name+' '+i.colorName+' '+i.fabric+' '+i.place).toLowerCase().includes(q)));
   const wash=S.items.filter(i=>i.laundry).length;
-  const tabs=[['all','All'],['fav','Favourites'],...CATS.map(c=>[c[0],c[2]])];
+  const nWash=S.items.filter(i=>i.laundry).length,nForg=S.items.filter(forgotten).length;
+  const tabs=[['all','All'],['fav','Favourites'],['wash','In the wash'+(nWash?' · '+nWash:'')],['forgot','Not worn lately'+(nForg?' · '+nForg:'')],...CATS.map(c=>[c[0],c[2]])];
   const rows=list.map(i=>{
     const tags=[];if(i.laundry)tags.push('<span class="tag clay">In the wash</span>');else if(i.stored)tags.push('<span class="tag olive">Stored</span>');
-    tags.push(`<span class="tag">Worn ${i.worn}×</span>`);if(!i.laundry&&!i.stored)tags.push(`<span class="tag">${i.warm[1]>=30?'Above '+i.warm[0]:'Below '+i.warm[1]}°</span>`);
+    tags.push(forgotten(i)?`<span class="tag clay">${i.last?daysSince(i.last)+' days unworn':'Never worn'}</span>`:`<span class="tag">Worn ${i.worn}×</span>`);if(!i.laundry&&!i.stored)tags.push(`<span class="tag">${i.warm[1]>=30?'Above '+i.warm[0]:'Below '+i.warm[1]}°</span>`);
     return`<div class="item"><button class="tile0" data-piece="${i.id}" aria-label="Open ${esc(i.name)}">${g(i,64,72,'position:static')}</button>
       <button class="meta" data-piece="${i.id}" style="text-align:left"><span class="nm">${esc(i.name)}</span><span class="sub">${esc(i.colorName)} · ${esc(i.fabric)}</span><span class="tags">${tags.join('')}</span></button>
       <button class="fav ${i.fav?'on':''}" data-fav="${i.id}" aria-label="${i.fav?'Remove from favourites':'Add to favourites'}" aria-pressed="${!!i.fav}">${ic('heart')}</button></div>`}).join('');
@@ -588,6 +606,8 @@ function scWardrobe(){
   <div class="seg" role="tablist" aria-label="Wardrobe or wishlist"><button role="tab" aria-selected="${Wd.mode==='mine'}" class="${Wd.mode==='mine'?'on':''}" data-wmode="mine">My pieces</button><button role="tab" aria-selected="${Wd.mode==='wish'}" class="${Wd.mode==='wish'?'on':''}" data-wmode="wish">Wishlist${S.wish.filter(w=>w.status==='wish'||w.status==='trying').length?' · '+S.wish.filter(w=>w.status==='wish'||w.status==='trying').length:''}</button></div>
   ${Wd.mode==='wish'?scWishlist():`<label class="search" for="q">${ic('search')}<span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search wardrobe</span><input id="q" type="search" placeholder="Search by colour, fabric, place" value="${esc(Wd.q)}" autocomplete="off"></label>
   <div class="utabs" role="tablist" aria-label="Category">${tabs.map(t=>`<button role="tab" aria-selected="${Wd.cat===t[0]}" class="${Wd.cat===t[0]?'on':''}" data-cat="${t[0]}">${t[1]}</button>`).join('')}</div>
+  ${Wd.cat==='wash'&&nWash?`<button class="btn ghost" style="height:48px;font-size:15px;flex:none" data-act="all-clean">${ic('check')}Laundry done · mark all clean</button>`:''}
+  ${Wd.cat==='forgot'&&nForg?'<p class="note" style="margin-top:-4px">Dresmi brings these back into your planned looks first. Tap one to plan it for a day.</p>':''}
   <div class="list">${rows||`<div class="empty"><h3>Nothing here yet</h3>${q?'No pieces match “'+esc(Wd.q)+'”.':'Add your first piece with the + button.'}</div>`}</div>`}`;
 }
 
@@ -631,9 +651,11 @@ function scPiece(){
     <span style="width:18px;height:18px;border-radius:9px;background:${i.color};box-shadow:0 0 0 2px var(--linen),0 0 0 3px var(--clay);flex-shrink:0;margin-bottom:8px" title="${esc(i.colorName)}"></span></div>
   <div class="rows">
     <div><span>Worn</span><span>${i.worn} time${i.worn===1?'':'s'}</span></div>
-    <div><span>Last worn</span><span>${i.last?esc(rel(i.last)):'Not yet'}</span></div>
+    <div><span>Last worn</span><span>${i.last?esc(rel(i.last))+(forgotten(i)?' · '+daysSince(i.last)+' days ago':''):'Not yet'}</span></div>
     <div><span>Best for</span><span>${i.warm[0]}° to ${i.warm[1]}°${i.rain?' · rain-proof':''}</span></div>
     <div><span>Fabric · care</span><span>${esc(i.fabric)} · ${esc(i.care)}</span></div>
+    ${['shoes','bag'].includes(i.cat)?'':`<div style="align-items:center"><span>To the laundry after</span><span style="display:flex;align-items:center;gap:6px"><button class="chev" style="width:32px;height:32px" data-act="wash-step" data-d="-1" aria-label="Fewer wears">−</button>${washEvery(i)?washEvery(i)+' wear'+(washEvery(i)===1?'':'s')+(i.laundry?'':' · '+(i.since||0)+' so far'):'Never'}<button class="chev" style="width:32px;height:32px" data-act="wash-step" data-d="1" aria-label="More wears">+</button></span></div>`}
+    ${i.feelWarm!=null||i.feelCold!=null?`<div><span>You told us</span><span>${[i.feelWarm!=null?'too warm at '+i.feelWarm+'°':'',i.feelCold!=null?'too cold at '+i.feelCold+'°':''].filter(Boolean).join(' · ')}</span></div>`:''}
     <div><span>Kept in</span><span>${esc(i.place)}</span></div></div>
   <div><h2 class="h-m" style="font-size:20px;margin-bottom:10px">Pairs <i class="it">well</i> with</h2>
     <div class="pairs">${pairs.map(p=>`<button data-piece="${p.id}" aria-label="${esc(p.name)}">${g(p,40,44,'position:static')}</button>`).join('')}</div></div>
@@ -738,7 +760,9 @@ let sb=null,USER=null,SYNC={state:'idle',at:null,err:''},pushT=null;
 function refreshSheet(){if(V.sheetOpen==='settings'){const sc=$('.sheet')&&$('.sheet').scrollTop;sheetSettings();if($('.sheet'))$('.sheet').scrollTop=sc||0}}
 function sbInit(){try{if(!window.supabase||!window.supabase.createClient)return;
   sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-  sb.auth.onAuthStateChange((ev,session)=>{const was=USER&&USER.id;USER=session&&session.user||null;if(USER&&USER.id!==was){setTimeout(pull,0);GRAV=null;gravatar()}if(!USER){SYNC={state:'idle'};GRAV=null}render();refreshSheet()});
+  sb.auth.onAuthStateChange((ev,session)=>{const was=USER&&USER.id;USER=session&&session.user||null;
+    if(session&&session.provider_token){GTOKEN=session.provider_token;GTOKEN_AT=Date.now();let want=false;try{want=localStorage.getItem('dresmi-gcal')==='1';localStorage.removeItem('dresmi-gcal')}catch(e){}if(want||(S.profile.gcal&&S.profile.gcal.connected))setTimeout(()=>gcalImport(GTOKEN),600)}
+    if(USER&&USER.id!==was){setTimeout(pull,0);GRAV=null;gravatar()}if(!USER){SYNC={state:'idle'};GRAV=null}render();refreshSheet()});
   /* refresh the user so a Google account linked elsewhere brings its photo here too */
   sb.auth.getUser().then(({data})=>{if(data&&data.user){USER=data.user;render();refreshSheet()}}).catch(()=>{});
 }catch(e){sb=null}}
@@ -769,6 +793,37 @@ function avatarSrc(){
   return null}
 function avatarHTML(cls){const u=avatarSrc();return`<span class="av ${cls}">${u?`<img src="${esc(u)}" alt="" referrerpolicy="no-referrer">`:esc((S.settings.name||'?').charAt(0).toUpperCase())}</span>`}
 const GICON='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.2H12v4.2h5.9a5 5 0 0 1-2.2 3.3v2.7h3.5c2.1-1.9 3.3-4.7 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.5-2.7c-1 .7-2.3 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.7H2.1v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.7 14c-.2-.7-.4-1.4-.4-2.1s.1-1.4.4-2.1V7H2.1a11 11 0 0 0 0 9.9z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.3 1.7l3.1-3.1A11 11 0 0 0 2.1 7l3.6 2.8C6.6 7.3 9.1 5.4 12 5.4z"/></svg>';
+const GCAL_SCOPE='https://www.googleapis.com/auth/calendar.readonly';
+let GTOKEN=null,GTOKEN_AT=0,CALBUSY=false;
+function calHTML(){
+  const G=S.profile.gcal;
+  if(!sb||!USER)return`<p class="note">Sign in below to connect your Google Calendar.</p>`;
+  if(G&&G.connected)return`<p class="note">Google Calendar connected${G.last?' · updated '+esc(rel(G.last.slice(0,10)).toLowerCase())+' at '+esc(G.last.slice(11,16)):''}${G.n!=null?' · '+G.n+' event'+(G.n===1?'':'s')+' in the next 3 months':''}</p>
+    <div class="two"><button class="btn ghost" style="height:48px;font-size:15px" data-act="gcal-refresh">${CALBUSY?'Updating…':'Update now'}</button><button class="btn ghost" style="height:48px;font-size:15px" data-act="gcal-off">Disconnect</button></div>`;
+  return`<button class="gbtn" data-act="gcal-connect">${GICON}Connect Google Calendar</button>`;
+}
+function gcalAuth(){try{localStorage.setItem('dresmi-gcal','1')}catch(e){}
+  sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname,scopes:GCAL_SCOPE,queryParams:{prompt:'consent',access_type:'offline'}}})}
+async function gcalImport(token){
+  CALBUSY=true;refreshSheet();
+  try{
+    const from=new Date(parse(TODAY));from.setHours(0,0,0,0);const to=new Date(from);to.setDate(to.getDate()+92);
+    let items=[],page='';
+    do{const r=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?singleEvents=true&orderBy=startTime&maxResults=250&timeMin='+encodeURIComponent(from.toISOString())+'&timeMax='+encodeURIComponent(to.toISOString())+(page?'&pageToken='+page:''),{headers:{Authorization:'Bearer '+token}});
+      if(r.status===401||r.status===403){GTOKEN=null;throw new Error('auth')}
+      if(!r.ok)throw new Error('http '+r.status);const j=await r.json();items=items.concat(j.items||[]);page=j.nextPageToken||''}while(page&&items.length<1000);
+    const ev=items.filter(e=>e.status!=='cancelled'&&e.summary&&e.start).map(e=>{const dt=e.start.dateTime?new Date(e.start.dateTime):null;
+      return{date:dt?iso(dt):e.start.date,time:dt?pad(dt.getHours())+':'+pad(dt.getMinutes()):'',title:e.summary.slice(0,40),allDay:!dt}});
+    /* one plan per day: prefer evening and travel events, then the earliest timed one */
+    const best={};const rank=x=>({evening:3,travel:2,work:1,weekend:0})[typeOf(x.title,x.date)]+(x.allDay?0:.5);
+    ev.forEach(x=>{if(!best[x.date]||rank(x)>rank(best[x.date]))best[x.date]=x});
+    Object.keys(S.looks).forEach(d=>{const L=S.looks[d];if(d>=TODAY&&L.fromCal&&!best[d]){delete L.title;delete L.time;delete L.fromCal;if(!(L.items&&L.items.length))delete S.looks[d]}});
+    let n=0;Object.values(best).forEach(x=>{const L=S.looks[x.date];if(L&&L.title&&!L.fromCal)return;S.looks[x.date]=Object.assign(L||{items:[]},{title:x.title,time:x.time,type:typeOf(x.title,x.date),fromCal:true});n++});
+    const now=new Date();S.profile.gcal={connected:true,last:iso(now)+'T'+pad(now.getHours())+':'+pad(now.getMinutes()),n:Object.keys(best).length};
+    save();toast(n?'Calendar updated · '+n+' plan'+(n===1?'':'s'):'Calendar updated · no upcoming events');render();
+  }catch(e){if(e.message==='auth'){toast('Google needs you to confirm again');CALBUSY=false;return gcalAuth()}toast('Couldn’t read your calendar. Try again in a moment.')}
+  CALBUSY=false;refreshSheet();
+}
 function accountHTML(){
   if(!sb)return`<div class="sec"><h3>Account</h3><p class="note">Accounts work in the Dresmi app at your web address. This preview can’t reach the account service.</p></div>`;
   if(!USER)return`<div class="sec"><h3>Account</h3>
@@ -781,7 +836,7 @@ function accountHTML(){
   const st=SYNC.state==='syncing'?'Syncing…':SYNC.state==='err'?'Sync failed: '+esc(SYNC.err):SYNC.at?'Synced at '+new Date(SYNC.at).toTimeString().slice(0,5):'Not synced yet';
   return`<div class="sec"><h3>Account</h3>
     <p class="note">Signed in as <b style="font-weight:500;color:var(--ink)">${esc(USER.email)}</b><br>${st}</p>
-    ${GOOGLE_READY&&!(USER.identities||[]).some(i=>i.provider==='google')?`<button class="gbtn" data-act="acct-google">${GICON}Use my Google photo and calendar</button>`:''}
+    ${GOOGLE_READY&&!(USER.identities||[]).some(i=>i.provider==='google')?`<button class="gbtn" data-act="acct-google">${GICON}Use my Google photo</button>`:''}
     <div class="two"><button class="btn ghost" style="height:48px;font-size:15px" data-act="acct-sync">Sync now</button><button class="btn ghost" style="height:48px;font-size:15px" data-act="acct-signout">Sign out</button></div></div>`;
 }
 
@@ -798,8 +853,9 @@ function sheetSettings(){
     <p class="note">${wLive?'Live forecast from Open-Meteo for the next 16 days.':'Seasonal estimates for '+esc(S.settings.city)+'. The live forecast could not load here.'}</p>
     <button class="btn" data-act="save-settings">Save</button>
     <div class="sec"><h3>Calendar</h3>
-      <p class="note">Dresmi reads your events so dinners, trips and meetings get the right look. Export your calendar as an .ics file (Google Calendar: Settings › Import &amp; export; Apple Calendar: File › Export) and add it here.</p>
-      <label class="btn ghost" style="height:48px;font-size:15px">${ic('plus')}Add calendar file (.ics)<input type="file" accept=".ics,text/calendar" data-file="ics" hidden></label>
+      <p class="note">Dresmi reads your events so dinners, trips and meetings get the right look. It only reads; it never changes your calendar.</p>
+      ${calHTML()}
+      <label class="linkbtn" style="align-self:flex-start;padding:4px 0;cursor:pointer">Or add a calendar file (.ics) from Apple or Outlook<input type="file" accept=".ics,text/calendar" data-file="ics" hidden></label>
       ${cal?`<p class="note">Last added ${esc(cal.when)} · ${cal.n} plan${cal.n===1?'':'s'} for the next 3 months.</p>`:''}</div>
     ${accountHTML()}
     <button class="linkbtn ${V.confirmReset?'warn':''}" data-act="reset">${V.confirmReset?'Tap again to erase everything and restore the sample wardrobe':'Restore sample wardrobe'}</button>`);
@@ -888,7 +944,7 @@ function render(scrollTop){
 
 /* ---------- actions ---------- */
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-lf],[data-look],[data-favlook],[data-ver],[data-wmode],[data-wish],[data-trysrc],[data-layer-t],[data-go],[data-act],[data-day],[data-filter],[data-cat],[data-piece],[data-fav],[data-layer],[data-pick],[data-sw]');if(!t)return;
+  const t=e.target.closest('[data-feel],[data-lf],[data-look],[data-favlook],[data-ver],[data-wmode],[data-wish],[data-trysrc],[data-layer-t],[data-go],[data-act],[data-day],[data-filter],[data-cat],[data-piece],[data-fav],[data-layer],[data-pick],[data-sw]');if(!t)return;
   const d=t.dataset;
   if(d.act!=='del-piece')V.confirmDel=false;
   if(d.act!=='reset')V.confirmReset=false;
@@ -899,6 +955,9 @@ document.addEventListener('click',e=>{
   if(d.piece){closeSheet();V.piece=d.piece;return go('piece')}
   if(d.fav){const i=byId(d.fav);i.fav=!i.fav;save();toast(i.fav?'Added to favourites':'Removed from favourites');return render()}
   if(d.layer){V.dr.tab=d.layer;return render()}
+  if(d.feel){const L=S.looks[d.date],w=wx(d.date);L.feel=d.feel;L.feltAt={max:w.max,min:w.min};
+    (L.items||[]).map(byId).filter(i=>i&&['outer','top','dress'].includes(i.cat)).forEach(i=>{if(d.feel==='warm')i.feelWarm=i.feelWarm==null?w.max:Math.min(i.feelWarm,w.max);if(d.feel==='cold')i.feelCold=i.feelCold==null?w.max:Math.max(i.feelCold,w.max)});
+    save();toast(d.feel==='ok'?'Noted. Dresmi will keep dressing you like this':d.feel==='cold'?'Noted. Warmer looks from now on':'Noted. Lighter looks from now on');return render()}
   if(d.lf){V.looksF=d.lf;return render()}
   if(d.look){V.look={base:d.look,key:null};return go('look')}
   if(d.ver){V.look.key=d.ver;return render()}
@@ -928,12 +987,14 @@ document.addEventListener('click',e=>{
     case'dress-day':closeSheet();return openDressing(d.date);
     case'open-day':return openDressing(V.plan.sel<TODAY?TODAY:V.plan.sel);
     case'fav-look':{const k=lookFor(TODAY).ids.slice().sort().join(',');const x=S.favLooks.indexOf(k);x>=0?S.favLooks.splice(x,1):S.favLooks.push(k);save();toast(x>=0?'Removed from saved looks':'Look saved');return render()}
-    case'wear':{const all=lookFor(TODAY).ids,hid=V.hide[TODAY]||[],ids=all.filter(id=>!hid.includes(id));const L=S.looks[TODAY]=Object.assign(S.looks[TODAY]||{},{items:ids,worn:true});L.type=L.type||'work';ids.forEach(id=>{const i=byId(id);i.worn++;i.prevLast=i.last;i.last=TODAY});save();toast('Logged as worn today');return render()}
-    case'unwear':{const L=S.looks[TODAY];if(L){L.worn=false;L.items.forEach(id=>{const i=byId(id);if(i){i.worn=Math.max(0,i.worn-1);i.last=i.prevLast||null}})}save();return render()}
+    case'wear':{const all=lookFor(TODAY).ids,hid=V.hide[TODAY]||[],ids=all.filter(id=>!hid.includes(id));const L=S.looks[TODAY]=Object.assign(S.looks[TODAY]||{},{items:ids,worn:true});L.type=L.type||'work';const washed=[];ids.forEach(id=>{const i=byId(id);i.worn++;i.prevLast=i.last;i.last=TODAY;i.prevSince=i.since||0;i.prevLaundry=!!i.laundry;i.since=(i.since||0)+1;const n=washEvery(i);if(n&&i.since>=n){i.laundry=true;washed.push(i.short)}});save();toast(washed.length?'Logged · '+washed.join(', ')+(washed.length>1?' go':' goes')+' to the laundry':'Logged as worn today');return render()}
+    case'unwear':{const L=S.looks[TODAY];if(L){L.worn=false;L.items.forEach(id=>{const i=byId(id);if(i){i.worn=Math.max(0,i.worn-1);i.last=i.prevLast||null;i.since=i.prevSince||0;i.laundry=!!i.prevLaundry}})}save();return render()}
     case'shuffle':{const L=S.looks[TODAY];if(L&&L.worn)return toast('Undo “worn” first to change today’s look');if(L&&L.items&&L.items.length){L.items=[]}S.shuffle[TODAY]=(S.shuffle[TODAY]||0)+1;save();return render()}
     case'month':{const[y,m]=V.plan.ym.split('-').map(Number);const n=new Date(y,m-1+(+d.d),1);V.plan.ym=n.getFullYear()+'-'+pad(n.getMonth()+1);return render()}
     case'plan-range':{let to;if(d.n==='month'){const[y,m]=V.plan.ym.split('-').map(Number);to=y+'-'+pad(m)+'-'+pad(new Date(y,m,0).getDate())}else to=add(TODAY,6);const from=V.plan.ym>TODAY.slice(0,7)&&d.n==='month'?V.plan.ym+'-01':TODAY;if(to<TODAY)return toast('That month is over');const n=planRange(from,to);toast(n?'Planned '+n+' day'+(n===1?'':'s'):'Every day already has a look');return render()}
     case'add-event':return sheetEvent();
+    case'all-clean':{let n=0;S.items.forEach(i=>{if(i.laundry){i.laundry=false;i.since=0;n++}});save();toast(n+' piece'+(n===1?'':'s')+' back in your wardrobe');V.ward.cat='all';return render()}
+    case'wash-step':{const i=byId(V.piece);i.washEvery=Math.max(0,Math.min(30,washEvery(i)+(+d.d)));save();return render()}
     case'try-new':delete IMG._draft;NP.ci=0;NP.color=SW[0][0];return sheetTry();
     case'save-try':{const nm=$('#t-name').value.trim(),url=$('#t-url')?$('#t-url').value.trim():'',err=$('#t-err');
       if(V.trySrc==='link'&&!/^https?:\/\/\S+\.\S+/.test(url)){err.textContent='Paste the full link to the piece, starting with https://';err.hidden=false;return}
@@ -962,6 +1023,9 @@ document.addEventListener('click',e=>{
       }catch(err){msg.textContent=/confirm/i.test(err.message)?'Confirm your email first: tap the link in the email we sent.':/invalid/i.test(err.message)?'That email and password don’t match.':err.message}})();return}
     case'acct-signout':(async()=>{try{await push();await sb.auth.signOut()}catch(e){}toast('Signed out. Your wardrobe stays on this device')})();return;
     case'acct-sync':pull();return;
+    case'gcal-connect':return gcalAuth();
+    case'gcal-refresh':if(GTOKEN&&Date.now()-GTOKEN_AT<50*60e3)return gcalImport(GTOKEN);return gcalAuth();
+    case'gcal-off':{S.profile.gcal=null;Object.keys(S.looks).forEach(d=>{const L=S.looks[d];if(L.fromCal){delete L.title;delete L.time;delete L.fromCal;if(!(L.items&&L.items.length))delete S.looks[d]}});save();toast('Google Calendar disconnected');render();return refreshSheet()}
     case'acct-google':sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});return;
     case'save-event':{const ti=$('#e-title').value.trim(),dt=$('#e-date').value;if(!ti){$('#e-err').hidden=false;return $('#e-title').focus()}
       const L=S.looks[dt]=Object.assign(S.looks[dt]||{items:[]},{title:ti,time:$('#e-time').value,type:$('#e-type').value});save();closeSheet();V.plan.sel=dt;V.plan.ym=dt.slice(0,7);toast('Added '+ti+' on '+rel(dt));return render()}
@@ -974,7 +1038,7 @@ document.addEventListener('click',e=>{
     case'drdate':{const D=V.dr;const nd=add(D.date,+d.d);if(nd<TODAY)return toast('You can only plan from today on');D.date=nd;D.ids=lookFor(nd).ids.slice();D.hist=[];return render()}
     case'save-look':{const D=V.dr;if(!D.ids.length)return toast('Pick at least one piece');const L=S.looks[D.date]=Object.assign(S.looks[D.date]||{type:'work'},{items:D.ids.slice()});save();toast('Saved for '+rel(D.date).toLowerCase().replace(/^(\w)/,c=>c));V.plan.sel=D.date;V.plan.ym=D.date.slice(0,7);V.stack=[];V.screen=D.date===TODAY?'today':'plan';return render(true)}
     case'plan-piece':{const i=byId(V.piece);if(!avail(i))return toast(i.laundry?'Mark it clean first':'This piece is stored for the season');const ds=nextOpen();const base=suggest(ds,(S.looks[ds]||{}).type).filter(id=>{const x=byId(id);return x.cat!==i.cat&&!(i.cat==='dress'&&x.cat==='bottom')&&!(i.cat==='bottom'&&x.cat==='dress')&&!(i.cat==='dress'&&x.cat==='top')&&!(i.cat==='top'&&x.cat==='dress')});return openDressing(ds,[i.id,...base])}
-    case'laundry':{const i=byId(V.piece);i.laundry=!i.laundry;save();toast(i.laundry?'Moved to the laundry':'Back in the wardrobe');return render()}
+    case'laundry':{const i=byId(V.piece);i.laundry=!i.laundry;if(!i.laundry)i.since=0;save();toast(i.laundry?'Moved to the laundry':'Back in the wardrobe');return render()}
     case'del-piece':{if(!V.confirmDel){V.confirmDel=true;return render()}const id=V.piece;S.items=S.items.filter(i=>i.id!==id);Object.values(S.looks).forEach(L=>{if(L.items)L.items=L.items.filter(x=>x!==id)});V.confirmDel=false;save();toast('Removed');V.stack=[];V.screen='wardrobe';return render(true)}
     case'save-settings':{const nm=$('#s-name').value.trim()||S.settings.name,c=$('#s-city').value,changed=c!==S.settings.city;S.settings.name=nm;S.settings.city=c;save();closeSheet();if(changed){W={};wLive=false;loadWeather()}toast('Settings saved');return render()}
     case'reset':{if(!V.confirmReset){V.confirmReset=true;return sheetSettings()}S=seed();save();V.confirmReset=false;closeSheet();toast('Sample wardrobe restored');V.stack=[];V.screen='today';return render(true)}
