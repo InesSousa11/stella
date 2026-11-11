@@ -240,6 +240,35 @@ nav.tabs .on i{background:var(--clay)}
 .evB{font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-align:center}
 .evD{text-align:center;font-family:var(--serif);font-size:19px;color:var(--clay-ink)}
 .evD span{font-family:var(--sans);font-size:12px;margin-left:8px;letter-spacing:.04em}
+.ev1,.ev2,.evc{position:absolute;left:14px;top:62px;max-width:calc(100% - 28px);height:32px;padding:0 12px 0 10px;border-radius:16px;display:flex;align-items:center;gap:6px;font-size:12.5px;z-index:2;text-align:left}
+.ev1{background:var(--clay);color:var(--linen)}
+.ev1 svg,.ev2 svg,.evdot svg{width:14px;height:14px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
+.ev1 b,.ev2 b,.evc b{font-weight:600;flex:none}
+.et{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.ev1 em,.ev2 em{font-style:normal;flex:none;height:20px;min-width:20px;padding:0 5px;border-radius:10px;display:grid;place-items:center;font-size:11px;font-weight:600}
+.ev1 em{background:rgba(255,253,250,.22)}
+.pill.joined{border-radius:18px 18px 18px 6px}
+.ev2{top:50px;background:#E7D3C7;color:var(--clay-ink);border-radius:6px 16px 16px 16px;height:30px}
+.ev2 em{background:var(--clay);color:var(--linen)}
+.evstack{position:absolute;left:14px;top:62px;display:flex;flex-direction:column;align-items:flex-start;gap:6px;max-width:calc(100% - 28px);z-index:2}
+.evc{position:static;max-width:100%;height:28px;background:var(--ink);color:var(--linen);border-radius:9px;font-size:12px;padding:0 10px}
+.evc b{color:#E9B49E}
+.evc.more{background:rgba(43,36,32,.55)}
+.evdot{position:absolute;right:62px;top:14px;width:40px;height:40px;border-radius:20px;background:var(--clay);color:var(--linen);display:grid;place-items:center;z-index:2}
+.evdot svg{width:17px;height:17px}
+.evdot i{position:absolute;right:-3px;top:-3px;min-width:18px;height:18px;border-radius:9px;background:var(--ink);color:var(--linen);font-style:normal;font-size:10.5px;font-weight:600;display:grid;place-items:center;box-shadow:0 0 0 2px var(--oat)}
+.evpop{position:absolute;left:14px;right:14px;top:100px;max-width:280px;background:var(--card);border-radius:18px;padding:8px 14px;box-shadow:0 18px 40px -18px rgba(43,36,32,.45);z-index:4;display:flex;flex-direction:column}
+.evpop div{display:flex;gap:12px;padding:9px 0;font-size:13.5px;border-bottom:1px solid var(--line)}
+.evpop div:last-child{border:0}
+.evpop b{font-weight:500;color:var(--clay-ink);width:48px;flex:none;font-variant-numeric:tabular-nums}
+.hero.ev-t .left .ph{top:100px;height:calc(100% - 160px)}
+.hero.ev-s1 .left .ph{top:98px;height:calc(100% - 158px)}
+.hero.ev-s2 .left .ph{top:132px;height:calc(100% - 192px)}
+.hero.ev-s3 .left .ph{top:166px;height:calc(100% - 226px)}
+.hero.ev-t .fc{top:96px}.hero.ev-s2 .fc,.hero.ev-s3 .fc{top:130px}
+.hero .pill.topL{max-width:calc(100% - 82px)}
+.hero .left:has(.evdot) .pill.topL{max-width:calc(100% - 128px)}
+.hero .pill .lg{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .evpill{position:absolute;left:14px;right:14px;bottom:14px;margin:0 auto;width:max-content;max-width:calc(100% - 28px);height:34px;padding:0 14px 0 11px;border-radius:17px;background:rgba(255,253,250,.9);display:flex;align-items:center;gap:7px;font-size:13px;font-weight:500;z-index:2}
 .evpill span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .evpill svg{width:15px;height:15px;flex:none;fill:none;stroke:var(--clay-ink);stroke-width:1.6;stroke-linecap:round}
@@ -729,13 +758,12 @@ function scToday(){
   ${(()=>{const fd=isT&&feelDue();if(!fd)return'';const FL=S.looks[fd],ft=titleOf(FL.items);return`<div class="feel"><span class="q">How did ${fd===TODAY?'today’s':'yesterday’s'} look feel?<small>${esc(ft.join(' '))}</small></span>
     <div class="opts"><button data-feel="cold" data-date="${fd}">Too cold</button><button data-feel="ok" data-date="${fd}">Just right</button><button data-feel="warm" data-date="${fd}">Too warm</button></div></div>`})()}
   </div>
-  <div class="hero split-able ${p?'photo':''} ${V.split?'split':''}" id="hero">
+  <div class="hero split-able ${p?'photo':''} ${V.split?'split':''} ${(()=>{const n=evList(ds,L).length,st=window.EVS2||'1';return!n||st==='4'?'':st==='3'?'ev-s'+Math.min(3,n):'ev-t'})()}" id="hero">
     <div class="left">
       <button class="cover" data-act="dress-day" data-date="${ds}" aria-label="Open this look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:`<span class="ff">${flatlay(ids)}</span><span class="fc">${pieces.filter(i=>i.cat!=='bag').map(i=>g(i,i.cat==='shoes'?84:96,i.cat==='shoes'?56:i.cat==='bottom'?120:100,'position:static')).join('')}</span>`}</button>
-      ${window.EVS==='C'&&L&&L.title?`<span class="evpill">${ic('cal')}<span>${esc(L.title)}${L.time?' · '+esc(L.time.split(/\s*[–-]\s*/)[0]):''}</span></span>`:''}
-      <span class="pill topL">${ic(wIcon(w))}<span class="lg">${w.max}° · ${esc(word(w))}${w.est?' · estimate':''}</span><span class="sm">${w.max}°</span></span>
+      <span class="pill topL ${window.EVS2==='2'&&evList(ds,L).length?'joined':''}">${ic(wIcon(w))}<span class="lg">${w.max}° · ${esc(word(w))}${w.est?' · estimate':''}</span><span class="sm">${w.max}°</span></span>${evMark(ds,L)}
       <button class="heart topR ${isFav?'on':''}" data-act="fav-look" aria-label="${isFav?'Remove from saved looks':'Save this look'}" aria-pressed="${isFav}">${ic('heart')}</button>
-      ${p||(window.EVS==='C'&&L&&L.title)?'':'<span class="pill soon2">Photo coming soon</span>'}
+      ${p?'':'<span class="pill soon2">Photo coming soon</span>'}
     </div>
     <span class="divider" aria-hidden="true"></span>
     <div class="right" aria-label="The pieces in this look" ${V.split?'':'aria-hidden="true"'}>
@@ -751,7 +779,17 @@ function scToday(){
     <button class="sq" data-act="shuffle" aria-label="Suggest another look">${ic('swap')}</button></div>
   </div>`;
 }
-function evLine(L){if(!L||!L.title||window.EVS==='C')return'';const st=window.EVS||'A',t=L.time?L.time.split(/\s*[–-]\s*/)[0]:'';
+function evList(ds,L){const c=((S.cal||{})[ds]||[]).slice(),t=L&&L.time?L.time.split(/\s*[–-]\s*/)[0]:'';
+  if(L&&L.title&&(!L.fromCal||!c.length)&&!c.some(e=>e.title===L.title))c.push({title:L.title,time:t});
+  return c.sort((a,b)=>(a.time||'')<(b.time||'')?-1:1)}
+function evMark(ds,L){const ev=evList(ds,L);if(!ev.length)return'';const st=window.EVS2||'1',e=ev[0],more=ev.length-1;
+  const lab=`${e.time?`<b>${esc(e.time)}</b>`:''}<span class="et">${esc(e.title)}</span>${more?`<em>+${more}</em>`:''}`;
+  const pop=V.evOpen===ds?`<div class="evpop" role="dialog" aria-label="Events on this day">${ev.map(x=>`<div><b>${esc(x.time||'All day')}</b><span>${esc(x.title)}</span></div>`).join('')}</div>`:'';
+  const aria=`aria-label="${ev.length} event${ev.length>1?'s':''}: ${esc(ev.map(x=>(x.time?x.time+' ':'')+x.title).join(', '))}" aria-expanded="${V.evOpen===ds}"`;
+  if(st==='3')return`<div class="evstack">${ev.slice(0,2).map(x=>`<button class="evc" data-act="ev-open" data-date="${ds}" ${aria}>${x.time?`<b>${esc(x.time)}</b>`:''}<span class="et">${esc(x.title)}</span></button>`).join('')}${ev.length>2?`<button class="evc more" data-act="ev-open" data-date="${ds}">+${ev.length-2} more</button>`:''}</div>${pop}`;
+  if(st==='4')return`<button class="evdot" data-act="ev-open" data-date="${ds}" ${aria}>${ic('cal')}<i>${ev.length}</i></button>${pop}`;
+  return`<button class="ev${st}" data-act="ev-open" data-date="${ds}" ${aria}>${ic('cal')}${lab}</button>${pop}`}
+function evLine(L){if(!L||!L.title||window.EVS!=='line')return'';const st=window.EVS||'A',t=L.time?L.time.split(/\s*[–-]\s*/)[0]:'';
   if(st==='B')return`<p class="ev evB">${esc(L.title)}${t?' · '+esc(t):''}</p>`;
   if(st==='D')return`<p class="ev evD"><i>${esc(L.title)}</i>${t?`<span>${esc(t)}</span>`:''}</p>`;
   return`<p class="ev evA"><b></b>${esc(L.title)}${t?`<span>${esc(t)}</span>`:''}</p>`}
@@ -1156,6 +1194,7 @@ async function gcalImport(token){
     const ev=items.filter(e=>e.status!=='cancelled'&&e.summary&&e.start).map(e=>{const dt=e.start.dateTime?new Date(e.start.dateTime):null;
       return{date:dt?iso(dt):e.start.date,time:dt?pad(dt.getHours())+':'+pad(dt.getMinutes()):'',title:e.summary.slice(0,40),allDay:!dt}});
     /* one plan per day: prefer evening and travel events, then the earliest timed one */
+    S.cal={};ev.forEach(x=>{(S.cal[x.date]=S.cal[x.date]||[]).push({title:x.title,time:x.time})});
     const best={};const rank=x=>({evening:3,travel:2,work:1,weekend:0})[typeOf(x.title,x.date)]+(x.allDay?0:.5);
     ev.forEach(x=>{if(!best[x.date]||rank(x)>rank(best[x.date]))best[x.date]=x});
     Object.keys(S.looks).forEach(d=>{const L=S.looks[d];if(d>=TODAY&&L.fromCal&&!best[d]){delete L.title;delete L.time;delete L.fromCal;if(!(L.items&&L.items.length))delete S.looks[d]}});
@@ -1349,6 +1388,7 @@ document.addEventListener('click',e=>{
     case'shuffle':{const ds=V.day||TODAY,L=S.looks[ds];if(L&&L.worn)return toast('Undo “worn” first to change today’s look');if(L&&L.items&&L.items.length){L.items=[]}S.shuffle[ds]=(S.shuffle[ds]||0)+1;save();return render()}
     case'to-today':return goToday();
     case'split':return setSplit(!V.split);
+    case'ev-open':V.evOpen=V.evOpen===d.date?null:d.date;{const k=$('#tsc')?$('#tsc').scrollTop:0;render();layoutToday(k)}return;
     case'stats':return go('stats');
     case'see-forgot':V.stack=[];V.screen='wardrobe';V.ward.mode='mine';V.ward.cat='forgot';V.anim='f';return render(true);
     case'price':return sheetPrice();
@@ -1404,7 +1444,7 @@ document.addEventListener('click',e=>{
     case'acct-sync':pull();return;
     case'gcal-connect':return gcalAuth();
     case'gcal-refresh':if(GTOKEN&&Date.now()-GTOKEN_AT<50*60e3)return gcalImport(GTOKEN);return gcalAuth();
-    case'gcal-off':{S.profile.gcal=null;Object.keys(S.looks).forEach(d=>{const L=S.looks[d];if(L.fromCal){delete L.title;delete L.time;delete L.fromCal;if(!(L.items&&L.items.length))delete S.looks[d]}});save();toast('Google Calendar disconnected');render();return refreshSheet()}
+    case'gcal-off':{S.profile.gcal=null;S.cal={};Object.keys(S.looks).forEach(d=>{const L=S.looks[d];if(L.fromCal){delete L.title;delete L.time;delete L.fromCal;if(!(L.items&&L.items.length))delete S.looks[d]}});save();toast('Google Calendar disconnected');render();return refreshSheet()}
     case'acct-google':sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});return;
     case'save-event':{const ti=$('#e-title').value.trim(),dt=$('#e-date').value;if(!ti){$('#e-err').hidden=false;return $('#e-title').focus()}
       const L=S.looks[dt]=Object.assign(S.looks[dt]||{items:[]},{title:ti,time:$('#e-time').value,type:$('#e-type').value});save();closeSheet();V.plan.sel=dt;V.plan.ym=dt.slice(0,7);toast('Added '+ti+' on '+rel(dt));return render()}
