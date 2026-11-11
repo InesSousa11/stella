@@ -224,12 +224,13 @@ nav.tabs .on i{background:var(--clay)}
 .week.slide{animation:slideIn .3s var(--ease)}
 .fold{display:flex;flex-direction:column;gap:16px;min-height:100%;flex-shrink:0}
 .fold .hero{flex:1 1 auto;min-height:360px}
-.fold.today{height:100%;min-height:0;gap:20px}
-.screen.isToday{overflow:hidden;padding-bottom:96px}
+.fold.today{height:100%;min-height:0;gap:var(--gap)}
+.screen.isToday{overflow:hidden;padding-bottom:calc(var(--navH,72px) + var(--gap,20px))}
+:root{--gap:20px}
 .fold.today .hero{min-height:0;padding:0;flex:none;height:var(--heroH,420px)}
 .tsc{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none;display:flex;flex-direction:column;margin:0 -24px;padding:0 24px}
 .tsc::-webkit-scrollbar{display:none}
-.thead{display:flex;flex-direction:column;gap:20px;padding:4px 0 22px;flex-shrink:0}
+.thead{display:flex;flex-direction:column;gap:var(--gap);padding:0 0 var(--gap);flex-shrink:0}
 .thead .week{margin-top:0}
 .tspace{flex:none;height:0}
 .ev{margin:-8px 0 -4px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1349,7 +1350,7 @@ function sheetPiece(){
 /* ---------- render ---------- */
 document.addEventListener('scroll',e=>{const c=e.target;if(!c||c.id!=='car')return;const pg=Math.round(c.scrollLeft/Math.max(1,c.clientWidth));if(pg!==V.carPage){V.carPage=pg;document.querySelectorAll('.cdots i').forEach((d,k)=>d.classList.toggle('on',k===pg))}},true);
 let TL=null;
-function layoutToday(keep){const sc=$('#tsc');if(!sc)return;const hd=sc.querySelector('.thead'),h=$('#hero'),sp=sc.querySelector('.tspace');
+function layoutToday(keep){const sc=$('#tsc');if(!sc)return;const tb=$('#tabs');if(tb)document.documentElement.style.setProperty('--navH',tb.offsetHeight+'px');const hd=sc.querySelector('.thead'),h=$('#hero'),sp=sc.querySelector('.tspace');
   const C=sc.clientHeight,T=hd.offsetHeight,h0=Math.max(300,C-T);TL={sc,h,sp,T,h0,C};todayScroll();if(keep!=null)sc.scrollTop=keep}
 function todayScroll(){if(!TL)return;const{sc,h,sp,T,h0}=TL,y=Math.max(0,Math.min(T,sc.scrollTop));h.style.height=(h0+y)+'px';sp.style.height=(T-y)+'px'}
 document.addEventListener('scroll',e=>{if(e.target&&e.target.id==='tsc')todayScroll()},true);
