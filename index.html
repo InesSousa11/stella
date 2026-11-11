@@ -95,7 +95,7 @@ i.it{font-style:italic;font-weight:500;color:var(--clay-ink)}
 .layer.on .box{background:var(--clay)}
 .layer.on .box::after{content:"";width:8px;height:4px;border:1.6px solid var(--card);border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}
 .stage.photo{background:var(--oat);height:420px}
-.hero.photo .pane:first-child::before,.stage.photo::before{content:"";position:absolute;left:28%;right:28%;bottom:4px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(96,78,62,.26),rgba(96,78,62,0))}
+.stage.photo::before{content:"";position:absolute;left:28%;right:28%;bottom:4px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(96,78,62,.26),rgba(96,78,62,0))}
 .planbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .planbar .btn{height:46px;font-size:14px}
 nav.tabs::after{content:"";position:absolute;left:0;right:0;top:100%;height:200px;background:var(--card)}
@@ -235,7 +235,30 @@ nav.tabs .on i{background:var(--clay)}
 .pp-head .note{margin-top:2px}
 .pieces-pane .pieces{grid-template-columns:repeat(2,minmax(0,1fr))}
 .pieces-pane .pc .t{background:var(--card)}
-.cdots{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);display:flex;gap:5px;pointer-events:none}
+.hero.split-able{overflow:hidden}
+.hero .left{position:absolute;top:0;bottom:0;left:0;width:100%;transition:width .45s var(--ease)}
+.hero.split .left{width:50%}
+.hero .left .ph{object-fit:cover;object-position:50% 100%;top:54px;height:calc(100% - 56px)}
+.hero.photo .left::before{content:"";position:absolute;left:22%;right:22%;bottom:4px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(96,78,62,.26),rgba(96,78,62,0))}
+.hero .fc{display:none}
+.hero.split .ff{display:none}
+.hero.split .fc{position:absolute;inset:56px 8px 30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.hero .pill .sm{display:none}
+.hero.split .pill .lg{display:none}.hero.split .pill .sm{display:inline}
+.hero.split .soon2{display:none}
+.hero .right{position:absolute;top:0;bottom:0;right:0;width:50%;padding:16px 14px 34px 12px;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:8px;transform:translateX(100%);opacity:0;transition:transform .45s var(--ease),opacity .3s var(--ease)}
+.hero .right::-webkit-scrollbar{display:none}
+.hero.split .right{transform:none;opacity:1}
+.hero .right .pp-head{padding:2px 2px 4px}
+.hero .right .note{font-size:12px;line-height:1.35}
+.pr{display:flex;align-items:center;gap:10px;text-align:left;padding:4px;border-radius:16px;width:100%}
+.pr:active{background:rgba(255,253,250,.6)}
+.pr .t{width:52px;height:52px;border-radius:14px;background:var(--card);display:grid;place-items:center;flex-shrink:0}
+.pr .n{font-size:13px;line-height:1.25;min-width:0}
+.pr small{display:block;font-size:11px;color:var(--muted)}
+.divider{position:absolute;left:50%;top:22px;bottom:22px;width:1px;background:linear-gradient(rgba(110,98,90,0),rgba(110,98,90,.22) 25%,rgba(110,98,90,.22) 75%,rgba(110,98,90,0));opacity:0;transition:opacity .35s var(--ease)}
+.hero.split .divider{opacity:1}
+.cdots{position:absolute;left:50%;bottom:4px;transform:translateX(-50%);display:flex;gap:5px;padding:8px 10px;align-items:center}
 .cdots i{width:6px;height:6px;border-radius:3px;background:rgba(43,36,32,.18);transition:width .25s var(--ease),background .25s var(--ease)}
 .cdots i.on{width:16px;background:var(--clay)}
 
@@ -357,12 +380,12 @@ nav.tabs .on i{background:var(--clay)}
 .sheet .btn,.sheet .gbtn{flex:none}
 /* profile drawer */
 .scrim.side{justify-content:flex-start;align-items:stretch}
-.sheet.drawer{width:min(86%,380px);max-height:none;height:100%;border-radius:0 28px 28px 0;padding:calc(18px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));animation:drawerIn .34s var(--ease);position:relative}
+.sheet.drawer{position:absolute;left:max(12px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 74px);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:min(calc(100% - 56px),380px);max-height:none;height:auto;border-radius:26px;padding:20px 18px 22px;box-shadow:0 24px 60px -24px rgba(43,36,32,.45);animation:drawerIn .34s var(--ease);transform-origin:top left}
 .scrim.side.noanim,.scrim.side.noanim .drawer{animation:none}
-.drawer .xclose{position:absolute;right:12px;top:calc(12px + env(safe-area-inset-top,0px))}
+.drawer .xclose{position:absolute;right:8px;top:12px}
 .drawer.out{animation:drawerOut .26s var(--ease) forwards}.scrim.side.out{animation:fadeOut .26s var(--ease) forwards}
-@keyframes drawerIn{from{transform:translateX(-100%)}}
-@keyframes drawerOut{to{transform:translateX(-100%)}}
+@keyframes drawerIn{from{transform:translateX(calc(-100% - 20px));opacity:.4}}
+@keyframes drawerOut{to{transform:translateX(calc(-100% - 20px));opacity:.4}}
 @keyframes fadeOut{to{opacity:0}}
 /* sheet & toast */
 .scrim{position:fixed;inset:0;background:rgba(43,36,32,.32);z-index:40;display:flex;align-items:flex-end;justify-content:center;animation:fade .2s var(--ease)}
@@ -386,9 +409,7 @@ nav.tabs .on i{background:var(--clay)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 
-</head>
-<body>
-<div class="app">
+</head><body><div class="app">
   <main class="screen" id="screen" aria-live="polite"></main>
   <nav class="tabs" id="tabs" aria-label="Main">
     <button data-go="today"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v8.5a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H5.5A1.5 1.5 0 0 1 4 19.5z"/></svg>Today<i></i></button>
@@ -659,7 +680,6 @@ function scToday(){
   const order=['outer','top','dress','bottom','shoes','bag'];
   const pieces=ids.map(byId).filter(Boolean).sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat));
   const meta=`${planned?(L.auto?'Planned by Dresmi':'Planned by you'):isT?'Suggested for today':'Suggested'} · ${c.ok?(w.rain>=50?'rain-ready':'right for the weather'):esc(c.t.replace('\n',' ').toLowerCase())} · ${layers} layer${layers===1?'':'s'}`;
-  const pg=V.carPage||0;
   return`
   <div class="fold today">
   <div class="top"><button class="ib" data-act="settings" aria-label="Your profile">${USER||avatarSrc()?avatarHTML(''):ic('menu')}</button><div class="wordmark">DRESMI</div><button class="ib" data-act="notices" aria-label="Upcoming plans">${ic('bell')}${notes?'<span class="dot"></span>':''}</button></div>
@@ -668,20 +688,19 @@ function scToday(){
   ${S.items.length<4?`<button class="trycard" data-go="wardrobe"><span class="ti">${ic('plus')}</span><span style="flex:1;min-width:0"><b style="font-weight:500;display:block">Add a few more pieces</b><span class="note">With a top, a bottom and shoes Dresmi can start dressing you.</span></span><span class="chev">${ic('right')}</span></button>`:''}
   ${(()=>{const fd=isT&&feelDue();if(!fd)return'';const FL=S.looks[fd],ft=titleOf(FL.items);return`<div class="feel"><span class="q">How did ${fd===TODAY?'today’s':'yesterday’s'} look feel?<small>${esc(ft.join(' '))}</small></span>
     <div class="opts"><button data-feel="cold" data-date="${fd}">Too cold</button><button data-feel="ok" data-date="${fd}">Just right</button><button data-feel="warm" data-date="${fd}">Too warm</button></div></div>`})()}
-  <div class="hero ${p?'photo':''}">
-    <div class="car" id="car" data-page="${pg}">
-      <div class="pane" aria-label="The look on you">
-        <button class="cover" data-act="dress-day" data-date="${ds}" aria-label="Open this look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:flatlay(ids)}</button>
-        <span class="pill topL">${ic(wIcon(w))}<span>${w.max}° · ${esc(word(w))}${w.est?' · estimate':''}</span></span>
-        <button class="heart topR ${isFav?'on':''}" data-act="fav-look" aria-label="${isFav?'Remove from saved looks':'Save this look'}" aria-pressed="${isFav}">${ic('heart')}</button>
-        ${chips?`<div class="layers" role="group" aria-label="Layers">${chips}</div>`:p?'':'<span class="pill">Photo of this look coming soon</span>'}
-      </div>
-      <div class="pane pieces-pane" aria-label="The pieces in this look">
-        <div class="pp-head"><h2 class="h-m" style="font-size:22px">In this <i class="it">look</i></h2><p class="note">${meta}</p></div>
-        <div class="pieces">${pieces.map(i=>`<button class="pc" data-piece="${i.id}"><span class="t">${g(i,64,68,'position:static')}</span><span>${esc(i.name)}</span>${!vis.includes(i.id)?'<small>Taken off</small>':''}</button>`).join('')}</div>
-      </div>
+  <div class="hero split-able ${p?'photo':''} ${V.split?'split':''}" id="hero">
+    <div class="left">
+      <button class="cover" data-act="dress-day" data-date="${ds}" aria-label="Open this look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:`<span class="ff">${flatlay(ids)}</span><span class="fc">${pieces.filter(i=>i.cat!=='bag').map(i=>g(i,i.cat==='shoes'?84:96,i.cat==='shoes'?56:i.cat==='bottom'?120:100,'position:static')).join('')}</span>`}</button>
+      <span class="pill topL">${ic(wIcon(w))}<span class="lg">${w.max}° · ${esc(word(w))}${w.est?' · estimate':''}</span><span class="sm">${w.max}°</span></span>
+      <button class="heart topR ${isFav?'on':''}" data-act="fav-look" aria-label="${isFav?'Remove from saved looks':'Save this look'}" aria-pressed="${isFav}">${ic('heart')}</button>
+      ${chips?`<div class="layers" role="group" aria-label="Layers">${chips}</div>`:p?'':'<span class="pill soon2">Photo coming soon</span>'}
     </div>
-    <div class="cdots" aria-hidden="true"><i class="${pg===0?'on':''}"></i><i class="${pg===1?'on':''}"></i></div>
+    <span class="divider" aria-hidden="true"></span>
+    <div class="right" aria-label="The pieces in this look" ${V.split?'':'aria-hidden="true"'}>
+      <div class="pp-head"><h2 class="h-m" style="font-size:20px">In this <i class="it">look</i></h2><p class="note">${meta}</p></div>
+      ${pieces.map(i=>`<button class="pr" data-piece="${i.id}" ${V.split?'':'tabindex="-1"'}><span class="t">${g(i,40,44,'position:static')}</span><span class="n">${esc(i.name)}${!vis.includes(i.id)?'<small>Taken off</small>':''}</span></button>`).join('')}
+    </div>
+    <button class="cdots" data-act="split" aria-label="${V.split?'Hide the pieces':'Show the pieces in this look'}"><i class="${V.split?'':'on'}"></i><i class="${V.split?'on':''}"></i></button>
   </div>
   <div class="row">${isT?(worn?`<button class="btn done" data-act="unwear">${ic('check')}Worn today · undo</button>`:`<button class="btn" data-act="wear">Wear this look</button>`)
       :planned&&!L.auto?`<button class="btn ghost" data-act="dress-day" data-date="${ds}">Change this look</button>`:`<button class="btn" data-act="keep-day" data-date="${ds}">Keep this look</button>`}
@@ -1215,7 +1234,6 @@ function render(scrollTop){
   const tab={stats:'looks',welcome:'',trip:'plan',today:'today',plan:'plan',looks:'looks',look:'looks',try:'looks',wardrobe:'wardrobe',dressing:'create',piece:'wardrobe'}[V.screen];
   document.querySelectorAll('#tabs button').forEach(b=>{const on=b.dataset.go===tab;b.classList.toggle('on',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')});
   if(scrollTop)sc.scrollTop=0;
-  const car=$('#car');if(car&&V.carPage)car.scrollLeft=car.clientWidth*V.carPage;
   const q=$('#q');if(q){q.addEventListener('input',e=>{V.ward.q=e.target.value;const p=e.target.selectionStart;render();const n=$('#q');n.focus();n.setSelectionRange(p,p)});if(keep)q.focus()}
 }
 
@@ -1274,6 +1292,7 @@ document.addEventListener('click',e=>{
     case'unwear':{const L=S.looks[TODAY];if(L){L.worn=false;L.items.forEach(id=>{const i=byId(id);if(i){i.worn=Math.max(0,i.worn-1);i.last=i.prevLast||null;i.since=i.prevSince||0;i.laundry=!!i.prevLaundry}})}save();return render()}
     case'shuffle':{const ds=V.day||TODAY,L=S.looks[ds];if(L&&L.worn)return toast('Undo “worn” first to change today’s look');if(L&&L.items&&L.items.length){L.items=[]}S.shuffle[ds]=(S.shuffle[ds]||0)+1;save();return render()}
     case'to-today':return goToday();
+    case'split':return setSplit(!V.split);
     case'stats':return go('stats');
     case'see-forgot':V.stack=[];V.screen='wardrobe';V.ward.mode='mine';V.ward.cat='forgot';V.anim='f';return render(true);
     case'price':return sheetPrice();
@@ -1361,25 +1380,32 @@ document.addEventListener('change',async e=>{
 });
 function finishOb(quiet){S.settings.name=V.obName||S.settings.name;const cityChanged=V.obCity&&V.obCity!==S.settings.city;if(V.obCity)S.settings.city=V.obCity;S.onboarded=true;save();if(cityChanged){W={};loadWeather()}
   if(!quiet){V.stack=[];V.screen='today';V.anim='f';render(true);toast('Welcome to Dresmi, '+S.settings.name)}}
-function setDay(d,dir){const prev=V.day||TODAY;if(d>add(TODAY,13))d=add(TODAY,13);if(d<TODAY)d=TODAY;if(d===prev)return;V.carPage=0;
+function setDay(d,dir){const prev=V.day||TODAY;if(d>add(TODAY,13))d=add(TODAY,13);if(d<TODAY)d=TODAY;if(d===prev)return;
   const wkChange=Math.floor(gap(TODAY,d)/7)!==Math.floor(gap(TODAY,prev)/7);V.day=d;const keep=$('#screen').scrollTop;render();$('#screen').scrollTop=keep;
-  const dd=dir||(d>prev?1:-1),h=$('.hero .car');if(h){h.style.setProperty('--sx',dd*28+'px');h.classList.remove('slide');void h.offsetWidth;h.classList.add('slide')}
+  const dd=dir||(d>prev?1:-1),h=$('#hero .left');if(h){h.style.setProperty('--sx',dd*28+'px');h.classList.remove('slide');void h.offsetWidth;h.classList.add('slide')}
   const wk=$('.week');if(wk&&wkChange){wk.style.setProperty('--sx',dd*40+'px');wk.classList.add('slide')}}
 let TT=null;
 function goToday(){clearTimeout(TT);const step=()=>{const cur=V.day||TODAY;if(cur<=TODAY){V.day=TODAY;return}setDay(add(cur,-1),-1);TT=setTimeout(step,gap(TODAY,V.day)>1?110:160)};$('#screen').scrollTo({top:0,behavior:'smooth'});step()}
 let PT=null;
 function ptrEl(){let e=$('#ptr');if(!e){e=document.createElement('div');e.id='ptr';e.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v4.2h-4.2"/></svg><span>Pull to refresh</span>';document.body.appendChild(e)}return e}
-document.addEventListener('touchstart',e=>{const sc=$('#screen');PT=(V.screen==='today'&&sc.scrollTop<=0&&!e.target.closest('.car,.week'))?{y:e.touches[0].clientY,d:0}:null},{passive:true});
+document.addEventListener('touchstart',e=>{const sc=$('#screen');PT=(V.screen==='today'&&sc.scrollTop<=0&&!e.target.closest('#hero,.week'))?{y:e.touches[0].clientY,d:0}:null},{passive:true});
 document.addEventListener('touchmove',e=>{if(!PT)return;PT.d=e.touches[0].clientY-PT.y;if(PT.d<=0)return;const el=ptrEl(),p=Math.min(PT.d,110);el.style.transform='translate(-50%,'+(p-60)+'px)';el.querySelector('span').textContent=PT.d>80?'Release to refresh':'Pull to refresh'},{passive:true});
 document.addEventListener('touchend',()=>{if(!PT)return;const go=PT.d>80;PT=null;const el=$('#ptr');if(!el)return;
   if(!go){el.style.transform='';return}
   el.classList.add('spin');el.querySelector('span').textContent='Updating…';el.style.transform='translate(-50%,10px)';
   Promise.all([loadWeather(),USER?pull():null,GTOKEN&&Date.now()-GTOKEN_AT<50*60e3?gcalImport(GTOKEN):null]).finally(()=>{setTimeout(()=>{el.classList.remove('spin');el.style.transform='';render()},400)})},{passive:true});
+let HS=null;
+document.addEventListener('touchstart',e=>{const h=e.target.closest('#hero');HS=h&&!e.target.closest('.right')?{x:e.touches[0].clientX,y:e.touches[0].clientY}:(h?{x:e.touches[0].clientX,y:e.touches[0].clientY,inRight:true}:null)},{passive:true});
+document.addEventListener('touchend',e=>{if(!HS)return;const t=e.changedTouches[0],dx=t.clientX-HS.x,dy=t.clientY-HS.y,r=HS.inRight;HS=null;
+  if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.4){const want=dx<0;if(r&&want)return;if(!!V.split!==want){V.swiped=Date.now();setSplit(want)}}},{passive:true});
+function setSplit(on){V.split=on;const h=$('#hero');if(!h)return render();h.classList.toggle('split',on);
+  const r=h.querySelector('.right');if(r){on?r.removeAttribute('aria-hidden'):r.setAttribute('aria-hidden','true');r.querySelectorAll('.pr').forEach(b=>on?b.removeAttribute('tabindex'):b.setAttribute('tabindex','-1'))}
+  h.querySelectorAll('.cdots i').forEach((d,k)=>d.classList.toggle('on',on?k===1:k===0));const cd=h.querySelector('.cdots');if(cd)cd.setAttribute('aria-label',on?'Hide the pieces':'Show the pieces in this look')}
 let SW0=null;
 document.addEventListener('touchstart',e=>{const h=e.target.closest('.week');SW0=h&&V.screen==='today'?{x:e.touches[0].clientX,y:e.touches[0].clientY}:null},{passive:true});
 document.addEventListener('touchend',e=>{if(!SW0)return;const t=e.changedTouches[0],dx=t.clientX-SW0.x,dy=t.clientY-SW0.y;SW0=null;
   if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5){V.swiped=Date.now();const onWeek=e.target.closest&&e.target.closest('.week');setDay(add(V.day||TODAY,(dx<0?1:-1)*(onWeek?7:1)),dx<0?1:-1)}},{passive:true});
-document.addEventListener('click',e=>{if(V.swiped&&Date.now()-V.swiped<400&&e.target.closest('.week')){e.stopPropagation();e.preventDefault()}},true);
+document.addEventListener('click',e=>{if(V.swiped&&Date.now()-V.swiped<400&&e.target.closest('.week,#hero')){e.stopPropagation();e.preventDefault()}},true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#layer').innerHTML)closeSheet()});
 /* fit the app to the real screen: iOS home-screen apps can report a viewport shorter than the screen */
 let FIT={txt:'measuring'};
@@ -1403,6 +1429,3 @@ imgLoadAll();
 sbInit();
 })();
 </script>
-
-</body>
-</html>
