@@ -242,28 +242,37 @@ nav.tabs .on i{background:var(--clay)}
 .pieces-pane .pc .t{background:var(--card)}
 .hero.split-able{overflow:hidden}
 .hero .left{position:absolute;top:0;bottom:0;left:0;width:100%;transition:width .45s var(--ease)}
-.hero.split .left{width:50%}
-.hero .left .ph{object-fit:cover;object-position:50% 100%;top:54px;height:calc(100% - 56px)}
+.hero.split .left{width:calc(100% - var(--pw))}
+.hero{--pw:96px}
+.hero .left .ph{top:auto;bottom:2px;height:calc(100% - 58px);width:auto;max-width:none;left:50%;transform:translateX(-50%);object-fit:contain}
 .hero.photo .left::before{content:"";position:absolute;left:22%;right:22%;bottom:4px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(96,78,62,.26),rgba(96,78,62,0))}
 .hero .fc{display:none}
 .hero.split .ff{display:none}
 .hero.split .fc{position:absolute;inset:56px 8px 30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
 .hero .pill .sm{display:none}
-.hero.split .pill .lg{display:none}.hero.split .pill .sm{display:inline}
+
 .hero.split .soon2{display:none}
-.hero .right{position:absolute;top:0;bottom:0;right:0;width:50%;padding:16px 14px 34px 12px;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:8px;transform:translateX(100%);opacity:0;transition:transform .45s var(--ease),opacity .3s var(--ease)}
+.hero.split .pill .lg{display:none}.hero.split .pill .sm{display:inline}
+.hero .right{position:absolute;top:0;bottom:0;right:0;width:var(--pw);padding:16px 14px 16px 6px;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;justify-content:safe center;align-items:center;gap:10px;transform:translateX(100%);opacity:0;transition:transform .45s var(--ease),opacity .3s var(--ease)}
 .hero .right::-webkit-scrollbar{display:none}
 .hero.split .right{transform:none;opacity:1}
 .hero .right .pp-head{padding:2px 2px 4px}
 .hero .right .note{font-size:12px;line-height:1.35}
-.pr{display:flex;align-items:center;gap:10px;text-align:left;padding:4px;border-radius:16px;width:100%}
+.pr{display:block;padding:0;border-radius:18px;flex:none}
+.pr.off{opacity:.4}
 .pr:active{background:rgba(255,253,250,.6)}
-.pr .t{width:52px;height:52px;border-radius:14px;background:var(--card);display:grid;place-items:center;flex-shrink:0}
+.pr .t{width:72px;height:72px;border-radius:18px;box-shadow:0 6px 16px -10px rgba(43,36,32,.35);background:var(--card);display:grid;place-items:center;flex-shrink:0}
 .pr .n{font-size:13px;line-height:1.25;min-width:0}
 .pr small{display:block;font-size:11px;color:var(--muted)}
-.divider{position:absolute;left:50%;top:22px;bottom:22px;width:1px;background:linear-gradient(rgba(110,98,90,0),rgba(110,98,90,.22) 25%,rgba(110,98,90,.22) 75%,rgba(110,98,90,0));opacity:0;transition:opacity .35s var(--ease)}
+.divider{position:absolute;right:var(--pw);top:22px;bottom:22px;width:1px;background:linear-gradient(rgba(110,98,90,0),rgba(110,98,90,.22) 25%,rgba(110,98,90,.22) 75%,rgba(110,98,90,0));opacity:0;transition:opacity .35s var(--ease)}
 .hero.split .divider{opacity:1}
-.cdots{position:absolute;left:50%;bottom:4px;transform:translateX(-50%);display:flex;gap:5px;padding:8px 10px;align-items:center}
+.cdots{display:none}
+.ptab{position:absolute;right:0;top:50%;transform:translateY(-50%);width:30px;height:84px;border-radius:16px 0 0 16px;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:-6px 0 18px -12px rgba(43,36,32,.35);transition:right .45s var(--ease),border-radius .3s var(--ease);z-index:3}
+.ptab::before{content:"";position:absolute;inset:-10px -4px -10px -14px}
+.ptab svg{width:16px;height:16px;fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .45s var(--ease)}
+.ptab .hg{width:18px;height:18px;stroke:var(--clay-ink)}
+.hero.split .ptab{right:var(--pw)}
+.hero.split .ptab .chev2{transform:rotate(180deg)}
 .cdots i{width:6px;height:6px;border-radius:3px;background:rgba(43,36,32,.18);transition:width .25s var(--ease),background .25s var(--ease)}
 .cdots i.on{width:16px;background:var(--clay)}
 
@@ -704,10 +713,9 @@ function scToday(){
     </div>
     <span class="divider" aria-hidden="true"></span>
     <div class="right" aria-label="The pieces in this look" ${V.split?'':'aria-hidden="true"'}>
-      <div class="pp-head"><h2 class="h-m" style="font-size:20px">In this <i class="it">look</i></h2><p class="note">${meta}</p></div>
-      ${pieces.map(i=>`<button class="pr" data-piece="${i.id}" ${V.split?'':'tabindex="-1"'}><span class="t">${g(i,40,44,'position:static')}</span><span class="n">${esc(i.name)}${!vis.includes(i.id)?'<small>Taken off</small>':''}</span></button>`).join('')}
+      ${pieces.map(i=>`<button class="pr ${vis.includes(i.id)?'':'off'}" data-piece="${i.id}" aria-label="${esc(i.name)}${vis.includes(i.id)?'':', taken off'}" ${V.split?'':'tabindex="-1"'}><span class="t">${g(i,52,56,'position:static')}</span></button>`).join('')}
     </div>
-    <button class="cdots" data-act="split" aria-label="${V.split?'Hide the pieces':'Show the pieces in this look'}"><i class="${V.split?'':'on'}"></i><i class="${V.split?'on':''}"></i></button>
+    <button class="ptab" data-act="split" aria-expanded="${!!V.split}" aria-label="${V.split?'Hide the pieces':'Show the pieces in this look'}"><svg class="hg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7.5a2 2 0 1 1 2-2c0 1-.8 1.4-1.4 1.8-.4.3-.6.6-.6 1.1v.6L3.5 15a1 1 0 0 0 .5 1.8h16a1 1 0 0 0 .5-1.8L12 9"/></svg><svg class="chev2" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></button>
   </div>
   <div class="tspace" aria-hidden="true"></div></div>
   <div class="row">${isT?(worn?`<button class="btn done" data-act="unwear">${ic('check')}Worn today · undo</button>`:`<button class="btn" data-act="wear">Wear this look</button>`)
@@ -1416,7 +1424,7 @@ document.addEventListener('touchend',e=>{if(!HS)return;const t=e.changedTouches[
   if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.4){const want=dx<0;if(r&&want)return;if(!!V.split!==want){V.swiped=Date.now();setSplit(want)}}},{passive:true});
 function setSplit(on){V.split=on;const h=$('#hero');if(!h)return render();h.classList.toggle('split',on);
   const r=h.querySelector('.right');if(r){on?r.removeAttribute('aria-hidden'):r.setAttribute('aria-hidden','true');r.querySelectorAll('.pr').forEach(b=>on?b.removeAttribute('tabindex'):b.setAttribute('tabindex','-1'))}
-  h.querySelectorAll('.cdots i').forEach((d,k)=>d.classList.toggle('on',on?k===1:k===0));const cd=h.querySelector('.cdots');if(cd)cd.setAttribute('aria-label',on?'Hide the pieces':'Show the pieces in this look')}
+  const cd=h.querySelector('.ptab');if(cd){cd.setAttribute('aria-label',on?'Hide the pieces':'Show the pieces in this look');cd.setAttribute('aria-expanded',on)}}
 let SW0=null;
 document.addEventListener('touchstart',e=>{const h=e.target.closest('.week');SW0=h&&V.screen==='today'?{x:e.touches[0].clientX,y:e.touches[0].clientY}:null},{passive:true});
 document.addEventListener('touchend',e=>{if(!SW0)return;const t=e.changedTouches[0],dx=t.clientX-SW0.x,dy=t.clientY-SW0.y;SW0=null;
