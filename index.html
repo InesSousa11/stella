@@ -95,7 +95,7 @@ i.it{font-style:italic;font-weight:500;color:var(--clay-ink)}
 .layer.on .box{background:var(--clay)}
 .layer.on .box::after{content:"";width:8px;height:4px;border:1.6px solid var(--card);border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}
 .stage.photo{background:var(--oat);height:420px}
-.hero.photo::before,.stage.photo::before{content:"";position:absolute;left:28%;right:28%;bottom:4px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(96,78,62,.26),rgba(96,78,62,0))}
+.hero.photo .pane:first-child::before,.stage.photo::before{content:"";position:absolute;left:28%;right:28%;bottom:4px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(96,78,62,.26),rgba(96,78,62,0))}
 .planbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .planbar .btn{height:46px;font-size:14px}
 nav.tabs::after{content:"";position:absolute;left:0;right:0;top:100%;height:200px;background:var(--card)}
@@ -219,11 +219,26 @@ nav.tabs .on i{background:var(--clay)}
 .wday.on{background:var(--ink);color:var(--linen)}
 .wday.on small,.wday.on span{color:#D9CFC3}
 .wday.on i.on{background:var(--linen)}
-.hero.slide{animation:slideIn .35s var(--ease)}
+.hero.slide,.car.slide{animation:slideIn .35s var(--ease)}
 .week.slide{animation:slideIn .3s var(--ease)}
 .fold{display:flex;flex-direction:column;gap:16px;min-height:100%;flex-shrink:0}
 .fold .hero{flex:1 1 auto;min-height:360px}
-.daynav{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.fold.today{height:100%;min-height:0}
+.fold.today .hero{min-height:300px;padding:0}
+.daynav{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.car{position:absolute;inset:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.car::-webkit-scrollbar{display:none}
+.pane{position:relative;flex:0 0 100%;height:100%;scroll-snap-align:start;scroll-snap-stop:always}
+.hero.photo .pane .ph{top:54px;height:calc(100% - 56px)}
+.pieces-pane{overflow-y:auto;padding:18px 16px 28px;display:flex;flex-direction:column;gap:12px;scrollbar-width:none}
+.pieces-pane::-webkit-scrollbar{display:none}
+.pp-head .note{margin-top:2px}
+.pieces-pane .pieces{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pieces-pane .pc .t{background:var(--card)}
+.cdots{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);display:flex;gap:5px;pointer-events:none}
+.cdots i{width:6px;height:6px;border-radius:3px;background:rgba(43,36,32,.18);transition:width .25s var(--ease),background .25s var(--ease)}
+.cdots i.on{width:16px;background:var(--clay)}
+
 .backtoday{font-size:13px;color:var(--clay-ink);display:inline-flex;align-items:center;gap:4px;padding:6px 0;white-space:nowrap}
 .backtoday svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
 .pieces{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
@@ -339,6 +354,16 @@ nav.tabs .on i{background:var(--clay)}
 .wl .tile0 img{width:100%;height:100%;object-fit:cover;border-radius:18px}
 .sec{display:flex;flex-direction:column;gap:10px;padding:14px 0;border-top:1px solid var(--line)}
 .sec h3{font-size:20px}
+.sheet .btn,.sheet .gbtn{flex:none}
+/* profile drawer */
+.scrim.side{justify-content:flex-start;align-items:stretch}
+.sheet.drawer{width:min(86%,380px);max-height:none;height:100%;border-radius:0 28px 28px 0;padding:calc(18px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));animation:drawerIn .34s var(--ease);position:relative}
+.scrim.side.noanim,.scrim.side.noanim .drawer{animation:none}
+.drawer .xclose{position:absolute;right:12px;top:calc(12px + env(safe-area-inset-top,0px))}
+.drawer.out{animation:drawerOut .26s var(--ease) forwards}.scrim.side.out{animation:fadeOut .26s var(--ease) forwards}
+@keyframes drawerIn{from{transform:translateX(-100%)}}
+@keyframes drawerOut{to{transform:translateX(-100%)}}
+@keyframes fadeOut{to{opacity:0}}
 /* sheet & toast */
 .scrim{position:fixed;inset:0;background:rgba(43,36,32,.32);z-index:40;display:flex;align-items:flex-end;justify-content:center;animation:fade .2s var(--ease)}
 .sheet{width:min(100%,460px);background:var(--card);border-radius:28px 28px 0 0;padding:10px max(20px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px;max-height:88%;overflow-y:auto;animation:up .3s var(--ease)}
@@ -627,34 +652,41 @@ function scToday(){
   const notes=upcomingNeeds().length,p=photoFor(ids);
   const hidden=(V.hide[ds]||[]).filter(id=>ids.includes(id)),vis=ids.filter(id=>!hidden.includes(id));
   let img=p&&imageFor(p,vis);if(p&&!img){V.hide[ds]=[];img=imageFor(p,ids)}
-  const t=titleOf(img?vis:ids);
   const layers=['outer','top','dress','bottom'].filter(k=>s[k]&&vis.includes(s[k].id)).length;
   let chips='';
   if(p)ids.forEach(id=>{const on=vis.includes(id),nv=on?vis.filter(x=>x!==id):vis.concat(id);if(!imageFor(p,nv))return;const it=byId(id);
     chips+=`<button class="layer ${on?'on':''}" data-layer-t="${id}" data-hk="${ds}" aria-pressed="${on}" aria-label="${on?'Take off':'Put on'} the ${esc(it.name)}"><span class="box"></span>${esc(KNAME[it.kind]||it.name)}</button>`});
-  const wpill=`<span class="pill topL">${ic(wIcon(w))}<span>${w.max}° · ${esc(word(w))}${w.est?' · estimate':''}</span></span>`;
+  const order=['outer','top','dress','bottom','shoes','bag'];
+  const pieces=ids.map(byId).filter(Boolean).sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat));
+  const meta=`${planned?(L.auto?'Planned by Dresmi':'Planned by you'):isT?'Suggested for today':'Suggested'} · ${c.ok?(w.rain>=50?'rain-ready':'right for the weather'):esc(c.t.replace('\n',' ').toLowerCase())} · ${layers} layer${layers===1?'':'s'}`;
+  const pg=V.carPage||0;
   return`
-  <div class="fold">
+  <div class="fold today">
   <div class="top"><button class="ib" data-act="settings" aria-label="Your profile">${USER||avatarSrc()?avatarHTML(''):ic('menu')}</button><div class="wordmark">DRESMI</div><button class="ib" data-act="notices" aria-label="Upcoming plans">${ic('bell')}${notes?'<span class="dot"></span>':''}</button></div>
-  <div><div class="daynav"><span class="eyebrow">${esc(longD(ds))}</span>${isT?'':`<button class="backtoday" data-act="to-today">${ic('left')}Back to today</button>`}</div>
-    <h1 class="h-xl" style="margin-top:2px;font-size:34px">${isT?greet+', <i class="it">'+esc(S.settings.name)+'</i>':L&&L.title?esc(L.title):esc(dayLine(w))}</h1></div>
+  <div class="daynav"><h1 class="h-xl" style="font-size:34px;min-width:0">${isT?greet+', <i class="it">'+esc(S.settings.name)+'</i>':L&&L.title?esc(L.title):esc(dayLine(w))}</h1>${isT?'':`<button class="backtoday" data-act="to-today">${ic('left')}Today</button>`}</div>
   ${weekStrip(ds)}
   ${S.items.length<4?`<button class="trycard" data-go="wardrobe"><span class="ti">${ic('plus')}</span><span style="flex:1;min-width:0"><b style="font-weight:500;display:block">Add a few more pieces</b><span class="note">With a top, a bottom and shoes Dresmi can start dressing you.</span></span><span class="chev">${ic('right')}</span></button>`:''}
   ${(()=>{const fd=isT&&feelDue();if(!fd)return'';const FL=S.looks[fd],ft=titleOf(FL.items);return`<div class="feel"><span class="q">How did ${fd===TODAY?'today’s':'yesterday’s'} look feel?<small>${esc(ft.join(' '))}</small></span>
     <div class="opts"><button data-feel="cold" data-date="${fd}">Too cold</button><button data-feel="ok" data-date="${fd}">Just right</button><button data-feel="warm" data-date="${fd}">Too warm</button></div></div>`})()}
-  <div class="hero ${p?'photo':''}" data-swipe="1">
-    <button class="cover" data-act="dress-day" data-date="${ds}" aria-label="Open this look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:flatlay(ids)}</button>
-    ${wpill}
-    <button class="heart topR ${isFav?'on':''}" data-act="fav-look" aria-label="${isFav?'Remove from saved looks':'Save this look'}" aria-pressed="${isFav}">${ic('heart')}</button>
-    ${chips?`<div class="layers" role="group" aria-label="Layers">${chips}</div>`:p?'':'<span class="pill">Photo of this look coming soon</span>'}
+  <div class="hero ${p?'photo':''}">
+    <div class="car" id="car" data-page="${pg}">
+      <div class="pane" aria-label="The look on you">
+        <button class="cover" data-act="dress-day" data-date="${ds}" aria-label="Open this look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:flatlay(ids)}</button>
+        <span class="pill topL">${ic(wIcon(w))}<span>${w.max}° · ${esc(word(w))}${w.est?' · estimate':''}</span></span>
+        <button class="heart topR ${isFav?'on':''}" data-act="fav-look" aria-label="${isFav?'Remove from saved looks':'Save this look'}" aria-pressed="${isFav}">${ic('heart')}</button>
+        ${chips?`<div class="layers" role="group" aria-label="Layers">${chips}</div>`:p?'':'<span class="pill">Photo of this look coming soon</span>'}
+      </div>
+      <div class="pane pieces-pane" aria-label="The pieces in this look">
+        <div class="pp-head"><h2 class="h-m" style="font-size:22px">In this <i class="it">look</i></h2><p class="note">${meta}</p></div>
+        <div class="pieces">${pieces.map(i=>`<button class="pc" data-piece="${i.id}"><span class="t">${g(i,64,68,'position:static')}</span><span>${esc(i.name)}</span>${!vis.includes(i.id)?'<small>Taken off</small>':''}</button>`).join('')}</div>
+      </div>
+    </div>
+    <div class="cdots" aria-hidden="true"><i class="${pg===0?'on':''}"></i><i class="${pg===1?'on':''}"></i></div>
   </div>
   <div class="row">${isT?(worn?`<button class="btn done" data-act="unwear">${ic('check')}Worn today · undo</button>`:`<button class="btn" data-act="wear">Wear this look</button>`)
       :planned&&!L.auto?`<button class="btn ghost" data-act="dress-day" data-date="${ds}">Change this look</button>`:`<button class="btn" data-act="keep-day" data-date="${ds}">Keep this look</button>`}
     <button class="sq" data-act="shuffle" aria-label="Suggest another look">${ic('swap')}</button></div>
-  </div>
-  <div style="padding-top:8px"><h2 class="h-m" style="font-size:22px">In this <i class="it">look</i></h2>
-    <p class="note" style="margin-top:2px">${planned?(L.auto?'Planned by Dresmi':'Planned by you'):isT?'Suggested for today':'Suggested'}${L&&L.title&&isT?' · '+esc(L.title):''} · ${c.ok?(w.rain>=50?'rain-ready':'right for the weather'):esc(c.t.replace('\n',' ').toLowerCase())} · ${layers} layer${layers===1?'':'s'}</p></div>
-  <div class="pieces">${ids.map(byId).filter(Boolean).sort((a,b)=>['outer','top','dress','bottom','shoes','bag'].indexOf(a.cat)-['outer','top','dress','bottom','shoes','bag'].indexOf(b.cat)).map(i=>`<button class="pc" data-piece="${i.id}"><span class="t">${g(i,70,74,'position:static')}</span><span>${esc(i.name)}</span>${!vis.includes(i.id)?'<small>Taken off</small>':''}</button>`).join('')}</div>`;
+  </div>`;
 }
 function dayLine(w){const c=w.rain>=50?'Rain from '+(w.from||'midday'):w.code<=1?'Clear skies':w.code<=2?'Mostly clear':w.code===3?'Cloudy':w.code<=48?'Foggy':'Showers';return c+', '+w.max+'°'}
 function weekStrip(sel){
@@ -1083,7 +1115,7 @@ function accountHTML(){
 }
 
 /* ---------- sheets ---------- */
-function sheet(html,onMount){V.sheetOpen=html.includes('Your <i class="it">profile')?'settings':'other';const L=$('#layer');L.innerHTML=`<div class="scrim" data-act="close-sheet"><div class="sheet" role="dialog" aria-modal="true"><span class="grab"></span>${html}</div></div>`;onMount&&onMount(L)}
+function sheet(html,onMount){const isProf=html.includes('Your <i class="it">profile'),again=isProf&&V.sheetOpen==='settings';V.sheetOpen=isProf?'settings':'other';const L=$('#layer');L.innerHTML=isProf?`<div class="scrim side ${again?'noanim':''}" data-act="close-sheet"><div class="sheet drawer" role="dialog" aria-modal="true" aria-label="Your profile"><button class="ib xclose" data-act="close-drawer" aria-label="Close">${ic('left')}</button>${html}</div></div>`:`<div class="scrim" data-act="close-sheet"><div class="sheet" role="dialog" aria-modal="true"><span class="grab"></span>${html}</div></div>`;onMount&&onMount(L)}
 function closeSheet(){V.sheetOpen=null;$('#layer').innerHTML=''}
 function sheetSettings(){
   const P=S.profile,cal=P.calImported;
@@ -1173,6 +1205,7 @@ function sheetPiece(){
 }
 
 /* ---------- render ---------- */
+document.addEventListener('scroll',e=>{const c=e.target;if(!c||c.id!=='car')return;const pg=Math.round(c.scrollLeft/Math.max(1,c.clientWidth));if(pg!==V.carPage){V.carPage=pg;document.querySelectorAll('.cdots i').forEach((d,k)=>d.classList.toggle('on',k===pg))}},true);
 function render(scrollTop){
   const sc=$('#screen'),f=({today:scToday,plan:scPlan,looks:scLooks,look:scLook,wardrobe:scWardrobe,dressing:scDressing,piece:scPiece,try:scTry,trip:scTrip,stats:scStats,welcome:scWelcome})[V.screen];
   const keep=document.activeElement&&document.activeElement.id==='q';
@@ -1182,6 +1215,7 @@ function render(scrollTop){
   const tab={stats:'looks',welcome:'',trip:'plan',today:'today',plan:'plan',looks:'looks',look:'looks',try:'looks',wardrobe:'wardrobe',dressing:'create',piece:'wardrobe'}[V.screen];
   document.querySelectorAll('#tabs button').forEach(b=>{const on=b.dataset.go===tab;b.classList.toggle('on',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')});
   if(scrollTop)sc.scrollTop=0;
+  const car=$('#car');if(car&&V.carPage)car.scrollLeft=car.clientWidth*V.carPage;
   const q=$('#q');if(q){q.addEventListener('input',e=>{V.ward.q=e.target.value;const p=e.target.selectionStart;render();const n=$('#q');n.focus();n.setSelectionRange(p,p)});if(keep)q.focus()}
 }
 
@@ -1230,7 +1264,8 @@ document.addEventListener('click',e=>{
     case'back':return back();
     case'settings':return sheetSettings();
     case'notices':return sheetNotices();
-    case'close-sheet':if(e.target!==t)return;return closeSheet();
+    case'close-drawer':{const d0=$('.drawer'),sc0=$('.scrim.side');if(d0){d0.classList.add('out');sc0.classList.add('out');setTimeout(closeSheet,260);return}return closeSheet()}
+    case'close-sheet':{if(e.target!==t)return;const d0=$('.drawer');if(d0){d0.classList.add('out');$('.scrim.side').classList.add('out');setTimeout(closeSheet,260);return}return closeSheet()}
     case'dress-today':return openDressing(TODAY);
     case'dress-day':closeSheet();return openDressing(d.date);
     case'open-day':return openDressing(V.plan.sel<TODAY?TODAY:V.plan.sel);
@@ -1326,25 +1361,25 @@ document.addEventListener('change',async e=>{
 });
 function finishOb(quiet){S.settings.name=V.obName||S.settings.name;const cityChanged=V.obCity&&V.obCity!==S.settings.city;if(V.obCity)S.settings.city=V.obCity;S.onboarded=true;save();if(cityChanged){W={};loadWeather()}
   if(!quiet){V.stack=[];V.screen='today';V.anim='f';render(true);toast('Welcome to Dresmi, '+S.settings.name)}}
-function setDay(d,dir){const prev=V.day||TODAY;if(d>add(TODAY,13))d=add(TODAY,13);if(d<TODAY)d=TODAY;if(d===prev)return;
+function setDay(d,dir){const prev=V.day||TODAY;if(d>add(TODAY,13))d=add(TODAY,13);if(d<TODAY)d=TODAY;if(d===prev)return;V.carPage=0;
   const wkChange=Math.floor(gap(TODAY,d)/7)!==Math.floor(gap(TODAY,prev)/7);V.day=d;const keep=$('#screen').scrollTop;render();$('#screen').scrollTop=keep;
-  const dd=dir||(d>prev?1:-1),h=$('.hero');if(h){h.style.setProperty('--sx',dd*28+'px');h.classList.remove('slide');void h.offsetWidth;h.classList.add('slide')}
+  const dd=dir||(d>prev?1:-1),h=$('.hero .car');if(h){h.style.setProperty('--sx',dd*28+'px');h.classList.remove('slide');void h.offsetWidth;h.classList.add('slide')}
   const wk=$('.week');if(wk&&wkChange){wk.style.setProperty('--sx',dd*40+'px');wk.classList.add('slide')}}
 let TT=null;
 function goToday(){clearTimeout(TT);const step=()=>{const cur=V.day||TODAY;if(cur<=TODAY){V.day=TODAY;return}setDay(add(cur,-1),-1);TT=setTimeout(step,gap(TODAY,V.day)>1?110:160)};$('#screen').scrollTo({top:0,behavior:'smooth'});step()}
 let PT=null;
 function ptrEl(){let e=$('#ptr');if(!e){e=document.createElement('div');e.id='ptr';e.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v4.2h-4.2"/></svg><span>Pull to refresh</span>';document.body.appendChild(e)}return e}
-document.addEventListener('touchstart',e=>{const sc=$('#screen');PT=(V.screen==='today'&&sc.scrollTop<=0&&!e.target.closest('[data-swipe],.week'))?{y:e.touches[0].clientY,d:0}:null},{passive:true});
+document.addEventListener('touchstart',e=>{const sc=$('#screen');PT=(V.screen==='today'&&sc.scrollTop<=0&&!e.target.closest('.car,.week'))?{y:e.touches[0].clientY,d:0}:null},{passive:true});
 document.addEventListener('touchmove',e=>{if(!PT)return;PT.d=e.touches[0].clientY-PT.y;if(PT.d<=0)return;const el=ptrEl(),p=Math.min(PT.d,110);el.style.transform='translate(-50%,'+(p-60)+'px)';el.querySelector('span').textContent=PT.d>80?'Release to refresh':'Pull to refresh'},{passive:true});
 document.addEventListener('touchend',()=>{if(!PT)return;const go=PT.d>80;PT=null;const el=$('#ptr');if(!el)return;
   if(!go){el.style.transform='';return}
   el.classList.add('spin');el.querySelector('span').textContent='Updating…';el.style.transform='translate(-50%,10px)';
   Promise.all([loadWeather(),USER?pull():null,GTOKEN&&Date.now()-GTOKEN_AT<50*60e3?gcalImport(GTOKEN):null]).finally(()=>{setTimeout(()=>{el.classList.remove('spin');el.style.transform='';render()},400)})},{passive:true});
 let SW0=null;
-document.addEventListener('touchstart',e=>{const h=e.target.closest('[data-swipe],.week');SW0=h&&V.screen==='today'?{x:e.touches[0].clientX,y:e.touches[0].clientY}:null},{passive:true});
+document.addEventListener('touchstart',e=>{const h=e.target.closest('.week');SW0=h&&V.screen==='today'?{x:e.touches[0].clientX,y:e.touches[0].clientY}:null},{passive:true});
 document.addEventListener('touchend',e=>{if(!SW0)return;const t=e.changedTouches[0],dx=t.clientX-SW0.x,dy=t.clientY-SW0.y;SW0=null;
   if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5){V.swiped=Date.now();const onWeek=e.target.closest&&e.target.closest('.week');setDay(add(V.day||TODAY,(dx<0?1:-1)*(onWeek?7:1)),dx<0?1:-1)}},{passive:true});
-document.addEventListener('click',e=>{if(V.swiped&&Date.now()-V.swiped<400&&e.target.closest('[data-swipe],.week')){e.stopPropagation();e.preventDefault()}},true);
+document.addEventListener('click',e=>{if(V.swiped&&Date.now()-V.swiped<400&&e.target.closest('.week')){e.stopPropagation();e.preventDefault()}},true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#layer').innerHTML)closeSheet()});
 /* fit the app to the real screen: iOS home-screen apps can report a viewport shorter than the screen */
 let FIT={txt:'measuring'};
