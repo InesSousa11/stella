@@ -257,10 +257,12 @@ nav.tabs .on i{background:var(--clay)}
 .evdot{position:absolute;right:62px;top:14px;width:40px;height:40px;border-radius:20px;background:var(--clay);color:var(--linen);display:grid;place-items:center;z-index:2}
 .evdot svg{width:17px;height:17px}
 .evdot i{position:absolute;right:-3px;top:-3px;min-width:18px;height:18px;border-radius:9px;background:var(--ink);color:var(--linen);font-style:normal;font-size:10.5px;font-weight:600;display:grid;place-items:center;box-shadow:0 0 0 2px var(--oat)}
-.evpop{position:absolute;left:14px;right:14px;top:100px;max-width:280px;background:var(--card);border-radius:18px;padding:8px 14px;box-shadow:0 18px 40px -18px rgba(43,36,32,.45);z-index:4;display:flex;flex-direction:column}
-.evpop div{display:flex;gap:12px;padding:9px 0;font-size:13.5px;border-bottom:1px solid var(--line)}
+.evshield{position:absolute;inset:0;z-index:3}
+.evpop{position:absolute;left:14px;right:14px;top:66px;max-width:290px;margin-left:auto;margin-right:48px;background:linear-gradient(135deg,rgba(150,82,56,.62),rgba(110,62,44,.5));-webkit-backdrop-filter:blur(18px) saturate(1.2);backdrop-filter:blur(18px) saturate(1.2);border:1px solid rgba(255,253,250,.28);border-radius:20px;padding:6px 16px;box-shadow:0 24px 50px -24px rgba(43,36,32,.55);z-index:4;display:flex;flex-direction:column;color:#FFFDFA;animation:popIn .22s var(--ease);transform-origin:top right}
+@keyframes popIn{from{opacity:0;transform:scale(.94) translateY(-4px)}}
+.evpop div{display:flex;gap:12px;padding:10px 0;font-size:13.5px;border-bottom:1px solid rgba(255,253,250,.18)}
 .evpop div:last-child{border:0}
-.evpop b{font-weight:500;color:var(--clay-ink);width:48px;flex:none;font-variant-numeric:tabular-nums}
+.evpop b{font-weight:500;color:#F6CDB9;letter-spacing:.02em;width:48px;flex:none;font-variant-numeric:tabular-nums}
 .hero.ev-t .left .ph{top:100px;height:calc(100% - 160px)}
 .hero.ev-s1 .left .ph{top:98px;height:calc(100% - 158px)}
 .hero.ev-s2 .left .ph{top:132px;height:calc(100% - 192px)}
@@ -758,7 +760,7 @@ function scToday(){
   ${(()=>{const fd=isT&&feelDue();if(!fd)return'';const FL=S.looks[fd],ft=titleOf(FL.items);return`<div class="feel"><span class="q">How did ${fd===TODAY?'today’s':'yesterday’s'} look feel?<small>${esc(ft.join(' '))}</small></span>
     <div class="opts"><button data-feel="cold" data-date="${fd}">Too cold</button><button data-feel="ok" data-date="${fd}">Just right</button><button data-feel="warm" data-date="${fd}">Too warm</button></div></div>`})()}
   </div>
-  <div class="hero split-able ${p?'photo':''} ${V.split?'split':''} ${(()=>{const n=evList(ds,L).length,st=window.EVS2||'1';return!n||st==='4'?'':st==='3'?'ev-s'+Math.min(3,n):'ev-t'})()}" id="hero">
+  <div class="hero split-able ${p?'photo':''} ${V.split?'split':''} ${(()=>{const n=evList(ds,L).length,st=window.EVS2||'4';return!n||st==='4'?'':st==='3'?'ev-s'+Math.min(3,n):'ev-t'})()}" id="hero">
     <div class="left">
       <button class="cover" data-act="dress-day" data-date="${ds}" aria-label="Open this look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:`<span class="ff">${flatlay(ids)}</span><span class="fc">${pieces.filter(i=>i.cat!=='bag').map(i=>g(i,i.cat==='shoes'?84:96,i.cat==='shoes'?56:i.cat==='bottom'?120:100,'position:static')).join('')}</span>`}</button>
       <span class="pill topL ${window.EVS2==='2'&&evList(ds,L).length?'joined':''}">${ic(wIcon(w))}<span class="lg">${w.max}° · ${esc(word(w))}${w.est?' · estimate':''}</span><span class="sm">${w.max}°</span></span>${evMark(ds,L)}
@@ -782,9 +784,9 @@ function scToday(){
 function evList(ds,L){const c=((S.cal||{})[ds]||[]).slice(),t=L&&L.time?L.time.split(/\s*[–-]\s*/)[0]:'';
   if(L&&L.title&&(!L.fromCal||!c.length)&&!c.some(e=>e.title===L.title))c.push({title:L.title,time:t});
   return c.sort((a,b)=>(a.time||'')<(b.time||'')?-1:1)}
-function evMark(ds,L){const ev=evList(ds,L);if(!ev.length)return'';const st=window.EVS2||'1',e=ev[0],more=ev.length-1;
+function evMark(ds,L){const ev=evList(ds,L);if(!ev.length)return'';const st=window.EVS2||'4',e=ev[0],more=ev.length-1;
   const lab=`${e.time?`<b>${esc(e.time)}</b>`:''}<span class="et">${esc(e.title)}</span>${more?`<em>+${more}</em>`:''}`;
-  const pop=V.evOpen===ds?`<div class="evpop" role="dialog" aria-label="Events on this day">${ev.map(x=>`<div><b>${esc(x.time||'All day')}</b><span>${esc(x.title)}</span></div>`).join('')}</div>`:'';
+ const pop=V.evOpen===ds?`<div class="evshield" data-act="ev-close"></div><div class="evpop" role="dialog" aria-label="Events on this day">${ev.map(x=>`<div><b>${esc(x.time||'All day')}</b><span>${esc(x.title)}</span></div>`).join('')}</div>`:'';
   const aria=`aria-label="${ev.length} event${ev.length>1?'s':''}: ${esc(ev.map(x=>(x.time?x.time+' ':'')+x.title).join(', '))}" aria-expanded="${V.evOpen===ds}"`;
   if(st==='3')return`<div class="evstack">${ev.slice(0,2).map(x=>`<button class="evc" data-act="ev-open" data-date="${ds}" ${aria}>${x.time?`<b>${esc(x.time)}</b>`:''}<span class="et">${esc(x.title)}</span></button>`).join('')}${ev.length>2?`<button class="evc more" data-act="ev-open" data-date="${ds}">+${ev.length-2} more</button>`:''}</div>${pop}`;
   if(st==='4')return`<button class="evdot" data-act="ev-open" data-date="${ds}" ${aria}>${ic('cal')}<i>${ev.length}</i></button>${pop}`;
@@ -1388,6 +1390,7 @@ document.addEventListener('click',e=>{
     case'shuffle':{const ds=V.day||TODAY,L=S.looks[ds];if(L&&L.worn)return toast('Undo “worn” first to change today’s look');if(L&&L.items&&L.items.length){L.items=[]}S.shuffle[ds]=(S.shuffle[ds]||0)+1;save();return render()}
     case'to-today':return goToday();
     case'split':return setSplit(!V.split);
+    case'ev-close':V.evOpen=null;{const k=$('#tsc')?$('#tsc').scrollTop:0;render();layoutToday(k)}return;
     case'ev-open':V.evOpen=V.evOpen===d.date?null:d.date;{const k=$('#tsc')?$('#tsc').scrollTop:0;render();layoutToday(k)}return;
     case'stats':return go('stats');
     case'see-forgot':V.stack=[];V.screen='wardrobe';V.ward.mode='mine';V.ward.cat='forgot';V.anim='f';return render(true);
