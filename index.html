@@ -257,6 +257,32 @@ nav.tabs .on i{background:var(--clay)}
 .evdot{position:absolute;right:62px;top:14px;width:40px;height:40px;border-radius:20px;background:var(--clay);color:var(--linen);display:grid;place-items:center;z-index:2}
 .evdot svg{width:17px;height:17px}
 .evdot i{position:absolute;right:-3px;top:-3px;min-width:18px;height:18px;border-radius:9px;background:var(--ink);color:var(--linen);font-style:normal;font-size:10.5px;font-weight:600;display:grid;place-items:center;box-shadow:0 0 0 2px var(--oat)}
+.tev{flex:none;padding:24px 0 8px;display:flex;flex-direction:column;gap:14px}
+.tev>*{flex:none}
+.evh{font-size:24px;display:flex;align-items:baseline;justify-content:space-between}
+.evh small{font-family:var(--sans);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.tev .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.evA2{list-style:none;margin:0;padding:0 0 0 4px;display:flex;flex-direction:column}
+.evA2 li{position:relative;display:flex;gap:16px;padding:10px 0 14px 22px;font-size:15px}
+.evA2 li::before{content:"";position:absolute;left:0;top:16px;width:9px;height:9px;border-radius:5px;background:var(--clay)}
+.evA2 li::after{content:"";position:absolute;left:4px;top:30px;bottom:-12px;width:1px;background:rgba(169,87,58,.3)}
+.evA2 li:last-child::after{display:none}
+.evA2 b{font-weight:500;color:var(--clay-ink);width:50px;flex:none;font-variant-numeric:tabular-nums}
+.evB2{display:flex;flex-direction:column;gap:10px}
+.evB2 .r{display:flex;align-items:center;gap:16px;background:var(--card);border-radius:20px;padding:14px 18px}
+.evB2 b{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--clay-ink);width:64px;flex:none;font-variant-numeric:lining-nums}
+.evB2 .r>span{display:flex;flex-direction:column;min-width:0;font-size:15px}
+.evB2 small{font-size:12px;color:var(--muted)}
+.evG{display:flex;flex-direction:column;border-radius:22px;padding:6px 18px;background:linear-gradient(135deg,rgba(150,82,56,.9),rgba(110,62,44,.85));color:#FFFDFA;box-shadow:0 24px 50px -28px rgba(43,36,32,.6)}
+.evG .r{display:flex;gap:14px;padding:13px 0;font-size:15px;border-bottom:1px solid rgba(255,253,250,.18)}
+.evG .r:last-child{border:0}
+.evG b{font-weight:500;color:#F6CDB9;width:52px;flex:none}
+.evD2{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:0 -24px;padding:0 24px 4px;scroll-snap-type:x proximity}
+.evD2::-webkit-scrollbar{display:none}
+.evD2 .r{flex:none;width:150px;border-radius:20px;background:var(--oat);padding:14px 16px;display:flex;flex-direction:column;gap:4px;scroll-snap-align:start}
+.evD2 b{font-family:var(--serif);font-size:26px;font-weight:600;line-height:1}
+.evD2 .t{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:14px;line-height:1.3}
+.evD2 small{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--clay-ink);margin-top:auto;padding-top:6px}
 .evshield{position:absolute;inset:0;z-index:3}
 .evpop{position:absolute;left:14px;right:14px;top:66px;max-width:290px;margin-left:auto;margin-right:48px;background:linear-gradient(135deg,rgba(150,82,56,.62),rgba(110,62,44,.5));-webkit-backdrop-filter:blur(18px) saturate(1.2);backdrop-filter:blur(18px) saturate(1.2);border:1px solid rgba(255,253,250,.28);border-radius:20px;padding:6px 16px;box-shadow:0 24px 50px -24px rgba(43,36,32,.55);z-index:4;display:flex;flex-direction:column;color:#FFFDFA;animation:popIn .22s var(--ease);transform-origin:top right}
 @keyframes popIn{from{opacity:0;transform:scale(.94) translateY(-4px)}}
@@ -760,10 +786,10 @@ function scToday(){
   ${(()=>{const fd=isT&&feelDue();if(!fd)return'';const FL=S.looks[fd],ft=titleOf(FL.items);return`<div class="feel"><span class="q">How did ${fd===TODAY?'today’s':'yesterday’s'} look feel?<small>${esc(ft.join(' '))}</small></span>
     <div class="opts"><button data-feel="cold" data-date="${fd}">Too cold</button><button data-feel="ok" data-date="${fd}">Just right</button><button data-feel="warm" data-date="${fd}">Too warm</button></div></div>`})()}
   </div>
-  <div class="hero split-able ${p?'photo':''} ${V.split?'split':''} ${(()=>{const n=evList(ds,L).length,st=window.EVS2||'4';return!n||st==='4'?'':st==='3'?'ev-s'+Math.min(3,n):'ev-t'})()}" id="hero">
+  <div class="hero split-able ${p?'photo':''} ${V.split?'split':''} " id="hero">
     <div class="left">
       <button class="cover" data-act="dress-day" data-date="${ds}" aria-label="Open this look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:`<span class="ff">${flatlay(ids)}</span><span class="fc">${pieces.filter(i=>i.cat!=='bag').map(i=>g(i,i.cat==='shoes'?84:96,i.cat==='shoes'?56:i.cat==='bottom'?120:100,'position:static')).join('')}</span>`}</button>
-      <span class="pill topL ${window.EVS2==='2'&&evList(ds,L).length?'joined':''}">${ic(wIcon(w))}<span class="lg">${w.max}° · ${esc(word(w))}${w.est?' · estimate':''}</span><span class="sm">${w.max}°</span></span>${evMark(ds,L)}
+      <span class="pill topL ${window.EVS2==='2'&&evList(ds,L).length?'joined':''}">${ic(wIcon(w))}<span class="lg">${w.max}° · ${esc(word(w))}${w.est?' · estimate':''}</span><span class="sm">${w.max}°</span></span>
       <button class="heart topR ${isFav?'on':''}" data-act="fav-look" aria-label="${isFav?'Remove from saved looks':'Save this look'}" aria-pressed="${isFav}">${ic('heart')}</button>
       ${p?'':'<span class="pill soon2">Photo coming soon</span>'}
     </div>
@@ -775,7 +801,7 @@ function scToday(){
     </div>
     <button class="ptab" data-act="split" aria-expanded="${!!V.split}" aria-label="${V.split?'Hide the pieces':'Show the pieces in this look'}"><svg class="hg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7.5a2 2 0 1 1 2-2c0 1-.8 1.4-1.4 1.8-.4.3-.6.6-.6 1.1v.6L3.5 15a1 1 0 0 0 .5 1.8h16a1 1 0 0 0 .5-1.8L12 9"/></svg><svg class="chev2" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></button>
   </div>
-  <div class="tspace" aria-hidden="true"></div></div>
+  <div class="tspace" aria-hidden="true"></div>${evSection(ds,L)}</div>
   <div class="row">${isT?(worn?`<button class="btn done" data-act="unwear">${ic('check')}Worn today · undo</button>`:`<button class="btn" data-act="wear">Wear this look</button>`)
       :planned&&!L.auto?`<button class="btn ghost" data-act="dress-day" data-date="${ds}">Change this look</button>`:`<button class="btn" data-act="keep-day" data-date="${ds}">Keep this look</button>`}
     <button class="sq" data-act="shuffle" aria-label="Suggest another look">${ic('swap')}</button></div>
@@ -791,6 +817,14 @@ function evMark(ds,L){const ev=evList(ds,L);if(!ev.length)return'';const st=wind
   if(st==='3')return`<div class="evstack">${ev.slice(0,2).map(x=>`<button class="evc" data-act="ev-open" data-date="${ds}" ${aria}>${x.time?`<b>${esc(x.time)}</b>`:''}<span class="et">${esc(x.title)}</span></button>`).join('')}${ev.length>2?`<button class="evc more" data-act="ev-open" data-date="${ds}">+${ev.length-2} more</button>`:''}</div>${pop}`;
   if(st==='4')return`<button class="evdot" data-act="ev-open" data-date="${ds}" ${aria}>${ic('cal')}<i>${ev.length}</i></button>${pop}`;
   return`<button class="ev${st}" data-act="ev-open" data-date="${ds}" ${aria}>${ic('cal')}${lab}</button>${pop}`}
+function evSection(ds,L){const ev=evList(ds,L);if(!ev.length)return'';const st=window.EVS3||'A',k=x=>TYPES[typeOf(x.title,ds)][0];
+  const head=`<h2 class="h-m evh">${ds===TODAY?'<span>Your <i class="it">day</i></span>':'<span>On the <i class="it">day</i></span>'}<small>${ev.length} event${ev.length>1?'s':''}</small></h2>`;
+  let body;
+  if(st==='B')body=`<div class="evB2">${ev.map(x=>`<div class="r"><b>${esc(x.time||'All day')}</b><span><span class="t">${esc(x.title)}</span><small>${esc(k(x))}</small></span></div>`).join('')}</div>`;
+  else if(st==='C')body=`<div class="evG">${ev.map(x=>`<div class="r"><b>${esc(x.time||'All day')}</b><span class="t">${esc(x.title)}</span></div>`).join('')}</div>`;
+  else if(st==='D')body=`<div class="evD2">${ev.map(x=>`<div class="r"><b>${esc(x.time||'All day')}</b><span class="t">${esc(x.title)}</span><small>${esc(k(x))}</small></div>`).join('')}</div>`;
+  else body=`<ol class="evA2">${ev.map(x=>`<li><b>${esc(x.time||'All day')}</b><span class="t">${esc(x.title)}</span></li>`).join('')}</ol>`;
+  return`<section class="tev" aria-label="Events">${head}${body}</section>`}
 function evLine(L){if(!L||!L.title||window.EVS!=='line')return'';const st=window.EVS||'A',t=L.time?L.time.split(/\s*[–-]\s*/)[0]:'';
   if(st==='B')return`<p class="ev evB">${esc(L.title)}${t?' · '+esc(t):''}</p>`;
   if(st==='D')return`<p class="ev evD"><i>${esc(L.title)}</i>${t?`<span>${esc(t)}</span>`:''}</p>`;
