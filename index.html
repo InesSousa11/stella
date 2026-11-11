@@ -232,6 +232,17 @@ nav.tabs .on i{background:var(--clay)}
 .thead{display:flex;flex-direction:column;gap:20px;padding:4px 0 22px;flex-shrink:0}
 .thead .week{margin-top:0}
 .tspace{flex:none;height:0}
+.ev{margin:-8px 0 -4px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evA{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--ink)}
+.evA b{width:6px;height:6px;border-radius:3px;background:var(--clay);flex:none}
+.evA span,.evD span{color:var(--muted)}
+.evA span::before{content:"·";margin-right:8px}
+.evB{font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-align:center}
+.evD{text-align:center;font-family:var(--serif);font-size:19px;color:var(--clay-ink)}
+.evD span{font-family:var(--sans);font-size:12px;margin-left:8px;letter-spacing:.04em}
+.evpill{position:absolute;left:14px;right:14px;bottom:14px;margin:0 auto;width:max-content;max-width:calc(100% - 28px);height:34px;padding:0 14px 0 11px;border-radius:17px;background:rgba(255,253,250,.9);display:flex;align-items:center;gap:7px;font-size:13px;font-weight:500;z-index:2}
+.evpill span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evpill svg{width:15px;height:15px;flex:none;fill:none;stroke:var(--clay-ink);stroke-width:1.6;stroke-linecap:round}
 .daynav{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .car{position:absolute;inset:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .car::-webkit-scrollbar{display:none}
@@ -248,9 +259,8 @@ nav.tabs .on i{background:var(--clay)}
 .hero{--pw:96px}
 .hero .left .ph{top:60px;bottom:auto;height:calc(100% - 120px);width:auto;max-width:none;left:50%;transform:translateX(-50%);object-fit:contain}
 .hero.photo .left::before{content:"";position:absolute;left:22%;right:22%;bottom:48px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(96,78,62,.26),rgba(96,78,62,0))}
-.hero .fc{display:none}
-.hero.split .ff{display:none}
-.hero.split .fc{position:absolute;inset:56px 8px 30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.hero .ff{display:none}
+.hero .fc{position:absolute;inset:56px 8px 30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
 .hero .pill .sm{display:none}
 
 .hero.split .soon2{display:none}
@@ -478,6 +488,7 @@ const I={
   search:'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/>',
   laundry:'<rect x="4.5" y="2.5" width="15" height="19" rx="3"/><path d="M4.5 7.5h15"/><circle cx="12" cy="14.2" r="4"/>',
   check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',suitcase:'<rect x="6" y="7" width="12" height="13" rx="2.5"/><path d="M9 7V5h6v2M9 20v1.5M15 20v1.5"/>',
+  cal:'<rect x="4" y="5.5" width="16" height="14.5" rx="3"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>',
   warn:'<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/>',
   sparkle:'<path d="M12 3l2.3 6.2L21 12l-6.7 2.8L12 21l-2.3-6.2L3 12l6.7-2.8z"/>',link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',camera:'<path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'
 };
@@ -712,8 +723,8 @@ function scToday(){
   <div class="fold today">
   <div class="top"><button class="ib" data-act="settings" aria-label="Your profile">${USER||avatarSrc()?avatarHTML(''):ic('menu')}</button><div class="wordmark">DRESMI</div><button class="ib" data-act="notices" aria-label="Upcoming plans">${ic('bell')}${notes?'<span class="dot"></span>':''}</button></div>
   <div class="tsc" id="tsc"><div class="thead">
-  ${isT?'<h1 class="sr">'+greet+', '+esc(S.settings.name)+'</h1>':''}<div class="daynav" ${isT?'hidden':''}><h1 class="h-xl" style="font-size:30px;min-width:0">${isT?greet+', <i class="it">'+esc(S.settings.name)+'</i>':L&&L.title?esc(L.title):esc(dayLine(w))}</h1>${isT?'':`<button class="backtoday" data-act="to-today">${ic('left')}Today</button>`}</div>
-  ${weekStrip(ds)}
+  <h1 class="sr">${isT?greet+', '+esc(S.settings.name):esc(longD(ds))}</h1><div class="daynav" hidden><h1 class="h-xl" style="font-size:30px;min-width:0">${isT?greet+', <i class="it">'+esc(S.settings.name)+'</i>':L&&L.title?esc(L.title):esc(dayLine(w))}</h1>${isT?'':`<button class="backtoday" data-act="to-today">${ic('left')}Today</button>`}</div>
+  ${weekStrip(ds)}${evLine(L)}
   ${S.items.length<4?`<button class="trycard" data-go="wardrobe"><span class="ti">${ic('plus')}</span><span style="flex:1;min-width:0"><b style="font-weight:500;display:block">Add a few more pieces</b><span class="note">With a top, a bottom and shoes Dresmi can start dressing you.</span></span><span class="chev">${ic('right')}</span></button>`:''}
   ${(()=>{const fd=isT&&feelDue();if(!fd)return'';const FL=S.looks[fd],ft=titleOf(FL.items);return`<div class="feel"><span class="q">How did ${fd===TODAY?'today’s':'yesterday’s'} look feel?<small>${esc(ft.join(' '))}</small></span>
     <div class="opts"><button data-feel="cold" data-date="${fd}">Too cold</button><button data-feel="ok" data-date="${fd}">Just right</button><button data-feel="warm" data-date="${fd}">Too warm</button></div></div>`})()}
@@ -721,9 +732,10 @@ function scToday(){
   <div class="hero split-able ${p?'photo':''} ${V.split?'split':''}" id="hero">
     <div class="left">
       <button class="cover" data-act="dress-day" data-date="${ds}" aria-label="Open this look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:`<span class="ff">${flatlay(ids)}</span><span class="fc">${pieces.filter(i=>i.cat!=='bag').map(i=>g(i,i.cat==='shoes'?84:96,i.cat==='shoes'?56:i.cat==='bottom'?120:100,'position:static')).join('')}</span>`}</button>
+      ${window.EVS==='C'&&L&&L.title?`<span class="evpill">${ic('cal')}<span>${esc(L.title)}${L.time?' · '+esc(L.time.split(/\s*[–-]\s*/)[0]):''}</span></span>`:''}
       <span class="pill topL">${ic(wIcon(w))}<span class="lg">${w.max}° · ${esc(word(w))}${w.est?' · estimate':''}</span><span class="sm">${w.max}°</span></span>
       <button class="heart topR ${isFav?'on':''}" data-act="fav-look" aria-label="${isFav?'Remove from saved looks':'Save this look'}" aria-pressed="${isFav}">${ic('heart')}</button>
-      ${p?'':'<span class="pill soon2">Photo coming soon</span>'}
+      ${p||(window.EVS==='C'&&L&&L.title)?'':'<span class="pill soon2">Photo coming soon</span>'}
     </div>
     <span class="divider" aria-hidden="true"></span>
     <div class="right" aria-label="The pieces in this look" ${V.split?'':'aria-hidden="true"'}>
@@ -739,6 +751,10 @@ function scToday(){
     <button class="sq" data-act="shuffle" aria-label="Suggest another look">${ic('swap')}</button></div>
   </div>`;
 }
+function evLine(L){if(!L||!L.title||window.EVS==='C')return'';const st=window.EVS||'A',t=L.time?L.time.split(/\s*[–-]\s*/)[0]:'';
+  if(st==='B')return`<p class="ev evB">${esc(L.title)}${t?' · '+esc(t):''}</p>`;
+  if(st==='D')return`<p class="ev evD"><i>${esc(L.title)}</i>${t?`<span>${esc(t)}</span>`:''}</p>`;
+  return`<p class="ev evA"><b></b>${esc(L.title)}${t?`<span>${esc(t)}</span>`:''}</p>`}
 function dayLine(w){const c=w.rain>=50?'Rain from '+(w.from||'midday'):w.code<=1?'Clear skies':w.code<=2?'Mostly clear':w.code===3?'Cloudy':w.code<=48?'Foggy':'Showers';return c+', '+w.max+'°'}
 function weekStrip(sel){
   const off=Math.floor(Math.max(0,Math.round((parse(sel)-parse(TODAY))/864e5))/7)*7;let h='';
