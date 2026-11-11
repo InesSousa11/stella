@@ -242,10 +242,10 @@ nav.tabs .on i{background:var(--clay)}
 .pieces-pane .pc .t{background:var(--card)}
 .hero.split-able{overflow:hidden}
 .hero .left{position:absolute;top:0;bottom:0;left:0;width:100%;transition:width .45s var(--ease)}
-.hero.split .left{width:calc(100% - var(--pw))}
+.hero.split .left{width:calc(100% - var(--pw) - 26px)}
 .hero{--pw:96px}
-.hero .left .ph{top:auto;bottom:2px;height:calc(100% - 58px);width:auto;max-width:none;left:50%;transform:translateX(-50%);object-fit:contain}
-.hero.photo .left::before{content:"";position:absolute;left:22%;right:22%;bottom:4px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(96,78,62,.26),rgba(96,78,62,0))}
+.hero .left .ph{top:60px;bottom:auto;height:calc(100% - 120px);width:auto;max-width:none;left:50%;transform:translateX(-50%);object-fit:contain}
+.hero.photo .left::before{content:"";position:absolute;left:22%;right:22%;bottom:48px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(96,78,62,.26),rgba(96,78,62,0))}
 .hero .fc{display:none}
 .hero.split .ff{display:none}
 .hero.split .fc{position:absolute;inset:56px 8px 30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
@@ -258,8 +258,17 @@ nav.tabs .on i{background:var(--clay)}
 .hero.split .right{transform:none;opacity:1}
 .hero .right .pp-head{padding:2px 2px 4px}
 .hero .right .note{font-size:12px;line-height:1.35}
-.pr{display:block;padding:0;border-radius:18px;flex:none}
-.pr.off{opacity:.4}
+.pr{display:block;padding:0;border-radius:18px;flex:none;position:relative}
+.pr.fixed .t{background:rgba(255,253,250,.7);box-shadow:none}
+.pr.tog .t{border:1.5px solid var(--clay);transition:opacity .25s var(--ease),border-color .25s var(--ease)}
+.pr.tog:active .t{transform:scale(.95)}
+.pr.tog.off .t{border:1.5px dashed var(--clay);background:rgba(255,253,250,.55)}
+.pr.tog.off .t>*{opacity:.35}
+.pr .bd{position:absolute;right:-5px;top:-5px;width:24px;height:24px;border-radius:12px;background:var(--clay);display:grid;place-items:center;box-shadow:0 0 0 2px var(--oat)}
+.pr .bd svg{width:13px;height:13px;fill:none;stroke:var(--card);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.pr.off .bd{background:var(--card);box-shadow:0 0 0 2px var(--oat),inset 0 0 0 1.5px var(--clay)}
+.pr.off .bd svg{stroke:var(--clay)}
+.right .hint{font-size:10.5px;line-height:1.25;color:var(--muted);text-align:center;margin-top:2px}
 .pr:active{background:rgba(255,253,250,.6)}
 .pr .t{width:72px;height:72px;border-radius:18px;box-shadow:0 6px 16px -10px rgba(43,36,32,.35);background:var(--card);display:grid;place-items:center;flex-shrink:0}
 .pr .n{font-size:13px;line-height:1.25;min-width:0}
@@ -688,8 +697,9 @@ function scToday(){
   const hidden=(V.hide[ds]||[]).filter(id=>ids.includes(id)),vis=ids.filter(id=>!hidden.includes(id));
   let img=p&&imageFor(p,vis);if(p&&!img){V.hide[ds]=[];img=imageFor(p,ids)}
   const layers=['outer','top','dress','bottom'].filter(k=>s[k]&&vis.includes(s[k].id)).length;
+  const canT=id=>{if(!p)return false;const on=vis.includes(id),nv=on?vis.filter(x=>x!==id):vis.concat(id);return!!imageFor(p,nv)};
   let chips='';
-  if(p)ids.forEach(id=>{const on=vis.includes(id),nv=on?vis.filter(x=>x!==id):vis.concat(id);if(!imageFor(p,nv))return;const it=byId(id);
+  if(false)ids.forEach(id=>{const on=vis.includes(id),nv=on?vis.filter(x=>x!==id):vis.concat(id);if(!imageFor(p,nv))return;const it=byId(id);
     chips+=`<button class="layer ${on?'on':''}" data-layer-t="${id}" data-hk="${ds}" aria-pressed="${on}" aria-label="${on?'Take off':'Put on'} the ${esc(it.name)}"><span class="box"></span>${esc(KNAME[it.kind]||it.name)}</button>`});
   const order=['outer','top','dress','bottom','shoes','bag'];
   const pieces=ids.map(byId).filter(Boolean).sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat));
@@ -709,11 +719,13 @@ function scToday(){
       <button class="cover" data-act="dress-day" data-date="${ds}" aria-label="Open this look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:`<span class="ff">${flatlay(ids)}</span><span class="fc">${pieces.filter(i=>i.cat!=='bag').map(i=>g(i,i.cat==='shoes'?84:96,i.cat==='shoes'?56:i.cat==='bottom'?120:100,'position:static')).join('')}</span>`}</button>
       <span class="pill topL">${ic(wIcon(w))}<span class="lg">${w.max}° · ${esc(word(w))}${w.est?' · estimate':''}</span><span class="sm">${w.max}°</span></span>
       <button class="heart topR ${isFav?'on':''}" data-act="fav-look" aria-label="${isFav?'Remove from saved looks':'Save this look'}" aria-pressed="${isFav}">${ic('heart')}</button>
-      ${chips?`<div class="layers" role="group" aria-label="Layers">${chips}</div>`:p?'':'<span class="pill soon2">Photo coming soon</span>'}
+      ${p?'':'<span class="pill soon2">Photo coming soon</span>'}
     </div>
     <span class="divider" aria-hidden="true"></span>
     <div class="right" aria-label="The pieces in this look" ${V.split?'':'aria-hidden="true"'}>
-      ${pieces.map(i=>`<button class="pr ${vis.includes(i.id)?'':'off'}" data-piece="${i.id}" aria-label="${esc(i.name)}${vis.includes(i.id)?'':', taken off'}" ${V.split?'':'tabindex="-1"'}><span class="t">${g(i,52,56,'position:static')}</span></button>`).join('')}
+      ${pieces.map(i=>{const on=vis.includes(i.id);return canT(i.id)
+        ?`<button class="pr tog ${on?'':'off'}" data-layer-t="${i.id}" data-hk="${ds}" aria-pressed="${on}" aria-label="${on?'Take off':'Put on'} the ${esc(i.name)}" ${V.split?'':'tabindex="-1"'}><span class="t">${g(i,52,56,'position:static')}</span><span class="bd">${ic(on?'check':'plus')}</span></button>`
+        :`<span class="pr fixed" role="img" aria-label="${esc(i.name)}"><span class="t">${g(i,46,50,'position:static')}</span></span>`}).join('')}
     </div>
     <button class="ptab" data-act="split" aria-expanded="${!!V.split}" aria-label="${V.split?'Hide the pieces':'Show the pieces in this look'}"><svg class="hg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7.5a2 2 0 1 1 2-2c0 1-.8 1.4-1.4 1.8-.4.3-.6.6-.6 1.1v.6L3.5 15a1 1 0 0 0 .5 1.8h16a1 1 0 0 0 .5-1.8L12 9"/></svg><svg class="chev2" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></button>
   </div>
