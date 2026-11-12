@@ -818,7 +818,7 @@ function scToday(){
   const meta=`${planned?(L.auto?'Planned by Dresmi':'Planned by you'):isT?'Suggested for today':'Suggested'} · ${c.ok?(w.rain>=50?'rain-ready':'right for the weather'):esc(c.t.replace('\n',' ').toLowerCase())} · ${layers} layer${layers===1?'':'s'}`;
   return`
   <div class="fold today">
-  <div class="top"><button class="ib" data-act="settings" aria-label="Your profile">${USER||avatarSrc()?avatarHTML(''):ic('menu')}</button><div class="wordmark">DRESMI</div><button class="ib" data-act="notices" aria-label="Upcoming plans">${ic('bell')}${notes?'<span class="dot"></span>':''}</button></div>
+  <div class="top"><button class="ib" data-act="notices" aria-label="Upcoming plans">${ic('bell')}${notes?'<span class="dot"></span>':''}</button><div class="wordmark">DRESMI</div><button class="ib" data-act="settings" aria-label="Your profile">${USER||avatarSrc()?avatarHTML(''):ic('user')}</button></div>
   <div class="tsc" id="tsc"><div class="thead">
   <h1 class="sr">${isT?greet+', '+esc(S.settings.name):esc(longD(ds))}</h1><div class="daynav" hidden><h1 class="h-xl" style="font-size:30px;min-width:0">${isT?greet+', <i class="it">'+esc(S.settings.name)+'</i>':L&&L.title?esc(L.title):esc(dayLine(w))}</h1>${isT?'':`<button class="backtoday" data-act="to-today">${ic('left')}Today</button>`}</div>
   ${weekStrip(ds)}${evLine(L)}
