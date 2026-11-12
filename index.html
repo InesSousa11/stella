@@ -97,6 +97,7 @@ i.it{font-style:italic;font-weight:500;color:var(--clay-ink)}
 .layer.on .box::after{content:"";width:8px;height:4px;border:1.6px solid var(--card);border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}
 .stage.photo{background:var(--oat);height:420px}
 .stage.photo::before{content:"";position:absolute;left:28%;right:28%;bottom:4px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(96,78,62,.26),rgba(96,78,62,0))}
+.top>.ib.addbtn{place-items:center}
 .ib.addbtn{background:var(--clay);box-shadow:0 8px 18px -10px rgba(169,87,58,.8)}
 .ib.addbtn svg{stroke:#FFFDFA;stroke-width:2;width:22px;height:22px}
 .ib.addbtn:active{transform:scale(.94)}
@@ -264,7 +265,12 @@ nav.tabs .on i{background:var(--clay)}
 .evdot i{position:absolute;right:-3px;top:-3px;min-width:18px;height:18px;border-radius:9px;background:var(--ink);color:var(--linen);font-style:normal;font-size:10.5px;font-weight:600;display:grid;place-items:center;box-shadow:0 0 0 2px var(--oat)}
 .tev{flex:none;padding:24px 0 8px;display:flex;flex-direction:column;gap:14px}
 .tev>*{flex:none}
-.tev.inplan{padding:0}
+.evcards{display:flex;flex-direction:column;gap:10px}
+.dayhead{font-size:11px;letter-spacing:.14em;margin:0 4px}
+.evo{display:block;font-size:13px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evo .it{font-size:15px}
+.evo.own{color:var(--clay-ink)}
+.evcards .btn.ghost{margin-top:4px}
 .evh{font-size:24px;display:flex;align-items:baseline;justify-content:space-between}
 .evh small{font-family:var(--sans);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:500}
 .tev .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -852,6 +858,7 @@ function scToday(){
     <button class="sq" data-act="shuffle" aria-label="Suggest another look">${ic('swap')}</button></div>
   </div>`;
 }
+function evKey(e){return(e.time||'')+'|'+e.title}
 function evList(ds,L){const c=((S.cal||{})[ds]||[]).concat((S.events||{})[ds]||[]),t=L&&L.time?L.time.split(/\s*[–-]\s*/)[0]:'';
   if(L&&L.title&&(!L.fromCal||!c.length)&&!c.some(e=>e.title===L.title))c.push({title:L.title,time:t});
   return c.sort((a,b)=>(a.time||'')<(b.time||'')?-1:1)}
@@ -896,11 +903,21 @@ function scPlan(){
     cells+=`<button class="${cls.join(' ')}" data-day="${ds}" aria-label="${esc(longD(ds))}${has?', look planned':L&&L.title?', needs a look':''}"><b>${d}</b>${ds<TODAY&&L&&L.worn?'<i class="w"></i>':''}</button>`;
   }
   const sel=P.sel,L=S.looks[sel],has=L&&L.items&&L.items.length,w=wx(sel),main=has?slots(L.items):null,mi=main&&(main.dress||main.outer||main.top);
-  const card=`<button class="daycard" data-act="open-day">
+  const dayHead=`<p class="eyebrow dayhead">${esc(longD(sel))} · ${w.max}° ${esc(word(w).replace(/rain from.*/,'rain'))}</p>`;
+  const card0=`<button class="daycard" data-act="open-day">
     <span class="thumb">${mi?g(mi,40,48,'position:static'):`<svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:var(--clay-ink);stroke-width:1.4;stroke-linecap:round">${I.plus}</svg>`}</span>
     <span class="t"><span class="eyebrow" style="font-size:11px;letter-spacing:.14em;display:block">${esc(rel(sel))}${L&&L.time?' · '+esc(L.time):''} · ${w.max}° ${esc(word(w).replace(/rain from.*/,'rain'))}</span>
     <span style="font-family:var(--serif);font-size:20px;font-weight:600;display:block;margin-top:2px">${L&&L.title?esc(L.title):has?'Planned look':sel<TODAY?(L&&L.worn?'You wore this':'Nothing logged'):'Nothing planned'}${has&&mi?', <i class="it">'+esc(mi.short)+'</i>':!has&&sel>=TODAY?', <i class="it">create a look</i>':''}</span></span>
     <span class="chev">${ic('right')}</span></button>${L&&sel>=TODAY&&(L.type==='travel'||tripFor(sel))?`<button class="btn ghost" style="height:48px;font-size:15px;flex:none" data-act="open-trip" data-date="${tripFor(sel)?tripFor(sel).from:sel}">${ic('suitcase')}${tripFor(sel)?'Trip and packing list':'Pack for this trip'}</button>`:''}`;
+  const card=card0,tripBtn=card0.includes('data-act="open-trip"')?card0.slice(card0.indexOf('<button class="btn ghost"')):'';
+  const evs=evList(sel,L),EL=(S.evLooks||{})[sel]||{};
+  const evCards=evs.length?evs.map(e=>{const k=evKey(e),own=EL[k],ids=own||(has?L.items:null),ms=ids?slots(ids):null,dif=own&&has?own.map(byId).filter(x=>x&&!L.items.includes(x.id)):[],m2=dif.length?dif[0]:ms&&(ms.dress||ms.outer||ms.top),kind=TYPES[typeOf(e.title,sel)][0];
+    return`<button class="daycard" data-act="open-ev" data-k="${esc(k)}">
+    <span class="thumb">${m2?g(m2,40,48,'position:static'):`<svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:var(--clay-ink);stroke-width:1.4;stroke-linecap:round">${I.plus}</svg>`}</span>
+    <span class="t"><span class="eyebrow" style="font-size:11px;letter-spacing:.14em;display:block">${esc(e.time||'All day')} · ${esc(kind)}</span>
+    <span style="font-family:var(--serif);font-size:20px;font-weight:600;display:block;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.title)}</span>
+    <span class="evo ${own?'own':''}">${m2?(own?'Own look · ':'Day look · ')+'<i class="it">'+esc(m2.short)+'</i>':sel<TODAY?'Nothing logged':'Create a look'}</span></span>
+    <span class="chev">${ic('right')}</span></button>`}).join(''):'';
   const circ=(k,label,inner)=>`<button class="circ ${P.filter===k?'on':''}" data-filter="${k}" aria-pressed="${P.filter===k}"><span class="c">${inner}</span>${label}</button>`;
   const mini=(kind,col,w,h)=>g({kind,color:col},w,h,'position:static');
   return`
@@ -908,8 +925,7 @@ function scPlan(){
   <div class="circles">${circ('all','All looks','<span class="all">All</span>')}${circ('work','Work',mini('coat','#C49A72',30,38))}${circ('evening','Evening',mini('dress','#7C3F2E',26,34))}${circ('weekend','Weekend',mini('knit','#E3CDB2',34,32))}${circ('travel','Travel','<svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:none;stroke:var(--clay-ink);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round">'+I.suitcase+'</svg>')}</div>
   <div class="cal"><div class="calhead"><button class="ib" data-act="month" data-d="-1" aria-label="Previous month">${ic('left')}</button><h2 class="h-m">${MON[m-1]} <i class="it">${y}</i></h2><button class="ib" data-act="month" data-d="1" aria-label="Next month">${ic('right')}</button></div><div class="grid7">${cells}</div></div>
   <div class="legend"><span><b style="background:var(--blush)"></b>Today</span><span><b style="background:var(--oat)"></b>Planned</span><span><b style="border:1px dashed var(--clay-ink)"></b>Needs a look</span><span><b style="width:5px;height:5px;background:var(--clay)"></b>Worn</span></div>
-  ${card}
-  ${(()=>{const e=evSection(sel,L);return e?e.replace('class="tev"','class="tev inplan"'):''})()}
+  ${evs.length?`<div class="evcards">${dayHead}${evCards}${tripBtn}</div>`:card}
   <div class="planbar"><button class="btn ghost" data-act="plan-range" data-n="7">Plan next 7 days</button><button class="btn ghost" data-act="plan-range" data-n="month">Plan this month</button></div>
   <p class="note" style="margin:0 4px">Dresmi fills empty days using the forecast, your plans and what is clean, and avoids repeating pieces from one day to the next. Days you planned yourself stay as they are.</p>`;
 }
@@ -959,7 +975,7 @@ function scDressing(){
   return`
   <div class="top"><button class="ib" data-act="back" aria-label="Back">${ic('back')}</button>
     <div class="center"><h1 class="h-l" style="font-size:24px">Dressing <i class="it">room</i></h1>
-      <div class="datenav"><button data-act="drdate" data-d="-1" aria-label="Previous day">${ic('left')}</button><span class="eyebrow" style="font-size:11px">${esc(rel(D.date))} · ${w.max}° ${esc(word(w).replace('rain from','rain'))}${L&&L.title?' · '+esc(L.title):''}</span><button data-act="drdate" data-d="1" aria-label="Next day">${ic('right')}</button></div></div>
+      <div class="datenav"><button data-act="drdate" data-d="-1" aria-label="Previous day">${ic('left')}</button><span class="eyebrow" style="font-size:11px">${esc(rel(D.date))} · ${w.max}° ${esc(word(w).replace('rain from','rain'))}${D.evt?' · '+esc(D.evt):L&&L.title?' · '+esc(L.title):''}</span><button data-act="drdate" data-d="1" aria-label="Next day">${ic('right')}</button></div></div>
     <button class="ib" data-act="undo" aria-label="Undo" ${D.hist.length?'':'disabled style="opacity:.35"'}>${ic('undo')}</button></div>
   ${(()=>{const p=photoFor(D.ids);return p?`<div class="stage photo"><img class="ph" src="${esc(imageFor(p,D.ids))}" alt="You wearing this look">`:`<div class="stage">${stack(D.ids)}`})()}
     <div class="badge ${c.ok?'':'warn'}" title="${esc(c.why)}">${ic(c.ok?'sun':'warn')}<span style="white-space:pre-line">${esc(c.t)}</span></div>
@@ -967,7 +983,7 @@ function scDressing(){
   <p class="note" style="margin:-6px 4px 0">${esc(c.why)}</p>
   <div class="utabs" role="tablist" aria-label="Layer" style="justify-content:space-between">${tabs.map(t=>`<button role="tab" aria-selected="${D.tab===t[0]}" class="${D.tab===t[0]?'on':''}" data-layer="${t[0]}">${t[1]}</button>`).join('')}</div>
   <div class="tiles">${tiles}</div>
-  <div class="sticky row"><button class="sq ${isFavKey(keyOf(D.ids))?'on':''}" data-favlook="${esc(keyOf(D.ids))}" aria-pressed="${isFavKey(keyOf(D.ids))}" aria-label="Save to your looks">${ic('heart')}</button><button class="btn" data-act="save-look">Save look for ${esc(rel(D.date).replace('Today','today').replace('Tomorrow','tomorrow'))}</button></div>`;
+  <div class="sticky row"><button class="sq ${isFavKey(keyOf(D.ids))?'on':''}" data-favlook="${esc(keyOf(D.ids))}" aria-pressed="${isFavKey(keyOf(D.ids))}" aria-label="Save to your looks">${ic('heart')}</button><button class="btn" data-act="save-look">Save look for ${D.evt?esc(D.evt):esc(rel(D.date).replace('Today','today').replace('Tomorrow','tomorrow'))}</button></div>`;
 }
 
 function scPiece(){
@@ -1489,6 +1505,7 @@ document.addEventListener('click',e=>{
     case'close-sheet':{if(e.target!==t)return;const d0=$('.drawer');if(d0){d0.classList.add('out');$('.scrim.side').classList.add('out');setTimeout(closeSheet,260);return}return closeSheet()}
     case'dress-today':return openDressing(TODAY);
     case'dress-day':closeSheet();return openDressing(d.date);
+    case'open-ev':{const ds=V.plan.sel<TODAY?TODAY:V.plan.sel,own=((S.evLooks||{})[ds]||{})[d.k];const e=evList(ds,S.looks[ds]).find(x=>evKey(x)===d.k);openDressing(ds,own);V.dr.ev=d.k;V.dr.evt=e?e.title:'';if(own)V.dr.tab='top';return render()}
     case'open-day':return openDressing(V.plan.sel<TODAY?TODAY:V.plan.sel);
     case'fav-look':{const k=lookFor(V.day||TODAY).ids.slice().sort().join(',');const x=S.favLooks.indexOf(k);x>=0?S.favLooks.splice(x,1):S.favLooks.push(k);save();toast(x>=0?'Removed from saved looks':'Look saved');return render()}
     case'wear':{const all=lookFor(TODAY).ids,hid=V.hide[TODAY]||[],ids=all.filter(id=>!hid.includes(id));const L=S.looks[TODAY]=Object.assign(S.looks[TODAY]||{},{items:ids,worn:true});L.type=L.type||'work';const washed=[];ids.forEach(id=>{const i=byId(id);i.worn++;i.prevLast=i.last;i.last=TODAY;i.prevSince=i.since||0;i.prevLaundry=!!i.laundry;i.since=(i.since||0)+1;const n=washEvery(i);if(n&&i.since>=n){i.laundry=true;washed.push(i.short)}});save();toast(washed.length?'Logged · '+washed.join(', ')+(washed.length>1?' go':' goes')+' to the laundry':'Logged as worn today');return render()}
@@ -1565,8 +1582,12 @@ document.addEventListener('click',e=>{
       const it={price:parseFloat($('#p-price').value)||0,id:'i'+Date.now(),name:nm,short:nm.toLowerCase(),cat:$('#p-cat').value,kind:$('#p-kind').value,color:NP.color,colorName:SW[NP.ci||0][1],fabric:$('#p-fab').value.trim()||'—',warm:[mn,mx],rain:$('#p-rain').checked,care:'—',place:'Wardrobe',worn:0,last:null,laundry:false};
       S.items.unshift(it);save();closeSheet();toast('Added '+nm);V.ward.cat='all';V.ward.q='';return render(true)}
     case'undo':{const D=V.dr;if(D.hist.length)D.ids=D.hist.pop();return render()}
-    case'drdate':{const D=V.dr;const nd=add(D.date,+d.d);if(nd<TODAY)return toast('You can only plan from today on');D.date=nd;D.ids=lookFor(nd).ids.slice();D.hist=[];return render()}
-    case'save-look':{const D=V.dr;if(!D.ids.length)return toast('Pick at least one piece');const L=S.looks[D.date]=Object.assign(S.looks[D.date]||{type:'work'},{items:D.ids.slice()});save();toast('Saved for '+rel(D.date).toLowerCase().replace(/^(\w)/,c=>c));V.plan.sel=D.date;V.plan.ym=D.date.slice(0,7);V.stack=[];V.screen=D.date===TODAY?'today':'plan';return render(true)}
+    case'drdate':{const D=V.dr;D.ev=null;D.evt='';const nd=add(D.date,+d.d);if(nd<TODAY)return toast('You can only plan from today on');D.date=nd;D.ids=lookFor(nd).ids.slice();D.hist=[];return render()}
+    case'save-look':{const D=V.dr;if(!D.ids.length)return toast('Pick at least one piece');
+      if(D.ev){const L0=S.looks[D.date],dayK=L0&&L0.items&&L0.items.length?keyOf(L0.items):null;S.evLooks=S.evLooks||{};const m=S.evLooks[D.date]=S.evLooks[D.date]||{};
+        if(!dayK){S.looks[D.date]=Object.assign(L0||{type:typeOf(D.evt||'',D.date)},{items:D.ids.slice()});delete m[D.ev]}
+        else if(keyOf(D.ids)===dayK)delete m[D.ev];else m[D.ev]=D.ids.slice();
+        save();toast('Saved for '+(D.evt||'this event'));V.plan.sel=D.date;V.plan.ym=D.date.slice(0,7);V.stack=[];V.screen='plan';return render(true)}const L=S.looks[D.date]=Object.assign(S.looks[D.date]||{type:'work'},{items:D.ids.slice()});save();toast('Saved for '+rel(D.date).toLowerCase().replace(/^(\w)/,c=>c));V.plan.sel=D.date;V.plan.ym=D.date.slice(0,7);V.stack=[];V.screen=D.date===TODAY?'today':'plan';return render(true)}
     case'plan-piece':{const i=byId(V.piece);if(!avail(i))return toast(i.laundry?'Mark it clean first':'This piece is stored for the season');const ds=nextOpen();const base=suggest(ds,(S.looks[ds]||{}).type).filter(id=>{const x=byId(id);return x.cat!==i.cat&&!(i.cat==='dress'&&x.cat==='bottom')&&!(i.cat==='bottom'&&x.cat==='dress')&&!(i.cat==='dress'&&x.cat==='top')&&!(i.cat==='top'&&x.cat==='dress')});return openDressing(ds,[i.id,...base])}
     case'laundry':{const i=byId(V.piece);i.laundry=!i.laundry;if(!i.laundry)i.since=0;save();toast(i.laundry?'Moved to the laundry':'Back in the wardrobe');return render()}
     case'del-piece':{if(!V.confirmDel){V.confirmDel=true;return render()}const id=V.piece;S.items=S.items.filter(i=>i.id!==id);Object.values(S.looks).forEach(L=>{if(L.items)L.items=L.items.filter(x=>x!==id)});V.confirmDel=false;save();toast('Removed');V.stack=[];V.screen='wardrobe';return render(true)}
