@@ -473,7 +473,46 @@ nav.tabs .on i{background:var(--clay)}
 .sec{display:flex;flex-direction:column;gap:10px;padding:14px 0;border-top:1px solid var(--line)}
 .sec h3{font-size:20px}
 .sheet .btn,.sheet .gbtn{flex:none}
-/* profile drawer */
+/* profile page */
+.scrim.pfull{background:var(--linen);align-items:stretch;animation:none}
+.sheet.prof{width:min(100%,460px);max-height:none;height:100%;border-radius:0;background:var(--linen);padding:calc(8px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));gap:12px;animation:pIn .32s var(--ease)}
+.scrim.pfull.noanim .prof{animation:none}
+.prof.out{animation:pOut .24s var(--ease) forwards}
+@keyframes pIn{from{opacity:0;transform:translateY(24px)}}
+@keyframes pOut{to{opacity:0;transform:translateY(24px)}}
+.pbar{display:flex;justify-content:flex-end;min-height:44px;margin:0 -6px}
+.pclose{position:static;background:transparent}
+.pclose svg{width:22px;height:22px}
+.pcard{background:var(--card);border-radius:24px;display:flex;flex-direction:column;overflow:hidden;flex:none}
+.phead{flex-direction:row;align-items:center;gap:16px;padding:18px}
+.pav{position:relative;cursor:pointer;flex:none}
+.pav .av.lg{width:76px;height:76px;border-radius:38px;box-shadow:0 0 0 2px var(--card),0 0 0 3.5px var(--clay)}
+.pen{position:absolute;right:-4px;bottom:-2px;width:28px;height:28px;border-radius:14px;background:var(--ink);display:grid;place-items:center;box-shadow:0 0 0 2.5px var(--card)}
+.pen svg{width:14px;height:14px;fill:none;stroke:var(--linen);stroke-width:1.7;stroke-linejoin:round}
+.pt{min-width:0;display:flex;flex-direction:column;gap:2px}
+.pt b{font-family:var(--serif);font-size:26px;font-weight:600;line-height:1.1}
+.pt span{font-size:13.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prow{display:flex;align-items:center;gap:14px;min-height:60px;padding:8px 18px;width:100%;text-align:left;cursor:pointer;position:relative}
+.prow+.prow::before{content:"";position:absolute;top:0;left:56px;right:0;height:1px;background:var(--line)}
+.prow:active{background:var(--oat)}
+.pi{width:24px;height:24px;display:grid;place-items:center;flex:none}
+.pi svg{width:22px;height:22px;fill:none;stroke:var(--clay-ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.pi.g svg{width:20px;height:20px;stroke:none}
+.pm{flex:1;min-width:0;display:flex;flex-direction:column;font-size:15.5px}
+.pm label{cursor:pointer}
+.pm b{font-weight:500}
+.pm small{font-size:12.5px;color:var(--muted);margin-top:1px}
+.prow .pch{display:grid;place-items:center;flex:none}
+.prow .pch svg{width:18px;height:18px;fill:none;stroke:var(--muted);stroke-width:1.5}
+.prow.muted .pm{color:var(--muted)}
+.prow.warn .pm b{color:var(--clay-ink)}
+.prow .pin{border:0;background:transparent;font:inherit;font-size:15px;color:var(--clay-ink);text-align:right;max-width:52%;padding:6px 0;outline:none;appearance:none;-webkit-appearance:none}
+.prow select.pin{direction:rtl}
+.plab{font-family:var(--sans);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:14px 4px 0}
+.pnote{font-size:12.5px;color:var(--muted);margin:-4px 6px 0;line-height:1.4}
+.pcard .pnote{margin:0;padding:16px 18px}
+.pform{padding:18px;gap:12px}
+/* profile drawer (old) */
 .scrim.side{justify-content:flex-start;align-items:stretch}
 .sheet.drawer{position:absolute;left:max(12px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 74px);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:min(calc(100% - 56px),380px);max-height:none;height:auto;border-radius:26px;padding:20px 18px 22px;box-shadow:0 24px 60px -24px rgba(43,36,32,.45);animation:drawerIn .34s var(--ease);transform-origin:top left}
 .scrim.side.noanim,.scrim.side.noanim .drawer{animation:none}
@@ -536,7 +575,7 @@ const longD=s=>{const d=parse(s);return DOW[d.getDay()]+' · '+d.getDate()+' '+M
 const rel=s=>s===TODAY?'Today':s===add(TODAY,1)?'Tomorrow':s===add(TODAY,-1)?'Yesterday':short(s)+' '+MON[parse(s).getMonth()].slice(0,3);
 function shade(hex,f){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;r=Math.round(r*f);g=Math.round(g*f);b=Math.round(b*f);return'#'+((1<<24)+(Math.min(r,255)<<16)+(Math.min(g,255)<<8)+Math.min(b,255)).toString(16).slice(1)}
 const I={
-  menu:'<path d="M4 8h16M4 16h10"/>',bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
+  menu:'<path d="M4 8h16M4 16h10"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',pin:'<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/>',user:'<circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/>',pen:'<path d="M14.5 5.5l4 4L8 20H4v-4z"/>',sync:'<path d="M20 11a8 8 0 0 0-14.6-4.5M4 13a8 8 0 0 0 14.6 4.5"/><path d="M5 3v4h4M19 21v-4h-4"/>',out:'<path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 16l-4-4 4-4M6 12h10"/>',file:'<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/>',reset:'<path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v5h5"/>',bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
   back:'<path d="M19 12H5M11 6l-6 6 6 6"/>',plus:'<path d="M12 5v14M5 12h14"/>',left:'<path d="M15 6l-6 6 6 6"/>',right:'<path d="M9 6l6 6-6 6"/>',
   swap:'<path d="M4 7h11l-3-3M20 17H9l3 3"/>',undo:'<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
   heart:'<path d="M12 20.5S4.5 16 4.5 9.8A4.1 4.1 0 0 1 12 7.6a4.1 4.1 0 0 1 7.5 2.2c0 6.2-7.5 10.7-7.5 10.7z"/>',
@@ -1258,24 +1297,49 @@ function accountHTML(){
 }
 
 /* ---------- sheets ---------- */
-function sheet(html,onMount){const isProf=html.includes('Your <i class="it">profile'),again=isProf&&V.sheetOpen==='settings';V.sheetOpen=isProf?'settings':'other';const L=$('#layer');L.innerHTML=isProf?`<div class="scrim side ${again?'noanim':''}" data-act="close-sheet"><div class="sheet drawer" role="dialog" aria-modal="true" aria-label="Your profile"><button class="ib xclose" data-act="close-drawer" aria-label="Close">${ic('left')}</button>${html}</div></div>`:`<div class="scrim" data-act="close-sheet"><div class="sheet" role="dialog" aria-modal="true"><span class="grab"></span>${html}</div></div>`;onMount&&onMount(L)}
+function sheet(html,onMount){const isProf=html.includes('Your <i class="it">profile'),again=isProf&&V.sheetOpen==='settings';V.sheetOpen=isProf?'settings':'other';const L=$('#layer');L.innerHTML=isProf?`<div class="scrim pfull ${again?'noanim':''}"><div class="sheet prof" role="dialog" aria-modal="true" aria-label="Your profile"><div class="pbar"><button class="ib pclose" data-act="close-drawer" aria-label="Close">${ic('x')}</button></div>${html}</div></div>`:`<div class="scrim" data-act="close-sheet"><div class="sheet" role="dialog" aria-modal="true"><span class="grab"></span>${html}</div></div>`;onMount&&onMount(L)}
 function closeSheet(){V.sheetOpen=null;$('#layer').innerHTML=''}
 function sheetSettings(){
-  const P=S.profile,cal=P.calImported;
-  sheet(`<h2 class="h-l">Your <i class="it">profile</i></h2>
-    <div class="me">${avatarHTML('lg')}<div class="t"><b>${esc(S.settings.name)}</b><span>${USER?esc(USER.email):'Not signed in'}</span>
-      <label>${S.profile.photo?'Change photo':'Add a photo'}<input type="file" accept="image/*" data-file="avatar" hidden></label></div></div>
-    <div class="field"><label for="s-name">Your name</label><input id="s-name" value="${esc(S.settings.name)}" maxlength="24"></div>
-    <div class="field"><label for="s-city">City for weather</label><select id="s-city">${Object.keys(CITIES).map(c=>`<option ${c===S.settings.city?'selected':''}>${c}</option>`).join('')}</select></div>
-    <p class="note">${wLive?'Live forecast from Open-Meteo for the next 16 days.':'Seasonal estimates for '+esc(S.settings.city)+'. The live forecast could not load here.'}</p>
-    <button class="btn" data-act="save-settings">Save</button>
-    <div class="sec"><h3>Calendar</h3>
-      <p class="note">Dresmi reads your events so dinners, trips and meetings get the right look. It only reads; it never changes your calendar.</p>
-      ${calHTML()}
-      <label class="linkbtn" style="align-self:flex-start;padding:4px 0;cursor:pointer">Or add a calendar file (.ics) from Apple or Outlook<input type="file" accept=".ics,text/calendar" data-file="ics" hidden></label>
-      ${cal?`<p class="note">Last added ${esc(cal.when)} · ${cal.n} plan${cal.n===1?'':'s'} for the next 3 months.</p>`:''}</div>
-    ${accountHTML()}
-    <button class="linkbtn ${V.confirmReset?'warn':''}" data-act="reset">${V.confirmReset?'Tap again to erase everything and restore the sample wardrobe':'Restore sample wardrobe'}</button>`);
+  const P=S.profile,cal=P.calImported,G=P.gcal;
+  const row=(icon,main,right='',extra='')=>`<div class="prow ${extra}"><span class="pi">${ic(icon)}</span><span class="pm">${main}</span>${right}</div>`;
+  const brow=(icon,act,main,right='',cls='')=>`<button class="prow ${cls}" data-act="${act}"><span class="pi">${ic(icon)}</span><span class="pm">${main}</span>${right}</button>`;
+  let calRows;
+  if(!sb||!USER)calRows=row('cal','<b>Google Calendar</b><small>Sign in below to connect it</small>');
+  else if(G&&G.connected)calRows=row('cal',`<b>Google Calendar</b><small>Connected${G.last?' · updated '+esc(rel(G.last.slice(0,10)).toLowerCase())+' '+esc(G.last.slice(11,16)):''}${G.n!=null?' · '+G.n+' event'+(G.n===1?'':'s'):''}</small>`)
+    +brow('sync','gcal-refresh',CALBUSY?'Updating…':'Update now')+brow('x','gcal-off','Disconnect','','muted');
+  else calRows=`<button class="prow" data-act="gcal-connect"><span class="pi g">${GICON}</span><span class="pm"><b>Connect Google Calendar</b><small>Dresmi only reads it</small></span><span class="pch">${ic('right')}</span></button>`;
+  calRows+=`<label class="prow"><span class="pi">${ic('file')}</span><span class="pm"><b>Add a calendar file</b><small>${cal?'Last added '+esc(cal.when)+' · '+cal.n+' plan'+(cal.n===1?'':'s'):'.ics from Apple or Outlook'}</small></span><span class="pch">${ic('right')}</span><input type="file" accept=".ics,text/calendar" data-file="ics" hidden></label>`;
+  let acct;
+  if(!sb)acct=`<div class="pcard"><p class="pnote">Accounts work in the Dresmi app at your web address. This preview can’t reach the account service.</p></div>`;
+  else if(!USER)acct=`<div class="pcard pform"><p class="pnote" style="padding:0">Sign in to keep your wardrobe, looks and photos in sync between devices.</p>
+    ${GOOGLE_READY?`<button class="gbtn" data-act="acct-google">${GICON}Continue with Google</button>`:''}
+    <div class="field"><label for="a-email">Email</label><input id="a-email" type="email" autocomplete="email" inputmode="email"></div>
+    <div class="field"><label for="a-pass">Password</label><input id="a-pass" type="password" autocomplete="current-password" minlength="8"></div>
+    <p class="note" id="a-msg" role="status" hidden></p>
+    <div class="two"><button class="btn" style="height:48px;font-size:15px" data-act="acct-signin">Sign in</button><button class="btn ghost" style="height:48px;font-size:15px" data-act="acct-signup">Create account</button></div></div>`;
+  else{const st=SYNC.state==='syncing'?'Syncing…':SYNC.state==='err'?'Sync failed: '+esc(SYNC.err):SYNC.at?'Synced at '+new Date(SYNC.at).toTimeString().slice(0,5):'Not synced yet';
+    acct=`<div class="pcard">${brow('sync','acct-sync','<b>Sync now</b><small>'+st+'</small>')}
+      ${GOOGLE_READY&&!(USER.identities||[]).some(i=>i.provider==='google')?brow('user','acct-google','Use my Google photo'):''}
+      ${brow('out','acct-signout','Sign out')}</div>`}
+  sheet(`<h2 class="sr">Your <i class="it">profile</i></h2>
+    <div class="pcard phead">
+      <label class="pav" aria-label="${P.photo?'Change photo':'Add a photo'}">${avatarHTML('lg')}<span class="pen">${ic('pen')}</span><input type="file" accept="image/*" data-file="avatar" hidden></label>
+      <div class="pt"><b>${esc(S.settings.name)}</b><span>${USER?esc(USER.email):'Not signed in'}</span></div>
+    </div>
+    <div class="pcard">
+      ${row('user','<label for="s-name">Name</label>',`<input id="s-name" class="pin" value="${esc(S.settings.name)}" maxlength="24" autocomplete="given-name">`)}
+      ${row('pin','<label for="s-city">City for weather</label>',`<select id="s-city" class="pin">${Object.keys(CITIES).map(c=>`<option ${c===S.settings.city?'selected':''}>${c}</option>`).join('')}</select>`)}
+    </div>
+    <p class="pnote">${wLive?'Live forecast for the next 16 days.':'Seasonal estimates for '+esc(S.settings.city)+' until the live forecast loads.'}</p>
+    <h3 class="plab">Calendar</h3>
+    <div class="pcard">${calRows}</div>
+    <h3 class="plab">Account</h3>
+    ${acct}
+    <div class="pcard">${brow('reset','reset',V.confirmReset?'<b>Tap again to erase everything</b><small>Your wardrobe goes back to the sample</small>':'Restore sample wardrobe','',V.confirmReset?'warn':'muted')}</div>`,L=>{
+      const nm=L.querySelector('#s-name'),ct=L.querySelector('#s-city');
+      if(nm)nm.addEventListener('change',()=>{const v=nm.value.trim();if(!v||v===S.settings.name)return;S.settings.name=v;save();L.querySelector('.pt b').textContent=v;render();toast('Name saved')});
+      if(ct)ct.addEventListener('change',()=>{S.settings.city=ct.value;save();W={};wLive=false;loadWeather();render();toast('Weather now for '+ct.value)});
+    });
 }
 function sheetTry(){
   const src=V.trySrc;
@@ -1414,7 +1478,7 @@ document.addEventListener('click',e=>{
     case'back':return back();
     case'settings':return sheetSettings();
     case'notices':return sheetNotices();
-    case'close-drawer':{const d0=$('.drawer'),sc0=$('.scrim.side');if(d0){d0.classList.add('out');sc0.classList.add('out');setTimeout(closeSheet,260);return}return closeSheet()}
+    case'close-drawer':{const d0=$('.drawer,.prof'),sc0=$('.scrim.side,.scrim.pfull');if(d0){d0.classList.add('out');sc0.classList.add('out');setTimeout(closeSheet,260);return}return closeSheet()}
     case'close-sheet':{if(e.target!==t)return;const d0=$('.drawer');if(d0){d0.classList.add('out');$('.scrim.side').classList.add('out');setTimeout(closeSheet,260);return}return closeSheet()}
     case'dress-today':return openDressing(TODAY);
     case'dress-day':closeSheet();return openDressing(d.date);
