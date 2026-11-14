@@ -826,9 +826,9 @@ let PHOTOS=[
   {id:'look-013',items:['i2','i30','i28','i36','i13','i15'],images:[{show:['i2','i30','i28','i36','i13','i15'],src:'photos/looks/look-013-1-full.webp'},{show:['i30','i28','i36','i13','i15'],src:'photos/looks/look-013-2-no-coat.webp'},{show:['i28','i36','i13','i15'],src:'photos/looks/look-013-3-no-layers.webp'}]},
   {id:'look-013b',items:['i30','i28','i36','i13','i15'],images:[{show:['i30','i28','i36','i13','i15'],src:'photos/looks/look-013-2-no-coat.webp'},{show:['i28','i36','i13','i15'],src:'photos/looks/look-013-3-no-layers.webp'}]},
   {id:'look-013c',items:['i28','i36','i13','i15'],images:[{show:['i28','i36','i13','i15'],src:'photos/looks/look-013-3-no-layers.webp'}]},
-  {id:'look-014',items:['i2','i33','i40','i8','i12','i16'],images:[{show:['i2','i33','i40','i8','i12','i16'],src:'photos/looks/look-014-1-full.webp'},{show:['i33','i40','i8','i12','i16'],src:'photos/looks/look-014-2-no-coat.webp'},{show:['i40','i8','i12','i16'],src:'photos/looks/look-014-3-no-layers.webp'}]},
-  {id:'look-014b',items:['i33','i40','i8','i12','i16'],images:[{show:['i33','i40','i8','i12','i16'],src:'photos/looks/look-014-2-no-coat.webp'},{show:['i40','i8','i12','i16'],src:'photos/looks/look-014-3-no-layers.webp'}]},
-  {id:'look-014c',items:['i40','i8','i12','i16'],images:[{show:['i40','i8','i12','i16'],src:'photos/looks/look-014-3-no-layers.webp'}]}];
+  {id:'look-014',items:['i2','i33','i40','i8','i12','i16'],images:[{show:['i2','i33','i40','i8','i12','i16'],src:'photos/looks/look-014-1-full.webp?v=2'},{show:['i33','i40','i8','i12','i16'],src:'photos/looks/look-014-2-no-coat.webp?v=2'},{show:['i40','i8','i12','i16'],src:'photos/looks/look-014-3-no-layers.webp?v=2'}]},
+  {id:'look-014b',items:['i33','i40','i8','i12','i16'],images:[{show:['i33','i40','i8','i12','i16'],src:'photos/looks/look-014-2-no-coat.webp?v=2'},{show:['i40','i8','i12','i16'],src:'photos/looks/look-014-3-no-layers.webp?v=2'}]},
+  {id:'look-014c',items:['i40','i8','i12','i16'],images:[{show:['i40','i8','i12','i16'],src:'photos/looks/look-014-3-no-layers.webp?v=2'}]}];
 const same=(a,b)=>a.length===b.length&&a.every(x=>b.includes(x));
 const noAcc=ids=>(ids||[]).filter(id=>{const i=byId(id);return!(i&&i.cat==='socks')});
 const photoFor=ids=>PHOTOS.find(p=>same(p.items,noAcc(ids)));
