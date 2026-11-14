@@ -333,7 +333,9 @@ nav.tabs .on i{background:var(--clay)}
 .hero .left .ph{top:60px;bottom:auto;height:calc(100% - 120px);width:auto;max-width:none;left:50%;transform:translateX(-50%);object-fit:contain}
 .hero.photo .left::before{content:"";position:absolute;left:50%;width:calc(var(--hw,360px)*.56);transform:translateX(-50%);bottom:48px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(96,78,62,.26),rgba(96,78,62,0))}
 .hero .ff{display:none}
-.hero .fc{position:absolute;inset:56px 8px 30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.hero .fc{position:absolute;inset:62px 14px 44px;display:grid;grid-template-columns:repeat(2,auto);place-content:center;place-items:center;gap:10px}
+.hero .fc img.gq{width:88px!important;height:88px!important}
+.hero .fc>*:last-child:nth-child(odd){grid-column:1/-1}
 .hero .pill .sm{display:none}
 
 .hero.split .soon2{display:none}
@@ -649,18 +651,9 @@ const TYPES={work:['Work',I.suitcase],formal:['Business formal'],evening:['Eveni
 function seed(){
   const T=TODAY;
   const items=[
-    {id:'i1',name:'Camel wool coat',short:'Camel coat',cat:'outer',kind:'coat',color:'#C49A72',colorName:'Camel',fabric:'Wool blend',warm:[-5,15],rain:true,care:'Dry clean',place:'Hall closet',fav:true},
     {id:'i2',name:'Beige gabardine',short:'gabardine',cat:'outer',kind:'trench',color:'#D9C6AA',colorName:'Beige',fabric:'Gabardine',brand:'Lanidor',warm:[10,21],rain:true,care:'Machine wash cold',place:'Hall closet',src:'photos/pieces/outer-gabardine.webp'},
-    {id:'i3',name:'Linen blend blazer',short:'Linen blazer',cat:'outer',kind:'blazer',color:'#CDB79A',colorName:'Beige',fabric:'Linen blend',warm:[16,27],rain:false,care:'Dry clean',place:'Bedroom wardrobe',fav:true},
-    {id:'i4',name:'Ivory poplin shirt',short:'crisp shirt',cat:'top',kind:'shirt',color:'#F3ECE1',colorName:'Ivory',fabric:'Cotton poplin',warm:[10,30],care:'Machine wash 30°',place:'Bedroom wardrobe'},
-    {id:'i5',name:'Ribbed knit jumper',short:'oat knit',cat:'top',kind:'knit',color:'#E3CDB2',colorName:'Oat',fabric:'Merino',warm:[4,16],care:'Hand wash',place:'Drawer'},
-    {id:'i6',name:'Rust merino knit',short:'rust knit',cat:'top',kind:'knit',color:'#8C4632',colorName:'Rust',fabric:'Merino',warm:[2,15],care:'Hand wash',place:'Drawer',fav:true},
-    {id:'i7',name:'Black silk top',short:'silk top',cat:'top',kind:'cami',color:'#2B2420',colorName:'Black',fabric:'Silk',warm:[14,30],care:'Hand wash',place:'Bedroom wardrobe'},
     {id:'i8',name:'Black suit trousers',short:'suit trousers',cat:'bottom',kind:'trousers',color:'#1F1B19',colorName:'Black',fabric:'Crepe',brand:'Salsa Jeans',suit:'salsa',laundry:false,worn:0,last:null,warm:[4,26],care:'Dry clean',place:'Bedroom wardrobe',src:'photos/pieces/bottom-black-suit-trousers.webp'},
     {id:'i22',name:'Black suit blazer',short:'black blazer',cat:'outer',kind:'blazer',color:'#1F1B19',colorName:'Black',fabric:'Crepe',brand:'Salsa Jeans',suit:'salsa',laundry:false,warm:[13,24],care:'Dry clean',place:'Bedroom wardrobe',src:'photos/pieces/outer-black-suit-blazer.webp'},
-    {id:'i9',name:'Straight indigo jeans',short:'jeans',cat:'bottom',kind:'jeans',color:'#4A5A78',colorName:'Indigo',fabric:'Denim',warm:[0,26],care:'Machine wash cold',place:'Drawer'},
-    {id:'i10',name:'Camel midi skirt',short:'midi skirt',cat:'bottom',kind:'skirt',color:'#B88A62',colorName:'Tan',fabric:'Suede',warm:[12,26],care:'Specialist clean',place:'Bedroom wardrobe'},
-    {id:'i11',name:'Brick slip dress',short:'brick dress',cat:'dress',kind:'dress',color:'#7C3F2E',colorName:'Brick',fabric:'Satin',warm:[14,30],care:'Hand wash',place:'Bedroom wardrobe',fav:true},
     {id:'i19',name:'Brown mary janes',short:'brown mary janes',cat:'shoes',kind:'loafers',color:'#6B3F26',colorName:'Chocolate',fabric:'Leather',brand:'Massimo Dutti',warm:[10,30],noRain:true,care:'Polish',place:'Shoe rack',src:'photos/pieces/shoes-brown-mary-janes.webp?v=2'},
     {id:'i21',name:'Black mary janes',short:'black mary janes',cat:'shoes',kind:'loafers',color:'#1F1B19',colorName:'Black',fabric:'Leather',brand:'Massimo Dutti',warm:[10,30],noRain:true,care:'Polish',place:'Shoe rack',src:'photos/pieces/shoes-black-mary-janes.webp?v=2'},
     {id:'i12',name:'Black chain loafers',short:'loafers',cat:'shoes',kind:'loafers',color:'#1F1B19',colorName:'Black',fabric:'Leather',brand:'Aldo',warm:[4,28],care:'Polish',place:'Shoe rack',src:'photos/pieces/shoes-black-loafers.webp?v=2'},
@@ -668,7 +661,6 @@ function seed(){
     {id:'i15',name:'Black leather crossbody',short:'leather crossbody',cat:'bag',kind:'bag',color:'#1F1B19',colorName:'Black',fabric:'Leather',brand:'Massimo Dutti',use:['weekend','travel'],warm:[-10,40],care:'Condition',place:'Hall closet',src:'photos/pieces/bag-black-leather-crossbody.webp'},
     {id:'i16',name:'Black crescent bag',short:'black crescent bag',cat:'bag',kind:'bag',color:'#1F1B19',colorName:'Black',fabric:'Nylon',brand:'Uniqlo',use:['weekend','travel'],warm:[-10,40],care:'Machine wash cold',place:'Hall closet',src:'photos/pieces/bag-black-crescent.webp'},
     {id:'i20',name:'Taupe crescent bag',short:'taupe crescent bag',cat:'bag',kind:'bag',color:'#8F7C68',colorName:'Taupe',fabric:'Nylon',brand:'Amazon',use:['work','evening','formal'],warm:[-10,40],care:'Machine wash cold',place:'Hall closet',src:'photos/pieces/bag-taupe-crescent.webp'},
-    {id:'i17',name:'White broderie blouse',short:'broderie blouse',cat:'top',kind:'shirt',color:'#F4EFE8',colorName:'White',fabric:'Cotton broderie',warm:[12,28],care:'Machine wash 30°',place:'Bedroom wardrobe',fav:true},
     {id:'i23',name:'Olive satin shirt',short:'olive satin shirt',cat:'top',kind:'shirt',color:'#6E6A55',colorName:'Olive',fabric:'Satin',price:49.95,warm:[12,26],care:'Hand wash',place:'Bedroom wardrobe',src:'photos/pieces/top-olive-satin-shirt.webp'},
     {id:'i24',name:'Navy satin shirt',short:'navy satin shirt',cat:'top',kind:'shirt',color:'#262C3A',colorName:'Navy',fabric:'Satin',price:49.95,warm:[12,26],care:'Hand wash',place:'Bedroom wardrobe',src:'photos/pieces/top-navy-satin-shirt.webp'},
     {id:'i25',name:'Mauve shirt',short:'mauve shirt',cat:'top',kind:'shirt',color:'#8C6264',colorName:'Mauve',fabric:'Crinkled viscose',brand:'System Action',price:69.95,warm:[12,26],care:'Machine wash 30°',place:'Bedroom wardrobe',src:'photos/pieces/top-mauve-shirt.webp'},
@@ -678,19 +670,10 @@ function seed(){
     {id:'i29',name:'Taupe mock-neck knit top',short:'taupe knit top',cat:'top',kind:'knit',color:'#A39684',colorName:'Taupe',fabric:'Fine knit',brand:'Lanidor',set:'lan-taupe',warm:[13,26],care:'Hand wash',place:'Drawer',src:'photos/pieces/top-taupe-knit-tee.webp'},
     {id:'i30',name:'Navy cardigan',short:'navy cardigan',cat:'outer',kind:'cardigan',color:'#1E2440',colorName:'Navy',fabric:'Fine knit',brand:'Lanidor',set:'lan-navy',warm:[12,22],care:'Hand wash',place:'Drawer',src:'photos/pieces/outer-navy-cardigan.webp'},
     {id:'i31',name:'Taupe cardigan',short:'taupe cardigan',cat:'outer',kind:'cardigan',color:'#A08F7C',colorName:'Taupe',fabric:'Fine knit',brand:'Lanidor',set:'lan-taupe',warm:[12,22],care:'Hand wash',place:'Drawer',src:'photos/pieces/outer-taupe-cardigan.webp'},
-    {id:'i32',name:'Sheer knee-high socks',short:'sheer socks',cat:'socks',kind:'socks',color:'#C9A27A',colorName:'Nude',fabric:'Sheer nylon',qty:9,warm:[-10,40],care:'Hand wash',place:'Drawer',src:'photos/pieces/socks-sheer-knee-high.webp'},
-    {id:'i18',name:'Pinstripe wide trousers',short:'pinstripe trousers',cat:'bottom',kind:'trousers',color:'#7A6B5F',colorName:'Taupe',fabric:'Wool blend',warm:[4,24],care:'Dry clean',place:'Bedroom wardrobe'}
+    {id:'i32',name:'Sheer knee-high socks',short:'sheer socks',cat:'socks',kind:'socks',color:'#C9A27A',colorName:'Nude',fabric:'Sheer nylon',qty:9,warm:[-10,40],care:'Hand wash',place:'Drawer',src:'photos/pieces/socks-sheer-knee-high.webp'}
   ];
   items.forEach(i=>{i.worn=0;i.last=null;i.laundry=false});
   const looks={};
-  const past=[[-9,['i2','i5','i9','i13','i15'],'work'],[-8,['i1','i4','i8','i12','i15'],'work'],[-7,['i3','i7','i10','i12','i16'],'evening'],[-6,['i1','i6','i9','i13','i15'],'weekend'],[-3,['i2','i4','i8','i12','i15'],'work'],[-2,['i1','i5','i10','i13','i16'],'weekend']];
-  past.forEach(([o,ids,t])=>{const d=add(T,o);looks[d]={items:ids,type:t,worn:true};ids.forEach(id=>{const it=items.find(x=>x.id===id);it.worn++;it.last=d})});
-  items.find(i=>i.id==='i8').laundry=true; /* trousers in the wash */
-  looks[T]={items:['i1','i17','i18','i19','i20'],type:'work',title:'Office day',time:'09:00 – 18:00'};
-  looks[add(T,1)]={items:['i11','i13','i16'],type:'evening',title:'Dinner out',time:'20:30'};
-  looks[add(T,2)]={items:[],type:'travel',title:'Train to Porto',time:'08:10'};
-  looks[add(T,4)]={items:['i1','i6','i9','i13','i15'],type:'work',title:'Studio day',time:'09:00 – 17:00'};
-  looks[add(T,11)]={items:[],type:'weekend',title:'Birthday lunch',time:'13:00'};
   return {v:2,items,looks,favLooks:[],settings:{name:'Inês',city:'Lisbon'},shuffle:{}};
 }
 let S;
@@ -704,6 +687,14 @@ const MY_BAGS=[{id:'i15',name:'Black leather crossbody',short:'leather crossbody
 function migBags(T){if(!T||!T.items||(T.mig&&T.mig.bags1))return;T.mig=T.mig||{};T.items=T.items.filter(i=>i.cat!=='bag').concat(MY_BAGS.map(x=>Object.assign({worn:0,last:null},x)));const keep=new Set(MY_BAGS.map(x=>x.id));const fix=a=>Array.isArray(a)?a.filter(id=>!(/^i\d+$/.test(id)&&false)):a;T.mig.bags1=Date.now()}
 const MY_PIECES=[{id:'i2',name:'Beige gabardine',short:'gabardine',cat:'outer',kind:'trench',color:'#D9C6AA',colorName:'Beige',fabric:'Gabardine',brand:'Lanidor',warm:[10,21],rain:true,care:'Machine wash cold',place:'Hall closet',src:'photos/pieces/outer-gabardine.webp'},{id:'i8',name:'Black suit trousers',short:'suit trousers',cat:'bottom',kind:'trousers',color:'#1F1B19',colorName:'Black',fabric:'Crepe',brand:'Salsa Jeans',suit:'salsa',laundry:false,worn:0,last:null,warm:[4,26],care:'Dry clean',place:'Bedroom wardrobe',src:'photos/pieces/bottom-black-suit-trousers.webp'},{id:'i22',name:'Black suit blazer',short:'black blazer',cat:'outer',kind:'blazer',color:'#1F1B19',colorName:'Black',fabric:'Crepe',brand:'Salsa Jeans',suit:'salsa',laundry:false,warm:[13,24],care:'Dry clean',place:'Bedroom wardrobe',src:'photos/pieces/outer-black-suit-blazer.webp'},{id:'i23',name:'Olive satin shirt',short:'olive satin shirt',cat:'top',kind:'shirt',color:'#6E6A55',colorName:'Olive',fabric:'Satin',price:49.95,warm:[12,26],care:'Hand wash',place:'Bedroom wardrobe',src:'photos/pieces/top-olive-satin-shirt.webp'},{id:'i24',name:'Navy satin shirt',short:'navy satin shirt',cat:'top',kind:'shirt',color:'#262C3A',colorName:'Navy',fabric:'Satin',price:49.95,warm:[12,26],care:'Hand wash',place:'Bedroom wardrobe',src:'photos/pieces/top-navy-satin-shirt.webp'},{id:'i25',name:'Mauve shirt',short:'mauve shirt',cat:'top',kind:'shirt',color:'#8C6264',colorName:'Mauve',fabric:'Crinkled viscose',brand:'System Action',price:69.95,warm:[12,26],care:'Machine wash 30°',place:'Bedroom wardrobe',src:'photos/pieces/top-mauve-shirt.webp'},{id:'i26',name:'Light blue shirt',short:'light blue shirt',cat:'top',kind:'shirt',color:'#C9CEE0',colorName:'Light blue',fabric:'Cotton',brand:'System Action',price:54.95,warm:[10,28],care:'Machine wash 30°',place:'Bedroom wardrobe',src:'photos/pieces/top-light-blue-shirt.webp'},{id:'i27',name:'Beige belted shirt',short:'beige belted shirt',cat:'top',kind:'shirt',color:'#B9A383',colorName:'Beige',fabric:'Crinkled viscose',brand:'System Action',price:69.95,warm:[14,28],care:'Machine wash 30°',place:'Bedroom wardrobe',src:'photos/pieces/top-beige-belted-shirt.webp'},{id:'i28',name:'Navy mock-neck knit top',short:'navy knit top',cat:'top',kind:'knit',color:'#1E2440',colorName:'Navy',fabric:'Fine knit',brand:'Lanidor',set:'lan-navy',warm:[13,26],care:'Hand wash',place:'Drawer',src:'photos/pieces/top-navy-knit-tee.webp'},{id:'i29',name:'Taupe mock-neck knit top',short:'taupe knit top',cat:'top',kind:'knit',color:'#A39684',colorName:'Taupe',fabric:'Fine knit',brand:'Lanidor',set:'lan-taupe',warm:[13,26],care:'Hand wash',place:'Drawer',src:'photos/pieces/top-taupe-knit-tee.webp'},{id:'i30',name:'Navy cardigan',short:'navy cardigan',cat:'outer',kind:'cardigan',color:'#1E2440',colorName:'Navy',fabric:'Fine knit',brand:'Lanidor',set:'lan-navy',warm:[12,22],care:'Hand wash',place:'Drawer',src:'photos/pieces/outer-navy-cardigan.webp'},{id:'i31',name:'Taupe cardigan',short:'taupe cardigan',cat:'outer',kind:'cardigan',color:'#A08F7C',colorName:'Taupe',fabric:'Fine knit',brand:'Lanidor',set:'lan-taupe',warm:[12,22],care:'Hand wash',place:'Drawer',src:'photos/pieces/outer-taupe-cardigan.webp'},{id:'i32',name:'Sheer knee-high socks',short:'sheer socks',cat:'socks',kind:'socks',color:'#C9A27A',colorName:'Nude',fabric:'Sheer nylon',qty:9,warm:[-10,40],care:'Hand wash',place:'Drawer',src:'photos/pieces/socks-sheer-knee-high.webp'}];
 function migPieces(T){if(!T||!T.items)return;T.mig=T.mig||{};if(T.mig.pieces5)return;MY_PIECES.forEach(p=>{const i=T.items.find(x=>x.id===p.id);if(i)Object.assign(i,p);else T.items.push(Object.assign({worn:0,last:null},p))});T.mig.gab1=T.mig.pieces2=T.mig.pieces3=T.mig.pieces4=T.mig.pieces5=Date.now()}
+const KEEP_IDS=new Set(["i2", "i8", "i22", "i19", "i21", "i12", "i13", "i15", "i16", "i20", "i23", "i24", "i25", "i26", "i27", "i28", "i29", "i30", "i31", "i32"]);
+function migClean(T){if(!T||!T.items)return;T.mig=T.mig||{};if(T.mig.clean1)return;
+  T.items=T.items.filter(i=>KEEP_IDS.has(i.id)||String(i.id).length>6);T.items.forEach(i=>{if(KEEP_IDS.has(i.id)){i.worn=0;i.last=null;i.laundry=false;i.wears=0}});
+  const ok=new Set(T.items.map(i=>i.id)),today=TODAY;
+  Object.keys(T.looks||{}).forEach(d=>{const L=T.looks[d];if(d<today){delete T.looks[d];return}
+    if(L.items&&L.items.some(id=>!ok.has(id))){L.items=[];delete L.auto}if(!L.title&&!(L.items&&L.items.length))delete T.looks[d]});
+  Object.keys(T.evLooks||{}).forEach(d=>{const m=T.evLooks[d];Object.keys(m).forEach(k=>{if(m[k].some(id=>!ok.has(id)))delete m[k]})});
+  T.favLooks=(T.favLooks||[]).filter(k=>k.split(',').every(id=>ok.has(id)));T.shuffle={};T.mig.clean1=Date.now()}
 function migShoes(T){if(!T||!T.items||(T.mig&&T.mig.shoes1))return;T.mig=T.mig||{};
   const keep=new Set(MY_SHOES.map(x=>x.id)),old=T.items.filter(i=>i.cat==='shoes');
   const map={};old.forEach(i=>{if(!keep.has(i.id))map[i.id]=i.kind==='boots'?'i13':'i19'});
@@ -718,7 +709,7 @@ const FRESH=!S;
 if(!S||S.v!==2)S=seed();
 if(FRESH)S.onboarded=false;else if(S.onboarded==null)S.onboarded=true;
 S.trips=S.trips||{};
-S.items&&S.items.forEach(i=>{const m=MY_BAGS.find(x=>x.id===i.id);if(m){if(m.brand)i.brand=m.brand;i.use=m.use}});if(!(S.mig&&S.mig.shoes1&&S.mig.bags1&&S.mig.pieces5)){migShoes(S);migBags(S);migPieces(S);try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}}
+S.items&&S.items.forEach(i=>{const m=MY_BAGS.find(x=>x.id===i.id);if(m){if(m.brand)i.brand=m.brand;i.use=m.use}});if(!(S.mig&&S.mig.shoes1&&S.mig.bags1&&S.mig.pieces5&&S.mig.clean1)){migShoes(S);migBags(S);migPieces(S);migClean(S);try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}}
 S.wish=S.wish||[];S.profile=S.profile||{};
 function save(){S.updatedAt=Date.now();try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}if(typeof schedulePush==='function')schedulePush()}
 const byId=id=>S.items.find(i=>i.id===id);
@@ -773,7 +764,7 @@ const washEvery=i=>i.washEvery!=null?i.washEvery:(WASH[i.kind]||0); /* 0 = never
 const daysSince=d=>d?Math.round((parse(TODAY)-parse(d))/864e5):Infinity;
 const forgotten=i=>!i.stored&&!i.laundry&&daysSince(i.last)>=45;
 let LU={},LUD='';
-function pick(list,k){if(!list.length)return null;const sc=i=>LU[i.id]?Math.min(gap(LU[i.id],LUD),14):30;list.sort((a,b)=>sc(b)-sc(a)||(a.worn-b.worn));const top=list.filter(i=>sc(i)>=Math.min(3,sc(list[0])));return top[k%top.length]}
+function pick(list,k){if(!list.length)return null;const sc=i=>LU[i.id]?Math.min(gap(LU[i.id],LUD),14):30;list.sort((a,b)=>sc(b)-sc(a)||(a.worn-b.worn));const top=list.filter(i=>sc(i)>=Math.min(3,sc(list[0]))),off=LUD?Math.round(parse(LUD)/864e5):0;return top[(k+off)%top.length]}
 function suggest(ds,type){
   LU=lastUseMap(ds);LUD=ds;
   const w=wx(ds),feel=w.max-2-feelBias(),k=S.shuffle[ds]||0,A=S.items.filter(avail),ids=[];
@@ -800,7 +791,7 @@ function suggest(ds,type){
        if(!ids.some(id=>it(id).cat==='top')){const tp=pick(A.filter(i=>i.cat==='top'&&i.kind!=='knit'),k)||pick(A.filter(i=>i.cat==='top'),k);tp&&ids.push(tp.id)}
        ids.unshift(bl.id);ids.push(tr.id)}}
    else{const o=ids.map(it).find(i=>i.cat==='outer'),b=ids.map(it).find(i=>i.cat==='bottom');
-     if(o&&b&&o.suit&&o.suit===b.suit){const alt=pick(A.filter(i=>i.cat==='bottom'&&i.id!==b.id&&fits(i,feel)),k+1)||pick(A.filter(i=>i.cat==='bottom'&&i.id!==b.id),k);if(alt)ids[ids.indexOf(b.id)]=alt.id}}}
+     if(o&&b&&o.suit&&o.suit===b.suit){const alt=pick(A.filter(i=>i.cat==='bottom'&&i.id!==b.id&&fits(i,feel)),k+1)||pick(A.filter(i=>i.cat==='bottom'&&i.id!==b.id),k);if(alt)ids[ids.indexOf(b.id)]=alt.id;else{const oo=pick(A.filter(i=>i.cat==='outer'&&!i.suit&&fits(i,(w.min+w.max)/2)),k);if(oo)ids[ids.indexOf(o.id)]=oo.id;else ids.splice(ids.indexOf(o.id),1)}}}}
   /* twin sets: often wear the matching top under the cardigan, but not always */
   {const it=id=>byId(id),o=ids.map(it).find(i=>i.cat==='outer'),t=ids.map(it).find(i=>i.cat==='top');
    if(o&&o.set&&k%2===0&&(!t||t.set!==o.set)){const mt=A.find(i=>i.cat==='top'&&i.set===o.set);if(mt){if(t)ids[ids.indexOf(t.id)]=mt.id;else if(!ids.some(id=>it(id).cat==='dress'))ids.splice(1,0,mt.id)}}
@@ -901,7 +892,7 @@ function scToday(){
   </div>
   <div class="hero split-able ${p?'photo':''} ${V.split?'split':''} " id="hero">
     <div class="left">
-      <button class="cover" data-act="dress-day" data-date="${ds}" aria-label="Open this look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:`<span class="ff">${flatlay(ids)}</span><span class="fc">${pieces.filter(i=>i.cat!=='bag').map(i=>g(i,i.cat==='shoes'?84:96,i.cat==='shoes'?56:i.cat==='bottom'?120:100,'position:static')).join('')}</span>`}</button>
+      <button class="cover" data-act="dress-day" data-date="${ds}" aria-label="Open this look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:`<span class="ff">${flatlay(ids)}</span><span class="fc">${pieces.map(i=>g(i,i.cat==='shoes'?84:96,i.cat==='shoes'?56:i.cat==='bottom'?120:100,'position:static')).join('')}</span>`}</button>
       <span class="pill topL ${window.EVS2==='2'&&evList(ds,L).length?'joined':''}">${ic(wIcon(w))}<span class="lg">${w.max}° · ${esc(word(w))}${w.est?' · estimate':''}</span><span class="sm">${w.max}°</span></span>
       <button class="heart topR ${isFav?'on':''}" data-act="fav-look" aria-label="${isFav?'Remove from saved looks':'Save this look'}" aria-pressed="${isFav}">${ic('heart')}</button>
       ${p?'':'<span class="pill soon2">Photo coming soon</span>'}
@@ -1086,7 +1077,7 @@ const keyOf=ids=>ids.slice().sort().join(',');
 const isFavKey=k=>S.favLooks.includes(k);
 function allLooks(){
   const m=new Map();
-  const addL=(ids,src)=>{ids=ids.filter(id=>byId(id));if(ids.length<2)return;const k=keyOf(ids);if(!m.has(k))m.set(k,{key:k,ids:ids.slice(),src:new Set()});m.get(k).src.add(src)};
+  const addL=(ids,src)=>{ids=ids.filter(id=>byId(id));if(ids.length<2||!ids.some(id=>{const c=byId(id).cat;return c==='top'||c==='dress'}))return;const k=keyOf(ids);if(!m.has(k))m.set(k,{key:k,ids:ids.slice(),src:new Set()});m.get(k).src.add(src)};
   PHOTOS.forEach(p=>addL(p.items,'photo'));
   S.favLooks.forEach(k=>addL(k.split(','),'fav'));
   Object.keys(S.looks).sort().reverse().forEach(d=>{const L=S.looks[d];if(L.items&&L.items.length&&(L.worn||!L.auto))addL(L.items,L.worn?'worn':'planned')});
@@ -1317,7 +1308,7 @@ async function push(){if(!sb||!USER)return;SYNC={state:'syncing'};refreshSheet()
 async function pull(){if(!sb||!USER)return;SYNC={state:'syncing'};refreshSheet();
   try{const{data,error}=await sb.from('wardrobes').select('data,updated_at').eq('user_id',USER.id).maybeSingle();if(error)throw error;
     const remoteT=data?new Date(data.updated_at).getTime():0,firstHere=S.syncedUser!==USER.id;
-    if(data&&data.data&&(firstHere||remoteT>(S.updatedAt||0))){S=data.data;if(!(S.mig&&S.mig.shoes1&&S.mig.bags1&&S.mig.pieces5)){migShoes(S);migBags(S);migPieces(S);setTimeout(()=>save(),0)}setTimeout(()=>{try{rebag();render()}catch(e){}},0);S.wish=S.wish||[];S.profile=S.profile||{};S.trips=S.trips||{};if(S.onboarded==null)S.onboarded=true;if(V.screen==='welcome'&&S.onboarded){V.screen='today';closeSheet()}S.syncedUser=USER.id;try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}
+    if(data&&data.data&&(firstHere||remoteT>(S.updatedAt||0))){S=data.data;if(!(S.mig&&S.mig.shoes1&&S.mig.bags1&&S.mig.pieces5&&S.mig.clean1)){migShoes(S);migBags(S);migPieces(S);migClean(S);setTimeout(()=>save(),0)}setTimeout(()=>{try{rebag();render()}catch(e){}},0);S.wish=S.wish||[];S.profile=S.profile||{};S.trips=S.trips||{};if(S.onboarded==null)S.onboarded=true;if(V.screen==='welcome'&&S.onboarded){V.screen='today';closeSheet()}S.syncedUser=USER.id;try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}
       await downloadImgs();SYNC={state:'ok',at:Date.now()};render(true);if(firstHere)toast('Your wardrobe is loaded from your account')}
     else{await push();return}
   }catch(e){SYNC={state:'err',err:e.message||String(e)}}refreshSheet()}
