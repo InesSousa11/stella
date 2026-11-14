@@ -339,6 +339,7 @@ nav.tabs .on i{background:var(--clay)}
 .hero .fc.fcl{position:absolute;inset:18px 12px 64px;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:10px}
 .hero .fc.fcl img.gq{width:var(--t,88px)!important;height:var(--t,88px)!important}
 .hero .fc img.gq{width:var(--t,88px)!important;height:var(--t,88px)!important}
+.hero.split .fc:not(.fcl){grid-template-columns:repeat(2,auto)!important;--t:62px!important;gap:8px}
 .hero .fc>*:last-child:nth-child(odd){grid-column:1/-1}
 .hero .pill .sm{display:none}
 
@@ -350,6 +351,14 @@ nav.tabs .on i{background:var(--clay)}
 .hero .right .pp-head{padding:2px 2px 4px}
 .hero .right .note{font-size:12px;line-height:1.35}
 .pr{display:block;padding:0;border-radius:18px;flex:none;position:relative}
+.pr.more .t{display:grid;place-items:center;background:transparent;border:1.5px dashed var(--clay);box-shadow:none}
+.pr.more .t svg{width:22px;height:22px;fill:none;stroke:var(--clay-ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.pr.more .ml{display:block;text-align:center;font-size:11px;color:var(--clay-ink);margin-top:3px}
+.alts{display:flex;flex-direction:column;gap:10px}
+.alt{display:flex;align-items:center;gap:12px;padding:10px;border-radius:18px;background:var(--card);border:1px solid var(--line);text-align:left;width:100%}
+.alt .ts{display:flex;gap:6px;flex:none}.alt .t{width:52px;height:52px;border-radius:12px;display:grid;place-items:center;overflow:hidden}
+.alt .m{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:14px}.alt .m b{font-weight:500}
+.alt .rt{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}.alt .rt.best{color:var(--clay-ink)}
 .pr.fixed .t{background:rgba(255,253,250,.7);box-shadow:none}
 .pr.tog .t{border:1.5px solid var(--clay);transition:opacity .25s var(--ease),border-color .25s var(--ease)}
 .pr.tog:active .t{transform:scale(.95)}
@@ -476,6 +485,10 @@ nav.tabs .on i{background:var(--clay)}
 .ver{flex-shrink:0;width:84px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--muted);text-align:center}
 .ver span.t{width:72px;height:72px;border-radius:18px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center}
 .ver.on span.t{border:1.5px solid var(--clay)}
+.ver .rt{display:block;margin-top:3px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-weight:500}
+.ver .rt.best{color:var(--clay-ink)}.ver .rt.good{color:var(--muted)}
+.verdict{margin-top:10px;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:5px 11px;border-radius:12px;background:var(--oat);color:var(--ink)}
+.verdict.best{background:var(--blush);color:var(--clay-ink)}
 .why{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink)}
 .why li{display:flex;gap:8px;align-items:baseline}
 .why li::before{content:'';width:5px;height:5px;border-radius:3px;background:var(--clay);flex:none;transform:translateY(-2px)}
@@ -813,7 +826,7 @@ function suggest(ds,type){
   let sh=A.filter(i=>i.cat==='shoes'&&fits(i,feel)&&!(type==='formal'&&i.kind==='boots'&&!(w.rain>=40)));if(w.rain>=40){if(sh.some(i=>i.rain))sh=sh.filter(i=>i.rain);else if(sh.some(i=>!i.noRain))sh=sh.filter(i=>!i.noRain)}
   const s=pick(sh,k)||pick(A.filter(i=>i.cat==='shoes'),k);s&&ids.push(s.id);
   const b=bagFor(ids,type||dayType(ds),k);b&&ids.push(b.id);{const ws=withSocks(ids);if(ws!==ids)ids.push(ws[ws.length-1])}
-  return refine(ids,type||dayType(ds),w,k+DN);
+  return refine(ids,type||dayType(ds),w,k+DN,true);
 }
 /* ---------- styling rules ----------
    Colour families from the piece's colour; neutrals still count as colours (three-colour rule). */
@@ -851,17 +864,30 @@ function harmony(ids){const P=ids.map(byId).filter(Boolean),G=P.filter(i=>['oute
   return{s,why}}
 const cap=t=>t?t[0].toUpperCase()+t.slice(1):t;
 /* choose shoes, bag and knit layer that suit the base best; k rotates between near-equal choices */
-function refine(ids,type,w,k){const A=S.items.filter(avail),P=ids.map(byId).filter(Boolean),base=P.filter(i=>!['shoes','bag','socks'].includes(i.cat)&&!(i.cat==='outer'&&LVL(i)===1)),knit=P.find(i=>i.cat==='outer'&&LVL(i)===1);
-  const feel=w.max-2;
+/* every allowed combination of layers, shoes and bag for a base, best first.
+   Layers keep the levels the weather asked for, but any piece of that level can compete. */
+function refineAll(ids,type,w,recent){const A=S.items.filter(avail),P=ids.map(byId).filter(Boolean),base=P.filter(i=>!['shoes','bag','socks','outer'].includes(i.cat));
+  const feel=w.max-2,mid=(w.min+w.max)/2,bot=base.find(i=>i.cat==='bottom'),top=base.find(i=>i.cat==='top');
   let shoes=A.filter(i=>i.cat==='shoes'&&feel>=i.warm[0]-1&&feel<=i.warm[1]+2&&!(type==='formal'&&i.kind==='boots'&&w.rain<40));
   if(w.rain>=40){if(shoes.some(i=>i.rain))shoes=shoes.filter(i=>i.rain);else if(shoes.some(i=>!i.noRain))shoes=shoes.filter(i=>!i.noRain)}
   if(!shoes.length)shoes=A.filter(i=>i.cat==='shoes').slice(0,1);
   const bags0=A.filter(i=>i.cat==='bag'),bu=bags0.filter(i=>!i.use||i.use.includes(type)),bags=bu.length?bu:bags0;
-  const top=base.find(i=>i.cat==='top');
-  const knits=knit?A.filter(i=>i.cat==='outer'&&LVL(i)===1&&(!top||!top.set||top.set===i.set||top.kind!=='knit')):[null];
-  const opts=[];(shoes.length?shoes:[null]).forEach(a=>(bags.length?bags:[null]).forEach(b=>knits.forEach(c=>{const x=base.map(i=>i.id);if(c)x.splice(base.filter(i=>i.cat==='outer'&&LVL(i)>1).length,0,c.id);if(a)x.push(a.id);if(b)x.push(b.id);opts.push({x,h:harmony(x).s})})));
-  if(!opts.length)return ids;opts.sort((p,q)=>q.h-p.h);const good=opts.filter(o=>o.h>=opts[0].h-.75);
-  return withSocks(good[(k||0)%good.length].x)}
+  const lv=[...new Set(P.filter(i=>i.cat==='outer').map(LVL))];
+  const layerOpts=lv.map(L=>{let c=A.filter(i=>i.cat==='outer'&&LVL(i)===L&&mid>=i.warm[0]-2&&mid<=i.warm[1]+3);
+    if(L===1)c=c.filter(i=>!top||!top.set||top.kind!=='knit'||top.set===i.set);
+    if(L===2)c=c.filter(i=>type==='formal'?(bot&&i.suit===bot.suit):!(bot&&i.suit&&i.suit===bot.suit));
+    if(L===3&&w.rain>=40&&c.some(i=>i.rain))c=c.filter(i=>i.rain);
+    const cur=P.find(i=>i.cat==='outer'&&LVL(i)===L);if(!c.length&&cur)c=[cur];return c});
+  let layerSets=[[]];layerOpts.forEach(c=>{const n=[];layerSets.forEach(ls=>c.forEach(o=>n.push(ls.concat(o))));layerSets=n});
+  const pen=id=>{if(!recent||!LU[id])return 0;const g=gap(LU[id],LUD);return g<=1?1.2:g<=2?.6:0};
+  const out=[];layerSets.forEach(ls=>(shoes.length?shoes:[null]).forEach(a=>(bags.length?bags:[null]).forEach(b=>{
+    const x=ls.slice().sort((p,q)=>LVL(q)-LVL(p)).map(i=>i.id).concat(base.map(i=>i.id));if(a)x.push(a.id);if(b)x.push(b.id);
+    const hm=harmony(x),h=hm.s-(a?pen(a.id):0)-(b?pen(b.id):0)-ls.reduce((t,o)=>t+pen(o.id)*.5,0);out.push({x:withSocks(x),h,raw:hm.s})})));
+  out.sort((p,q)=>q.h-p.h);return out}
+function refine(ids,type,w,k,recent){const o=refineAll(ids,type,w,recent);if(!o.length)return withSocks(ids);const good=o.filter(v=>v.h>=o[0].h-.75);return good[(k||0)%good.length].x}
+/* how an option compares with the best for its slot */
+function rateOf(h,best){return h>=best-.25?'best':h>=best-1.5?'good':h>=best-3?'ok':'no'}
+const RATE_NAME={best:'Best',good:'Good',ok:'OK'};
 const LVL=i=>i.kind==='cardigan'?1:i.kind==='blazer'?2:3;
 const grpOf=i=>i.cat==='outer'?'outer'+LVL(i):i.cat;
 const slots=ids=>{const o={};ids.map(byId).filter(Boolean).forEach(i=>{o[i.cat]=i});return o};
@@ -965,6 +991,7 @@ function scToday(){
       ${pieces.map(i=>{const on=vis.includes(i.id);return canT(i.id)
         ?`<button class="pr tog ${on?'':'off'}" data-layer-t="${i.id}" data-hk="${ds}" aria-pressed="${on}" aria-label="${on?'Take off':'Put on'} the ${esc(i.name)}" ${V.split?'':'tabindex="-1"'}><span class="t">${g(i,52,56,'position:static')}</span><span class="bd">${ic(on?'check':'plus')}</span></button>`
         :`<span class="pr fixed" role="img" aria-label="${esc(i.name)}"><span class="t">${g(i,46,50,'position:static')}</span></span>`}).join('')}
+      <button class="pr more" data-act="alts" data-date="${ds}" ${V.split?'':'tabindex="-1"'} aria-label="Other good options for this day"><span class="t">${ic('swap')}</span><span class="ml">Options</span></button>
     </div>
     <button class="ptab" data-act="split" aria-expanded="${!!V.split}" aria-label="${V.split?'Hide the pieces':'Show the pieces in this look'}"><svg class="hg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7.5a2 2 0 1 1 2-2c0 1-.8 1.4-1.4 1.8-.4.3-.6.6-.6 1.1v.6L3.5 15a1 1 0 0 0 .5 1.8h16a1 1 0 0 0 .5-1.8L12 9"/></svg><svg class="chev2" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></button>
   </div>
@@ -1212,13 +1239,18 @@ function scLook(){
   const h=heroFor(ids,'L'+key,{cover:'look-dress',top:`<button class="heart topR ${fav?'on':''}" data-favlook="${esc(key)}" aria-pressed="${fav}" aria-label="${fav?'Remove from favourites':'Add to favourites'}">${ic('heart')}</button>`});
   const t=titleOf(baseOf(ids)),c=check(ids,wx(TODAY)),s=slots(ids),p=photoFor(ids);
   const LC=(()=>{const P=ids.map(byId),o=P.find(i=>i&&i.cat==='outer'&&i.suit),b=P.find(i=>i&&i.cat==='bottom');if(o&&b&&o.suit===b.suit)return'formal';if(V.look.code)return V.look.code;const cs=codesOf(G.base.split(','));return cs.includes('weekend')?'weekend':cs[0]||null})();
-  const row=(cat,label,none)=>{const opts=S.items.filter(i=>grpOf(i)===cat&&!(cat==='bag'&&LC&&i.use&&!i.use.includes(LC)));if(!opts.length)return'';const cur=ids.map(byId).find(i=>i&&grpOf(i)===cat);
-    return`<div><div class="flabel" style="margin-bottom:8px">${label}</div><div class="vers">${none?`<button class="ver ${cur?'':'on'}" data-addon="${cat}:" aria-pressed="${!cur}"><span class="t"><span class="none">None</span></span>&nbsp;</button>`:''}${opts.map(i=>`<button class="ver ${cur&&cur.id===i.id?'on':''} ${avail(i)?'':'off'}" data-addon="${cat}:${i.id}" aria-pressed="${!!(cur&&cur.id===i.id)}" aria-label="${esc(i.name)}"><span class="t">${g(i,56,56,'position:static;--q:1')}</span>${esc(i.short)}</button>`).join('')}</div></div>`};
+  const swap=(cat,id)=>{let x=ids.filter(v=>{const i=byId(v);return!i||grpOf(i)!==cat});if(id)x=x.concat(id);if(cat==='shoes'){const sh=byId(id);x=x.filter(v=>byId(v).cat!=='socks');if(sh&&sh.kind==='loafers')x=withSocks(x)}return x};
+  const row=(cat,label,none)=>{let opts=S.items.filter(i=>grpOf(i)===cat&&!(cat==='bag'&&LC&&i.use&&!i.use.includes(LC)));if(cat==='outer2'&&LC!=='formal'){const b=s.bottom;opts=opts.filter(i=>!(b&&i.suit&&i.suit===b.suit))}
+    if(!opts.length)return'';const cur=ids.map(byId).find(i=>i&&grpOf(i)===cat);
+    const cand=(none?[null]:[]).concat(opts).map(i=>({i,h:harmony(swap(cat,i&&i.id)).s}));const best=Math.max(...cand.map(c=>c.h));
+    const shown=cand.map(c=>Object.assign(c,{r:rateOf(c.h,best)})).filter(c=>c.r!=='no'||(c.i?cur&&cur.id===c.i.id:!cur));
+    const tag=r=>RATE_NAME[r]?`<span class="rt ${r}">${RATE_NAME[r]}</span>`:'<span class="rt">—</span>';
+    return`<div><div class="flabel" style="margin-bottom:8px">${label}</div><div class="vers">${shown.map(c=>c.i?`<button class="ver ${cur&&cur.id===c.i.id?'on':''} ${avail(c.i)?'':'off'}" data-addon="${cat}:${c.i.id}" aria-pressed="${!!(cur&&cur.id===c.i.id)}" aria-label="${esc(c.i.name)}, ${RATE_NAME[c.r]||'weak'} match"><span class="t">${g(c.i,56,56,'position:static;--q:1')}</span>${esc(c.i.short)}${tag(c.r)}</button>`:`<button class="ver ${cur?'':'on'}" data-addon="${cat}:" aria-pressed="${!cur}" aria-label="None, ${RATE_NAME[c.r]||'weak'} match"><span class="t"><span class="none">None</span></span>&nbsp;${tag(c.r)}</button>`).join('')}</div></div>`};
   return`
   <div class="top"><button class="ib" data-act="back" aria-label="Back">${ic('back')}</button><h1 class="h-l">Look</h1><button class="ib" data-act="look-dress" aria-label="Open in the dressing room">${ic('sparkle')}</button></div>
   ${h.html}
   <div><h2 class="h-m" style="font-size:24px">${esc(t[0])} <i class="it">${esc(t[1])}</i></h2>
-    <div class="note" style="margin-top:2px">${(()=>{const cs=codesOf(G.base.split(','));const suit=(()=>{const P=ids.map(byId),o=P.find(i=>i&&i.cat==='outer'&&i.suit),b=P.find(i=>i&&i.cat==='bottom');return o&&b&&o.suit===b.suit})();const c0=suit?'formal':cs.find(x=>x!=='formal');return c0?esc(CODE_NAME[c0])+' · ':''})()}${p?'On you':'Photo to come'} · ${c.ok?'good for today':esc(c.t.replace('\n',' ').toLowerCase())+' today'}</div>${(()=>{const hw=harmony(ids).why.slice(0,3);return hw.length?`<ul class="why">${hw.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''})()}</div>
+    <div class="note" style="margin-top:2px">${(()=>{const cs=codesOf(G.base.split(','));const suit=(()=>{const P=ids.map(byId),o=P.find(i=>i&&i.cat==='outer'&&i.suit),b=P.find(i=>i&&i.cat==='bottom');return o&&b&&o.suit===b.suit})();const c0=suit?'formal':cs.find(x=>x!=='formal');return c0?esc(CODE_NAME[c0])+' · ':''})()}${p?'On you':'Photo to come'} · ${c.ok?'good for today':esc(c.t.replace('\n',' ').toLowerCase())+' today'}</div>${(()=>{const allO=refineAll(ids,LC||'work',wx(TODAY),false),me=harmony(ids).s,top=allO.length?Math.max(allO[0].raw,me):me;const r=rateOf(me,top);return`<div class="verdict ${r}">${r==='best'?'Top match for this base':r==='good'?'A good match: one of the strongest options':r==='ok'?'Works, but there are stronger options below':'Weak match: try the options marked Best'}</div>`})()}${(()=>{const hw=harmony(ids).why.slice(0,3);return hw.length?`<ul class="why">${hw.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''})()}</div>
   ${row('outer1','Knit layer',true)}${row('outer2','Jacket',true)}${row('outer3','Coat',true)}${row('shoes','Shoes')}${row('bag','Bag')}${row('socks','Socks',true)}
   <div class="row"><button class="btn" data-act="look-plan">Plan it for a day</button><button class="sq" data-act="look-today" aria-label="Wear it today">${ic('check')}</button></div>`;
 }
@@ -1551,6 +1583,14 @@ function sheetNotices(){
     ${n.length?n.map(d=>{const L=S.looks[d];return`<button class="notice" data-act="dress-day" data-date="${d}"><span class="thumb" style="width:44px;height:44px">${ic('plus')}</span><span style="flex:1"><b style="font-weight:500">${esc(L.title)}</b><br><span class="note">${esc(rel(d))}${L.time?' · '+esc(L.time):''} · needs a look</span></span></button>`}).join(''):'<p class="note">Every plan for the next two weeks has a look.</p>'}
     ${t&&t.items&&t.items.length?`<p class="note">Tomorrow is ready: ${esc(titleOf(t.items).join(' '))}.</p>`:''}`,L=>{L.querySelectorAll('.thumb svg').forEach(s=>{s.style.cssText='width:20px;height:20px;fill:none;stroke:var(--clay-ink);stroke-width:1.5;stroke-linecap:round'})});
 }
+function sheetAlts(ds){const L=S.looks[ds],ids=lookFor(ds).ids,type=(L&&L.type)||dayType(ds),cur=keyOf(ids);
+  const all=refineAll(ids,type,wx(ds),false);const best=all.length?all[0].raw:0,meH=harmony(ids).s;
+  const alts=all.filter(o=>keyOf(o.x)!==cur&&rateOf(o.raw,best)!=='no').filter((o,i,a)=>a.findIndex(z=>keyOf(z.x)===keyOf(o.x))===i).slice(0,5);
+  const diff=x=>x.map(byId).filter(i=>i&&!ids.includes(i.id)&&i.cat!=='socks');
+  sheet(`<h2 class="h-l">Other good <i class="it">options</i></h2>
+    <p class="note">Same base, other layers, shoes or bag. Today’s pick is rated <b>${RATE_NAME[rateOf(meH,Math.max(best,meH))]||'OK'}</b>.</p>
+    <div class="alts">${alts.length?alts.map(o=>{const d=diff(o.x),r=rateOf(o.raw,Math.max(best,meH));return`<button class="alt" data-act="use-alt" data-date="${ds}" data-x="${esc(o.x.join(','))}"><span class="ts">${d.map(i=>`<span class="t">${g(i,48,48,'position:static;--q:1')}</span>`).join('')}</span><span class="m"><b>${esc(d.map(i=>i.short).join(' + ')||'Same pieces')}</b><span class="rt ${r}">${RATE_NAME[r]}</span></span></button>`}).join(''):'<p class="note">This is the only strong combination for today.</p>'}</div>`);
+}
 function sheetEvent(){
   sheet(`<h2 class="h-l">Add a <i class="it">plan</i></h2>
     <div class="field"><label for="e-title">What is it?</label><input id="e-title" placeholder="Dinner with Ana" maxlength="40"></div>
@@ -1660,6 +1700,8 @@ document.addEventListener('click',e=>{
     case'shuffle':{const ds=V.day||TODAY,L=S.looks[ds];if(L&&L.worn)return toast('Undo “worn” first to change today’s look');if(L&&L.items&&L.items.length){L.items=[]}S.shuffle[ds]=(S.shuffle[ds]||0)+1;save();return render()}
     case'to-today':return goToday();
     case'split':return setSplit(!V.split);
+    case'alts':return sheetAlts(d.date);
+    case'use-alt':{const ds=d.date,L=S.looks[ds]||{type:dayType(ds)};S.looks[ds]=Object.assign(L,{items:d.x.split(','),auto:false});save();closeSheet();toast('Outfit updated');{const k=$('#tsc')?$('#tsc').scrollTop:0;render();if($('#tsc'))layoutToday(k)}return}
     case'ev-close':V.evOpen=null;{const k=$('#tsc')?$('#tsc').scrollTop:0;render();layoutToday(k)}return;
     case'ev-open':V.evOpen=V.evOpen===d.date?null:d.date;{const k=$('#tsc')?$('#tsc').scrollTop:0;render();layoutToday(k)}return;
     case'stats':return go('stats');
