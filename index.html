@@ -814,9 +814,15 @@ function suggest(ds,type){
   let bases=[];tops.forEach(a=>bots.forEach(b=>bases.push([a.id,b.id])));dresses.forEach(d=>bases.push([d.id]));
   const code=['formal','work','weekend'].includes(t)?t:null,fit=code?bases.filter(x=>codesOf(x).includes(code)):[];
   if(fit.length)bases=fit;else if(code==='weekend'){const wk=bases.filter(x=>codesOf(x).includes('work'));if(wk.length)bases=wk}
+  /* variety: what the previous three days wear (worn or planned), heavier for yesterday */
+  const prev=[1,2,3].map(j=>{const d=add(ds,-j);if(d<TODAY){const L=S.looks[d];return L&&L.items||[]}return lookFor(d).ids});
+  const WT={top:6,dress:6,bottom:1,shoes:2.5,bag:.6,socks:0},DEC=[1,.6,.3];
+  const wt=i=>i.cat==='outer'?(LVL(i)===3?.8:3):WT[i.cat]??1;
+  const vpen=x=>{let n=0;prev.forEach((pv,j)=>{if(!pv.length)return;x.forEach(id=>{if(pv.includes(id)){const i=byId(id);if(i)n+=wt(i)*DEC[j]}});if(j===0&&same(x.filter(id=>byId(id).cat!=='socks'),pv.filter(id=>byId(id)&&byId(id).cat!=='socks')))n+=12});return n};
   const rec=x=>x.reduce((n,id)=>n+(LU[id]?Math.max(0,14-Math.min(gap(LU[id],ds),14)):0),0);
-  const all=[];bases.forEach(bs=>refineAll(bs,t,w,false,true).forEach(o=>all.push({x:o.x,h:o.h,r:rec(o.x)})));
+  const all=[];bases.forEach(bs=>refineAll(bs,t,w,false,true).forEach(o=>all.push({x:o.x,h:o.h-vpen(o.x),s:o.h,r:rec(o.x)})));
   if(!all.length)return withSocks(bases[0]||[]);
+  {const top=Math.max(...all.map(o=>o.s)),floor=Math.min(top-1.5,(7-5)/.7);const ok=all.filter(o=>o.s>=floor);all.length=0;ok.forEach(o=>all.push(o))}
   all.sort((p,q)=>(q.h-p.h>.01||p.h-q.h>.01)?q.h-p.h:p.r-q.r);
   const seen=new Set(),uniq=all.filter(o=>{const kk=o.x.slice().sort().join(',');if(seen.has(kk))return false;seen.add(kk);return true});
   const out=uniq[k%uniq.length].x.slice();SUG[key]=out;return out.slice();
