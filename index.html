@@ -476,6 +476,9 @@ nav.tabs .on i{background:var(--clay)}
 .ver{flex-shrink:0;width:84px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--muted);text-align:center}
 .ver span.t{width:72px;height:72px;border-radius:18px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center}
 .ver.on span.t{border:1.5px solid var(--clay)}
+.why{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink)}
+.why li{display:flex;gap:8px;align-items:baseline}
+.why li::before{content:'';width:5px;height:5px;border-radius:3px;background:var(--clay);flex:none;transform:translateY(-2px)}
 .ver.off{opacity:.45}
 .ver .none{font-size:12px;color:var(--muted)}
 .lcard .flatb{gap:8px}
@@ -774,7 +777,7 @@ const forgotten=i=>!i.stored&&!i.laundry&&daysSince(i.last)>=45;
 let LU={},LUD='';
 function pick(list,k){if(!list.length)return null;const sc=i=>LU[i.id]?Math.min(gap(LU[i.id],LUD),14):30;list.sort((a,b)=>sc(b)-sc(a)||(a.worn-b.worn));const top=list.filter(i=>sc(i)>=Math.min(3,sc(list[0]))),off=LUD?Math.round(parse(LUD)/864e5):0;return top[(k+off)%top.length]}
 function suggest(ds,type){
-  LU=lastUseMap(ds);LUD=ds;
+  LU=lastUseMap(ds);LUD=ds;const DN=Math.round(parse(ds)/864e5);
   const w=wx(ds),feel=w.max-2-feelBias(),k=S.shuffle[ds]||0,A=S.items.filter(avail),ids=[];
   /* prefer photographed looks that suit the day and were not worn recently */
   const pc=PHOTOS.filter(p=>p.items.every(id=>{const i=byId(id);return i&&avail(i)})&&check(p.items,w).ok&&(type!=='evening'||p.items.some(id=>byId(id).cat==='dress'||byId(id).kind==='cami'))&&p.items.every(id=>!LU[id]||gap(LU[id],ds)>=3||byId(id).cat==='bag'||byId(id).cat==='shoes'||byId(id).cat==='outer'));
@@ -805,13 +808,60 @@ function suggest(ds,type){
      if(o&&b&&o.suit&&o.suit===b.suit){const alt=pick(A.filter(i=>i.cat==='bottom'&&i.id!==b.id&&fits(i,feel)),k+1)||pick(A.filter(i=>i.cat==='bottom'&&i.id!==b.id),k);if(alt)ids[ids.indexOf(b.id)]=alt.id;else{const oo=pick(A.filter(i=>i.cat==='outer'&&!i.suit&&fits(i,(w.min+w.max)/2)),k);if(oo)ids[ids.indexOf(o.id)]=oo.id;else ids.splice(ids.indexOf(o.id),1)}}}}
   /* twin sets: often wear the matching top under the cardigan, but not always */
   {const it=id=>byId(id),o=ids.map(it).find(i=>i.cat==='outer'),t=ids.map(it).find(i=>i.cat==='top');
-   if(o&&o.set&&k%2===0&&(!t||t.set!==o.set)){const mt=A.find(i=>i.cat==='top'&&i.set===o.set);if(mt){if(t)ids[ids.indexOf(t.id)]=mt.id;else if(!ids.some(id=>it(id).cat==='dress'))ids.splice(1,0,mt.id)}}
-   else if(!o&&t&&t.set&&k%3===0&&w.min<20){const mc=A.find(i=>i.cat==='outer'&&i.set===t.set);if(mc)ids.unshift(mc.id)}}
+   if(o&&o.set&&(k+DN)%3===0&&(!t||t.set!==o.set)){const mt=A.find(i=>i.cat==='top'&&i.set===o.set);if(mt){if(t)ids[ids.indexOf(t.id)]=mt.id;else if(!ids.some(id=>it(id).cat==='dress'))ids.splice(1,0,mt.id)}}
+   else if(!o&&t&&t.set&&(k+DN)%3===0&&w.min<20){const mc=A.find(i=>i.cat==='outer'&&i.set===t.set);if(mc)ids.unshift(mc.id)}}
   let sh=A.filter(i=>i.cat==='shoes'&&fits(i,feel)&&!(type==='formal'&&i.kind==='boots'&&!(w.rain>=40)));if(w.rain>=40){if(sh.some(i=>i.rain))sh=sh.filter(i=>i.rain);else if(sh.some(i=>!i.noRain))sh=sh.filter(i=>!i.noRain)}
   const s=pick(sh,k)||pick(A.filter(i=>i.cat==='shoes'),k);s&&ids.push(s.id);
   const b=bagFor(ids,type||dayType(ds),k);b&&ids.push(b.id);{const ws=withSocks(ids);if(ws!==ids)ids.push(ws[ws.length-1])}
-  return ids;
+  return refine(ids,type||dayType(ds),w,k+DN);
 }
+/* ---------- styling rules ----------
+   Colour families from the piece's colour; neutrals still count as colours (three-colour rule). */
+const FAM_BY_NAME={black:'black',navy:'navy',chocolate:'brown',brown:'brown',cognac:'brown',tan:'camel',camel:'camel',beige:'sand',taupe:'sand',stone:'sand',oat:'sand',nude:'skin',ivory:'white',white:'white',cream:'white',olive:'olive',mauve:'mauve','light blue':'lightblue',grey:'grey',gray:'grey',rust:'rust',brick:'rust',denim:'denim',indigo:'denim'};
+const LIGHT=new Set(['white','sand','camel','lightblue','skin','grey']),DARKN=new Set(['black','navy','brown']),ACCENT=new Set(['olive','mauve','lightblue','rust']);
+function famOf(i){const n=(i.colorName||'').toLowerCase();if(FAM_BY_NAME[n])return FAM_BY_NAME[n];
+  const h=(i.color||'#888').replace('#',''),r=parseInt(h.slice(0,2),16)/255,g=parseInt(h.slice(2,4),16)/255,b=parseInt(h.slice(4,6),16)/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2;
+  if(l<.16)return b>r+.04?'navy':'black';if(l>.86)return'white';if(mx-mn<.08)return'grey';if(r>=g&&g>=b)return l>.55?'sand':'brown';return'other'+Math.round(mx*10)}
+const FNAME={black:'black',navy:'navy',brown:'brown',camel:'camel',sand:'beige',white:'white',olive:'olive',mauve:'mauve',lightblue:'light blue',grey:'grey',rust:'rust',denim:'denim'};
+/* score an outfit; higher is better. Returns {s, why[]} */
+function harmony(ids){const P=ids.map(byId).filter(Boolean),G=P.filter(i=>['outer','top','dress','bottom'].includes(i.cat)),sh=P.find(i=>i.cat==='shoes'),bg=P.find(i=>i.cat==='bag'),bot=P.find(i=>i.cat==='bottom');
+  let s=0;const why=[];const gF=G.map(famOf),all=new Set(gF.concat(sh?[famOf(sh)]:[],bg?[famOf(bg)]:[]));
+  /* 1. three colours or fewer, neutrals included */
+  if(all.size<=3){s+=1;why.push(all.size===1?'One colour head to toe':'Kept to '+all.size+' colours')}else s-=(all.size-3)*2.5;
+  /* 2. repeat a colour across the garments (2-out-of-3) or go tonal */
+  const cnt={};gF.forEach(f=>cnt[f]=(cnt[f]||0)+1);const rep=Object.keys(cnt).find(f=>cnt[f]>=2);
+  if(G.length>1&&new Set(gF).size===1){s+=2;why.push('Tonal '+FNAME[gF[0]]+' look')}else if(rep){s+=1.5;why.push(cap(FNAME[rep]||rep)+' repeated for a cohesive look')}
+  /* 3. one accent colour at most */
+  const acc=gF.filter(f=>ACCENT.has(f));if(new Set(acc).size>1)s-=2;
+  /* 4. shoes continue the trouser line */
+  if(sh&&bot&&bot.kind!=='skirt'&&famOf(sh)===famOf(bot)){s+=2;why.push('Shoes match the trousers, so the leg line runs on')}
+  /* 5. bag: match the shoes, or echo a garment */
+  if(bg&&sh&&famOf(bg)===famOf(sh)){s+=2;why.push('Bag matches the shoes')}
+  else if(bg&&gF.includes(famOf(bg))){s+=1.5;const it=G.find(i=>famOf(i)===famOf(bg));why.push('Bag picks up the '+(FNAME[famOf(bg)]||'colour')+' of the '+it.short)}
+  else if(bg&&!DARKN.has(famOf(bg))&&!LIGHT.has(famOf(bg)))s-=1.5;
+  /* 6. shoes should relate to something unless neutral */
+  if(sh&&!DARKN.has(famOf(sh))&&!LIGHT.has(famOf(sh))&&!gF.includes(famOf(sh))&&!(bg&&famOf(bg)===famOf(sh)))s-=1;
+  /* 7. black and brown together need a lighter neutral to bridge them */
+  const fams=new Set(P.filter(i=>i.cat!=='socks').map(famOf)),light=[...fams].some(f=>LIGHT.has(f));
+  if(fams.has('black')&&fams.has('brown')&&!light)s-=2;
+  /* 8. navy against black reads as a mistake unless something light breaks it up */
+  if(gF.includes('navy')&&gF.includes('black'))s-=light?.5:1.5;
+  /* 9. mix of textures adds depth */
+  if(new Set(G.map(i=>(i.fabric||'').toLowerCase())).size>=2)s+=.5;
+  return{s,why}}
+const cap=t=>t?t[0].toUpperCase()+t.slice(1):t;
+/* choose shoes, bag and knit layer that suit the base best; k rotates between near-equal choices */
+function refine(ids,type,w,k){const A=S.items.filter(avail),P=ids.map(byId).filter(Boolean),base=P.filter(i=>!['shoes','bag','socks'].includes(i.cat)&&!(i.cat==='outer'&&LVL(i)===1)),knit=P.find(i=>i.cat==='outer'&&LVL(i)===1);
+  const feel=w.max-2;
+  let shoes=A.filter(i=>i.cat==='shoes'&&feel>=i.warm[0]-1&&feel<=i.warm[1]+2&&!(type==='formal'&&i.kind==='boots'&&w.rain<40));
+  if(w.rain>=40){if(shoes.some(i=>i.rain))shoes=shoes.filter(i=>i.rain);else if(shoes.some(i=>!i.noRain))shoes=shoes.filter(i=>!i.noRain)}
+  if(!shoes.length)shoes=A.filter(i=>i.cat==='shoes').slice(0,1);
+  const bags0=A.filter(i=>i.cat==='bag'),bu=bags0.filter(i=>!i.use||i.use.includes(type)),bags=bu.length?bu:bags0;
+  const top=base.find(i=>i.cat==='top');
+  const knits=knit?A.filter(i=>i.cat==='outer'&&LVL(i)===1&&(!top||!top.set||top.set===i.set||top.kind!=='knit')):[null];
+  const opts=[];(shoes.length?shoes:[null]).forEach(a=>(bags.length?bags:[null]).forEach(b=>knits.forEach(c=>{const x=base.map(i=>i.id);if(c)x.splice(base.filter(i=>i.cat==='outer'&&LVL(i)>1).length,0,c.id);if(a)x.push(a.id);if(b)x.push(b.id);opts.push({x,h:harmony(x).s})})));
+  if(!opts.length)return ids;opts.sort((p,q)=>q.h-p.h);const good=opts.filter(o=>o.h>=opts[0].h-.75);
+  return withSocks(good[(k||0)%good.length].x)}
 const LVL=i=>i.kind==='cardigan'?1:i.kind==='blazer'?2:3;
 const grpOf=i=>i.cat==='outer'?'outer'+LVL(i):i.cat;
 const slots=ids=>{const o={};ids.map(byId).filter(Boolean).forEach(i=>{o[i.cat]=i});return o};
@@ -1096,7 +1146,7 @@ function dressBase(base,type){const w=wx(TODAY),A=S.items.filter(avail),ids=base
   const bb=base.map(byId),hasSuitB=bb.find(i=>i.suit);
   if(w.min<15||w.rain>=40){let o=A.filter(i=>i.cat==='outer'&&!(hasSuitB&&i.suit===hasSuitB.suit&&t!=='formal')&&(w.min+w.max)/2>=i.warm[0]-1&&(w.min+w.max)/2<=i.warm[1]+2);if(w.rain>=40&&o.some(i=>i.rain))o=o.filter(i=>i.rain);if(o[0]){ids.unshift(o[0].id);if(LVL(o[0])===3&&w.min<12){const c=A.find(i=>i.kind==='cardigan');if(c)ids.splice(1,0,c.id)}}}
   let sh=A.filter(i=>i.cat==='shoes'&&feel>=i.warm[0]-1&&feel<=i.warm[1]+2);if(w.rain>=40){if(sh.some(i=>i.rain))sh=sh.filter(i=>i.rain);else sh=sh.filter(i=>!i.noRain)}
-  const s0=sh[0]||A.find(i=>i.cat==='shoes');if(s0)ids.push(s0.id);const bg=bagFor(ids,t);if(bg)ids.push(bg.id);return withSocks(ids)}
+  const s0=sh[0]||A.find(i=>i.cat==='shoes');if(s0)ids.push(s0.id);const bg=bagFor(ids,t);if(bg)ids.push(bg.id);return refine(ids,t,w,0)}
 function allLooks(){
   const m=new Map();
   const addL=(ids,src)=>{ids=ids.filter(id=>byId(id));if(ids.length<1||!ids.some(id=>{const c=byId(id).cat;return c==='top'||c==='dress'}))return;const k=keyOf(ids);if(!m.has(k))m.set(k,{key:k,ids:ids.slice(),src:new Set()});m.get(k).src.add(src)};
@@ -1153,7 +1203,7 @@ function scLook(){
   <div class="top"><button class="ib" data-act="back" aria-label="Back">${ic('back')}</button><h1 class="h-l">Look</h1><button class="ib" data-act="look-dress" aria-label="Open in the dressing room">${ic('sparkle')}</button></div>
   ${h.html}
   <div><h2 class="h-m" style="font-size:24px">${esc(t[0])} <i class="it">${esc(t[1])}</i></h2>
-    <div class="note" style="margin-top:2px">${p?'On you':'Photo to come'} · ${c.ok?'good for today':esc(c.t.replace('\n',' ').toLowerCase())+' today'}</div></div>
+    <div class="note" style="margin-top:2px">${p?'On you':'Photo to come'} · ${c.ok?'good for today':esc(c.t.replace('\n',' ').toLowerCase())+' today'}</div>${(()=>{const hw=harmony(ids).why.slice(0,3);return hw.length?`<ul class="why">${hw.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''})()}</div>
   ${row('outer1','Knit layer',true)}${row('outer2','Jacket',true)}${row('outer3','Coat',true)}${row('shoes','Shoes')}${row('bag','Bag')}${row('socks','Socks',true)}
   <div class="row"><button class="btn" data-act="look-plan">Plan it for a day</button><button class="sq" data-act="look-today" aria-label="Wear it today">${ic('check')}</button></div>`;
 }
