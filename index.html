@@ -483,6 +483,12 @@ nav.tabs .on i{background:var(--clay)}
 .lcard .hb svg{width:16px;height:16px;stroke:var(--clay);stroke-width:1.6;fill:none;stroke-linejoin:round}
 .lcard .hb.on svg{fill:var(--clay)}
 .lcard .onme{position:absolute;left:8px;top:8px;height:24px;padding:0 9px;border-radius:12px;background:var(--card);font-size:11px;font-weight:500;color:var(--clay-ink);display:flex;align-items:center}
+.todos{display:flex;flex-direction:column;gap:12px}
+.todo,.tdset{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.tdset{gap:6px;background:var(--oat);border:none}
+.tdh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.tdh b{font-weight:500;letter-spacing:.04em}
+.tdp{display:flex;gap:6px;flex-wrap:wrap}.tdp .t{width:46px;height:46px;border-radius:12px;overflow:hidden;display:grid;place-items:center;background:#fff}
+.tdb{display:flex;gap:6px;flex-wrap:wrap}.tdb .btn.sm{flex:0 0 auto;width:auto;height:auto;padding:7px 12px;font-size:13px;min-height:0;border-radius:14px;line-height:1.2}
 .trycard{border-radius:22px;background:var(--card);border:1px solid var(--line);padding:14px;display:flex;gap:14px;align-items:center;text-align:left;width:100%}
 .trycard .ti{width:52px;height:52px;border-radius:16px;background:#F3E3DA;display:grid;place-items:center;flex-shrink:0}
 .trycard .ti svg{width:24px;height:24px;fill:none;stroke:var(--clay-ink);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
@@ -1298,6 +1304,71 @@ function lookThumb(ids){const p=photoFor(ids);if(p){const src=imageFor(p,ids);if
 const BSC={};
 function baseScore(base,code){const k=base.join(',')+'|'+code+'|'+TODAY;if(BSC[k]!=null)return BSC[k];const o=refineAll(base,code,wx(TODAY),false,true);
   return BSC[k]=o.length?Math.max(...o.slice(0,6).map(v=>fitScore(v.x,wx(TODAY)))):fitScore(withSocks(base),wx(TODAY))}
+
+/* ---------- photos to make: every strong outfit that has no photo yet, as ChatGPT-ready messages ---------- */
+const AI_DESC={i2:'gabardine',i22:'black suit blazer, open',i33:'camel unstructured jacket, open',i30:'navy fine-knit V-neck cardigan, open',i31:'taupe fine-knit V-neck cardigan, open',
+ i8:'black suit trousers',i35:'black tailored trousers with creases',i36:'navy tailored trousers with creases',i34:'grey pinstripe trousers, no belt',
+ i23:'olive green satin button-up shirt',i24:'navy satin button-up shirt',i25:'mauve crinkled button-up shirt',i26:'light blue cotton button-up shirt',i42:'white button-up shirt with pointed collar',i43:'white crepe V-neck blouse with a black trim on the neckline',
+ i27:'beige crinkled shirt with its own matching fabric belt at the waist',i28:'navy fine-knit mock-neck short-sleeve top',i29:'taupe fine-knit mock-neck short-sleeve top',i37:'navy pointelle knit short-sleeve top with scalloped edges and pearl buttons',
+ i38:'white cotton blouse with lace trims, V-neck, long flared sleeves',i39:'dark green linen peplum blouse, V-neck, short sleeves, eyelet details',i40:'oat linen peplum blouse, V-neck, short sleeves, eyelet details',i41:'white textured smocked blouse, V-neck, short flutter sleeves',
+ i21:'black mary jane flats',i19:'brown mary jane flats',i12:'black leather loafers with a gold chain detail',i13:'black leather ankle boots',
+ i15:'black leather crossbody bag',i16:'black nylon crescent bag',i20:'taupe nylon crescent bag',i32:'sheer nude knee-highs (hint at the ankle)'};
+const AI_SHORT={i2:'gabardine',i22:'black blazer',i33:'camel jacket',i30:'navy cardigan',i31:'taupe cardigan'};
+const AI_SETUP="I'm building an outfit-planning app and need photos of me wearing my real clothes. The photos of me attached here are my reference. Always take my face from these reference photos \u2014 never from an image you generated earlier \u2014 so my face is identical in every image in this chat.\n\nThe trouser photo attached (TROUSER FIT REFERENCE) shows how ALL my trousers fit me. On me they are exactly my leg length, so the hem almost touches the floor but doesn't. Copy only the fit from it, never the model, her top or her shoes.\n\nI'll send one look at a time: an image with the pieces numbered, plus a short list. For every look, follow these rules so all photos match as a set:\n\nMe\n- I'm 1.78 m tall: keep my real height and body proportions from the reference photos.\n- Hair: always worn loose, exactly like in the first reference photo: middle parting, natural soft volume at the roots and on top of the head (lifted, not flat), framing my face and falling over the shoulders in loose, defined waves that start around ear level. It must look naturally loose and full, never slicked down, flattened, pulled back, gelled or stuck to the head. Neat and polished for work, with no frizz or flyaways. Keep the hair length of my reference photos (about 10 cm past the shoulders).\n- Pose: natural and confident, like a relaxed fashion lookbook photo, not stiff. Weight a little on one leg, the other knee softly bent. Shoulders relaxed and back, upright posture. Both arms hanging loosely by my sides with a soft bend at the elbows; neither arm raised or holding the bag strap. Head level (chin neither raised nor tucked), gentle natural smile, looking at the camera.\n\nTrouser fit (all trousers)\n- They sit low-to-mid on the hips and are relaxed and fluid through the hip and thigh. They fall in a wide straight column with soft drape and a pressed crease. Exactly my leg length: the hem covers most of the shoe and almost touches the floor, but doesn't. Not slim, not tapered, and no exaggerated gap between the legs.\n\nPhoto\n- Full body, head to toe, front view. A little space above my head and below my feet; nothing cropped.\n- Portrait 2:3 (1024 x 1536).\n- Plain flat background in warm oat (#EDE4D8): no floor line, no props, no shadows on the wall.\n- Soft even daylight, realistic photo.\n\nClothes\n- Wear only the listed pieces. No extra jewellery, belts, scarves or bags. If a piece is shown on a model, copy only the garment.\n- Copy every piece exactly: colour, fabric, length, buttons, collar and details.\n- Shirts and blouses: always untucked, outside the trousers, with the top one or two buttons undone. Keep each one's own length and cut from its photo: they end around the hip with a mostly straight hem. Not long, not oversized, not billowing. Untucked, they hang naturally and close to the body over the trousers.\n- Beige gabardine (photos 01, 01b and 01c): always worn open. Length: the hem ends just below my knees, never at mid-calf (see the side view 01c). Its tortoiseshell buttons down the front stay visible, and it has two large patch pockets. Its belt sits at pocket level (low, around the hips, not the natural waist), tied at the back so the coat is gently shaped there. No belt straps hanging at the front or sides.\n- When I say the gabardine is cuffed: each sleeve is turned back once into a neat cuff about 7 cm deep, showing the smooth medium-brown leather lining, exactly as in photos 01b and 01c. When I say sleeves down, the sleeves are full length with no cuff showing.\n- Black leather crossbody bag (its photo and the \"b\" side view): on my left shoulder with a long strap, so it hangs at about hand level. Worn this way, its flat front lies against my hip, so the camera sees its SIDE (the side view): a slim, soft leather profile, narrow at the top and gently rounded at the bottom. The strap runs straight down into the side seam with visible stitching. No zip or hardware visible from this side.\n- Other bags: on my left shoulder too, hanging at about hand level.\n\nEach look has follow-up versions without the outer layers. For those, always go back to the FIRST photo of that look and change only the clothes: same face, hair, pose, light, framing and background.\n\nReply \"ready\" and wait for the first look.\n";
+const aiDesc=i=>AI_DESC[i.id]||((i.colorName?i.colorName.toLowerCase()+' ':'')+i.name.toLowerCase());
+const AI_ORDER=['outer','dress','top','bottom','socks','shoes','bag'];
+function aiCode(key){let h=5381;for(let k=0;k<key.length;k++)h=((h*33)^key.charCodeAt(k))>>>0;return h.toString(36).toUpperCase().slice(-4).padStart(4,'0')}
+function aiSet(ids){const P=ids.map(byId).filter(Boolean),srt=P.slice().sort((a,b)=>AI_ORDER.indexOf(a.cat)-AI_ORDER.indexOf(b.cat)||(b.cat==='outer'?LVL(b)-LVL(a):0));
+  const key=P.filter(i=>i.cat!=='socks').map(i=>i.id).sort().join(','),code=aiCode(key),layers=srt.filter(i=>i.cat==='outer');
+  const lines=[],acc=[],fol=[];srt.forEach((i,k)=>{const n=String(k+1).padStart(2,'0');lines.push(n+' '+(i.id==='i2'?'gabardine, '+(harmony(ids).cuff?'cuffed':'sleeves down'):aiDesc(i)))});
+  layers.forEach(L=>{acc.push(AI_SHORT[L.id]||L.short);fol.push('Go back to the FIRST photo of this look. Take off the '+acc.join(' and the ')+'. Change only the clothes.')});
+  return{code,key,ids:P.map(i=>i.id),pieces:srt,text:'Look '+code+'. Outside in: '+lines.join(' · ')+'.',fol,covers:(()=>{const out=[key];let cur=P.filter(i=>i.cat!=='socks');layers.forEach(L=>{cur=cur.filter(i=>i!==L);out.push(cur.map(i=>i.id).sort().join(','))});return out})()}}
+let TODO=null,TODOW=null;
+function todoList(){const sig=S.items.filter(avail).length+'|'+PHOTOS.length+'|'+TODAY;if(TODO&&TODO.sig===sig)return TODO;
+  const covered=new Set();PHOTOS.forEach(p=>p.images.forEach(im=>covered.add(noAcc(im.show).slice().sort().join(','))));
+  const out=[],seen=new Set();const push=(ids,tag,rank)=>{const st=aiSet(ids);if(st.covers.some(k=>covered.has(k))&&covered.has(st.key))return;if(seen.has(st.key))return;
+    /* skip if this outfit is a layer-free version of a set already on the list */
+    if(out.some(o=>o.covers.includes(st.key)))return;seen.add(st.key);out.push(Object.assign(st,{tag,rank}))};
+  for(let j=0;j<14;j++){const d=add(TODAY,j),ids=lookFor(d).ids;if(!photoFor(ids))push(ids,rel(d),j)}
+  TODO={sig,list:out,more:null};return TODO}
+/* the rest of the wardrobe's strong outfits, worked out in small steps so the page stays smooth */
+function todoMore(done){const T=todoList();if(T.more)return done&&done();const W=[];[[5,12,0],[9,16,0],[13,20,0],[17,24,0],[21,29,0],[9,16,80],[13,20,80]].forEach(([a,b,r])=>W.push({min:a,max:b,rain:r,code:r?61:2,hum:60,wind:10}));
+  const bases=lookIdeas(),jobs=[];W.forEach(w=>['formal','work','weekend'].forEach(c=>jobs.push([w,c])));const U=new Map();
+  const step=()=>{const t0=performance.now();while(jobs.length&&performance.now()-t0<30){const [w,code]=jobs.shift();const all=[];
+      bases.filter(bs=>codesOf(bs).includes(code)).forEach(bs=>refineAll(bs,code,w,false,true).forEach(o=>all.push({x:o.x,s:fitScore(o.x,w)})));
+      if(!all.length)continue;const top=Math.max(...all.map(o=>o.s)),floor=Math.min(top-1.5,(7-5)/.7);
+      all.filter(o=>o.s>=floor).forEach(o=>{const k=o.x.filter(id=>byId(id).cat!=='socks').sort().join(',');const e=U.get(k)||{x:o.x,n:0,s:0};e.n++;e.s=Math.max(e.s,o.s);U.set(k,e)})}
+    if(jobs.length)return setTimeout(step,0);
+    const covered=new Set();PHOTOS.forEach(p=>p.images.forEach(im=>covered.add(noAcc(im.show).slice().sort().join(','))));
+    const rest=[...U.values()].sort((a,b)=>b.n-a.n||b.s-a.s||b.x.length-a.x.length),list=T.list,seen=new Set(list.map(o=>o.key));
+    rest.forEach(e=>{const st=aiSet(e.x);if(covered.has(st.key)||seen.has(st.key)||list.some(o=>o.covers.includes(st.key)))return;seen.add(st.key);list.push(Object.assign(st,{tag:null,rank:99}))});
+    T.more=true;done&&done()};step()}
+async function aiSheet(st){const T=420,pad=24,top=90,tiles=[];
+  st.pieces.forEach((i,k)=>{const n=String(k+1).padStart(2,'0');tiles.push([i.src.split('?')[0],n+' '+i.name.toLowerCase()]);
+    if(i.id==='i2'){tiles.push(['photos/ref/gabardine-real.jpg',n+'b my real gabardine (buttons, pockets, cuff)']);tiles.push(['photos/ref/gabardine-side.jpg',n+'c gabardine side: length + cuff'])}
+    if(i.id==='i15')tiles.push(['photos/ref/bag-crossbody-side.jpg',n+'b same bag, side view'])});
+  const cols=4,rows=Math.ceil(tiles.length/cols),cv=document.createElement('canvas');cv.width=cols*T+(cols+1)*pad;cv.height=top+rows*(T+70)+pad;
+  const x=cv.getContext('2d');x.fillStyle='#F6F1EA';x.fillRect(0,0,cv.width,cv.height);x.fillStyle='#2B2420';x.font='500 40px Jost, sans-serif';x.fillText('LOOK '+st.code,pad,62);
+  const load=src=>new Promise(r=>{const im=new Image();im.onload=()=>r(im);im.onerror=()=>r(null);im.src=src});
+  const ims=await Promise.all(tiles.map(t=>load(t[0])));
+  ims.forEach((im,k)=>{const X0=pad+(k%cols)*(T+pad),Y0=top+Math.floor(k/cols)*(T+70);x.fillStyle='#FFFFFF';x.fillRect(X0,Y0,T,T);
+    if(im){const s=Math.min(T/im.width,T/im.height),w=im.width*s,h=im.height*s;x.drawImage(im,X0+(T-w)/2,Y0+(T-h)/2,w,h)}
+    x.fillStyle='#2B2420';x.font='22px Jost, sans-serif';const lab=tiles[k][1];if(lab.length>34){const c=lab.lastIndexOf(' ',34);x.fillText(lab.slice(0,c),X0,Y0+T+30);x.fillText(lab.slice(c+1),X0,Y0+T+58)}else x.fillText(lab,X0,Y0+T+34)});
+  return new Promise(r=>cv.toBlob(r,'image/jpeg',.88))}
+async function aiShare(blob,name){const f=new File([blob],name,{type:blob.type});
+  try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}catch(e){if(e&&e.name==='AbortError')return}
+  const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
+async function aiCopy(t){try{await navigator.clipboard.writeText(t)}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(_){};ta.remove()}toast('Copied')}
+function scTodo(){const T=todoList(),n=V.todoN||12,list=T.list.slice(0,n);if(!T.more)setTimeout(()=>todoMore(()=>{if(V.screen==='todo')render()}),60);
+  const card=st=>`<div class="todo"><div class="tdh"><b>Look ${st.code}</b><span class="note">${st.tag?esc(st.tag):'often planned'}</span></div>
+    <div class="tdp">${st.pieces.filter(i=>i.cat!=='socks').map(i=>`<span class="t">${g(i,44,44,'position:static;--q:1')}</span>`).join('')}</div>
+    <div class="tdb"><button class="btn ghost sm" data-act="ai-img" data-code="${st.code}">Image</button><button class="btn ghost sm" data-act="ai-txt" data-code="${st.code}" data-n="0">Text</button>${st.fol.map((f,k)=>`<button class="btn ghost sm" data-act="ai-txt" data-code="${st.code}" data-n="${k+1}">Step ${k+2}</button>`).join('')}</div></div>`;
+  return`<div class="top"><button class="ib" data-act="back" aria-label="Back">${ic('back')}</button><h1 class="h-l">Photos to make</h1><span style="width:40px"></span></div>
+  <p class="note" style="margin:4px 0 14px">Outfits your planner can pick that don't have a photo yet. The next two weeks come first. For each look, send ChatGPT the image with its text, then each step one at a time. Send me the photos with the look's code.</p>
+  <div class="tdset"><b>New ChatGPT chat?</b><span class="note">Send this first, with your photos and the trouser fit image.</span><div class="tdb"><button class="btn ghost sm" data-act="ai-setup">Copy first message</button><button class="btn ghost sm" data-act="ai-trouser">Trouser fit image</button></div></div>
+  <div class="eyebrow" style="margin:16px 0 8px">${T.more?T.list.length+' looks to go':'Next two weeks · working out the rest…'}</div>
+  <div class="todos">${list.map(card).join('')}</div>
+  ${T.list.length>n?`<button class="btn ghost" style="width:100%;margin-top:14px" data-act="ai-more">Show more</button>`:''}`}
 function scLooks(){
   const L=allLooks(),hasFav=L.some(x=>x.fav);if(!V.looksF)V.looksF=hasFav?'fav':'all';
   const w=wx(TODAY),F=V.looksF;
@@ -1316,6 +1387,7 @@ function scLooks(){
   <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-top:8px">
     <div><div class="eyebrow">${L.length} look${L.length===1?'':'s'} · ${L.filter(x=>x.fav).length} favourite${L.filter(x=>x.fav).length===1?'':'s'}</div><h1 class="h-xl" style="margin-top:2px">Your <i class="it">looks</i></h1></div></div>
   <button class="trycard" data-act="stats"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V5M19 20v-6"/></svg></span><span style="flex:1;min-width:0"><b style="font-weight:500;display:block">Your style</b><span class="note">What you wear most, your colours and cost per wear.</span></span><span class="chev">${ic('right')}</span></button>
+  <button class="trycard" data-act="todo"><span class="ti">${ic('sparkle')}</span><span style="flex:1;min-width:0"><b style="font-weight:500;display:block">Photos to make</b><span class="note">${(()=>{const n=todoList().list.length;return n?n+' of the next two weeks’ looks still need a photo of you.':'Your next two weeks all have photos. See what else to make.'})()}</span></span><span class="chev">${ic('right')}</span></button>
   <button class="trycard" data-act="try-new"><span class="ti">${ic('sparkle')}</span><span style="flex:1;min-width:0"><b style="font-weight:500;display:block">Try on something new</b><span class="note">Paste a store link or add a photo and see it on you before you buy.</span></span><span class="chev">${ic('right')}</span></button>
   <div class="chips" role="group" aria-label="Filter looks">${chip('all','All')}${chip('formal','Business formal')}${chip('work','Business casual')}${chip('weekend','Casual')}${chip('fav','Favourites')}${chip('onme','On you')}${chip('today','Good for today')}</div>
   ${cards?`<div class="lgrid">${cards}</div>${hidden?`<p class="note" style="text-align:center;margin-top:4px">${hidden} weaker combination${hidden===1?'':'s'} hidden</p>`:''}`:`<div class="empty"><h3>${F==='fav'?'No favourites yet':CODE_NAME[F]?'No '+CODE_NAME[F].toLowerCase()+' looks yet':'Nothing here yet'}</h3>${CODE_NAME[F]?`<p>${F==='formal'?'You need a suit: a blazer with matching trousers or skirt, plus a shirt or blouse.':F==='work'?'You need tailored trousers, a skirt or dark jeans with a shirt, blouse or knit.':'You need casual bottoms like jeans or relaxed trousers. Add some to your wardrobe and casual looks will appear here.'}</p>`:''}${CODE_NAME[F]?'':F==='fav'?'Tap the heart on any look, on Today or here, and it will be kept in this list.':'Looks you plan, wear or save show up here.'}</div>`}`;
@@ -1732,12 +1804,12 @@ document.addEventListener('scroll',e=>{if(e.target&&e.target.id==='tsc')todayScr
 document.fonts&&document.fonts.ready.then(()=>{if(V.screen==='today')layoutToday($('#tsc')&&$('#tsc').scrollTop)});
 addEventListener('resize',()=>{if(V.screen==='today')layoutToday($('#tsc')&&$('#tsc').scrollTop)});
 function render(scrollTop){
-  const sc=$('#screen'),f=({today:scToday,plan:scPlan,looks:scLooks,look:scLook,wardrobe:scWardrobe,dressing:scDressing,piece:scPiece,try:scTry,trip:scTrip,stats:scStats,welcome:scWelcome})[V.screen];
+  const sc=$('#screen'),f=({today:scToday,plan:scPlan,looks:scLooks,look:scLook,wardrobe:scWardrobe,dressing:scDressing,piece:scPiece,try:scTry,trip:scTrip,stats:scStats,todo:scTodo,welcome:scWelcome})[V.screen];
   const keep=document.activeElement&&document.activeElement.id==='q';
   sc.innerHTML=f();sc.classList.remove('an-r','an-l','an-f');if(V.anim){void sc.offsetWidth;sc.classList.add('an-'+V.anim);V.anim=null}
-  const full=['dressing','piece','look','try','trip','stats','welcome'].includes(V.screen);sc.classList.toggle('noNav',full);
+  const full=['dressing','piece','look','try','trip','stats','todo','welcome'].includes(V.screen);sc.classList.toggle('noNav',full);
   $('#tabs').hidden=full;
-  const tab={stats:'looks',welcome:'',trip:'plan',today:'today',plan:'plan',looks:'looks',look:'looks',try:'looks',wardrobe:'wardrobe',dressing:'create',piece:'wardrobe'}[V.screen];
+  const tab={stats:'looks',todo:'looks',welcome:'',trip:'plan',today:'today',plan:'plan',looks:'looks',look:'looks',try:'looks',wardrobe:'wardrobe',dressing:'create',piece:'wardrobe'}[V.screen];
   document.querySelectorAll('#tabs button').forEach(b=>{const on=b.dataset.go===tab;b.classList.toggle('on',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')});
   if(scrollTop)sc.scrollTop=0;
   {const tb=$('#tabs');if(tb&&tb.offsetHeight)document.documentElement.style.setProperty('--navH',tb.offsetHeight+'px')}
@@ -1809,6 +1881,12 @@ document.addEventListener('click',e=>{
     case'ev-close':V.evOpen=null;{const k=$('#tsc')?$('#tsc').scrollTop:0;render();layoutToday(k)}return;
     case'ev-open':V.evOpen=V.evOpen===d.date?null:d.date;{const k=$('#tsc')?$('#tsc').scrollTop:0;render();layoutToday(k)}return;
     case'stats':return go('stats');
+    case'todo':V.todoN=12;return go('todo');
+    case'ai-more':V.todoN=(V.todoN||12)+12;{const k=$('#screen').scrollTop;render();$('#screen').scrollTop=k}return;
+    case'ai-txt':{const st=todoList().list.find(o=>o.code===d.code);if(!st)return;const n=+d.n;return aiCopy(n?st.fol[n-1]:st.text)}
+    case'ai-img':{const st=todoList().list.find(o=>o.code===d.code);if(!st)return;toast('Preparing image…');aiSheet(st).then(b=>aiShare(b,'look-'+st.code+'.jpg'));return}
+    case'ai-setup':return aiCopy(AI_SETUP);
+    case'ai-trouser':fetch('photos/ref/trouser-fit.jpg').then(r=>r.blob()).then(b=>aiShare(b,'trouser-fit-reference.jpg'));return;
     case'see-forgot':V.stack=[];V.screen='wardrobe';V.ward.mode='mine';V.ward.cat='forgot';V.anim='f';return render(true);
     case'price':return sheetPrice();
     case'price-save':{const i=byId(V.piece),v=parseFloat($('#pr-v').value);i.price=v>0?Math.round(v*100)/100:0;save();closeSheet();return render()}
