@@ -879,7 +879,11 @@ const cap=t=>t?t[0].toUpperCase()+t.slice(1):t;
 /* choose shoes, bag and knit layer that suit the base best; k rotates between near-equal choices */
 /* layers the weather calls for: 0 when warm, up to 3 when cold */
 function layerNeed(w){const m=(w.min+w.max)/2;return m>=21?0:m>=16?1:m>=11?2:3}
-function fitScore(ids,w){const h=harmony(ids).s,n=ids.map(byId).filter(i=>i&&i.cat==='outer').length,need=layerNeed(w);return h-Math.abs(n-need)*1.5}
+function fitScore(ids,w){const P=ids.map(byId).filter(Boolean),h=harmony(ids).s,n=P.filter(i=>i.cat==='outer').length,need=layerNeed(w);let x=h-Math.abs(n-need)*1.5;
+  /* weather: pieces outside their temperature range, shoes that hate rain, nothing rain-proof on a wet day */
+  const feel=w.max-2,mid=(w.min+w.max)/2;P.forEach(i=>{if(!i.warm||i.cat==='bag'||i.cat==='socks')return;const t=i.cat==='outer'?mid:feel;if(t<i.warm[0]-1||t>i.warm[1]+2)x-=2});
+  if(w.rain>=40){if(P.some(i=>i.noRain))x-=3;if(!P.some(i=>i.rain))x-=1.5}
+  return x}
 /* 0–10 for people */
 const S10=raw=>Math.max(0,Math.min(10,5+raw*.7));
 const fmt10=raw=>S10(raw).toFixed(1);
@@ -1255,14 +1259,14 @@ function lookIds(G){if(V.look.ids&&same(baseOf(V.look.ids),G.base.split(',')))re
   V.look.ids=pref&&pref.ids.length>G.base.split(',').length?pref.ids.slice():dressBase(G.base.split(','));return V.look.ids}
 function scLook(){
   const G=allLooks().find(x=>x.base===V.look.base);if(!G){V.screen='looks';return scLooks()}
-  const ids=lookIds(G),key=keyOf(ids),fav=isFavKey(key);
+  const ids=lookIds(G),key=keyOf(ids),fav=isFavKey(key),LW=V.look.ds?wx(V.look.ds):wx(TODAY);
   const h=heroFor(ids,'L'+key,{cover:'look-dress',top:`<button class="heart topR ${fav?'on':''}" data-favlook="${esc(key)}" aria-pressed="${fav}" aria-label="${fav?'Remove from favourites':'Add to favourites'}">${ic('heart')}</button>`});
-  const t=titleOf(baseOf(ids)),c=check(ids,wx(TODAY)),s=slots(ids),p=photoFor(ids);
+  const t=titleOf(baseOf(ids)),c=check(ids,LW),s=slots(ids),p=photoFor(ids);
   const LC=(()=>{const P=ids.map(byId),o=P.find(i=>i&&i.cat==='outer'&&i.suit),b=P.find(i=>i&&i.cat==='bottom');if(o&&b&&o.suit===b.suit)return'formal';if(V.look.code)return V.look.code;const cs=codesOf(G.base.split(','));return cs.includes('weekend')?'weekend':cs[0]||null})();
   const swap=(cat,id)=>{let x=ids.filter(v=>{const i=byId(v);return!i||grpOf(i)!==cat});if(id)x=x.concat(id);if(cat==='shoes'){const sh=byId(id);x=x.filter(v=>byId(v).cat!=='socks');if(sh&&sh.kind==='loafers')x=withSocks(x)}return x};
   const row=(cat,label,none)=>{let opts=S.items.filter(i=>grpOf(i)===cat&&!(cat==='bag'&&LC&&i.use&&!i.use.includes(LC)));if(cat==='outer2'&&LC!=='formal'){const b=s.bottom;opts=opts.filter(i=>!(b&&i.suit&&i.suit===b.suit))}
     if(!opts.length)return'';const cur=ids.map(byId).find(i=>i&&grpOf(i)===cat);
-    const W0=wx(TODAY),cand=(none?[null]:[]).concat(opts).map(i=>({i,h:fitScore(swap(cat,i&&i.id),W0)}));const best=Math.max(...cand.map(c=>c.h));
+    const W0=LW,cand=(none?[null]:[]).concat(opts).map(i=>({i,h:fitScore(swap(cat,i&&i.id),W0)}));const best=Math.max(...cand.map(c=>c.h));
     const shown=cand.map(c=>Object.assign(c,{r:rateOf(c.h,best)})).filter(c=>S10(c.h)>=4||c.r!=='no'&&S10(c.h)>=3||(c.i?cur&&cur.id===c.i.id:!cur));
     const tag=c=>`<span class="sc" style="--sc:${scoreCol(c.h)}">${fmt10(c.h)}${c.h>=best-.01?'<em>top</em>':''}</span>`;
     return`<div><div class="flabel" style="margin-bottom:8px">${label}</div><div class="vers">${shown.map(c=>c.i?`<button class="ver ${cur&&cur.id===c.i.id?'on':''} ${avail(c.i)?'':'off'}" data-addon="${cat}:${c.i.id}" aria-pressed="${!!(cur&&cur.id===c.i.id)}" aria-label="${esc(c.i.name)}, scores ${fmt10(c.h)} out of 10"><span class="t" style="--sc:${scoreCol(c.h)}">${g(c.i,56,56,'position:static;--q:1')}</span>${esc(c.i.short)}${tag(c)}</button>`:`<button class="ver ${cur?'':'on'}" data-addon="${cat}:" aria-pressed="${!cur}" aria-label="None, scores ${fmt10(c.h)} out of 10"><span class="t" style="--sc:${scoreCol(c.h)}"><span class="none">None</span></span>None${tag(c)}</button>`).join('')}</div></div>`};
@@ -1270,9 +1274,9 @@ function scLook(){
   <div class="top"><button class="ib" data-act="back" aria-label="Back">${ic('back')}</button><h1 class="h-l">Look</h1><button class="ib" data-act="look-dress" aria-label="Open in the dressing room">${ic('sparkle')}</button></div>
   ${h.html}
   <div><h2 class="h-m" style="font-size:24px">${esc(t[0])} <i class="it">${esc(t[1])}</i></h2>
-    <div class="note" style="margin-top:2px">${(()=>{const cs=codesOf(G.base.split(','));const suit=(()=>{const P=ids.map(byId),o=P.find(i=>i&&i.cat==='outer'&&i.suit),b=P.find(i=>i&&i.cat==='bottom');return o&&b&&o.suit===b.suit})();const c0=suit?'formal':cs.find(x=>x!=='formal');return c0?esc(CODE_NAME[c0])+' · ':''})()}${p?'On you':'Photo to come'} · ${c.ok?'good for today':esc(c.t.replace('\n',' ').toLowerCase())+' today'}</div>${(()=>{const allO=refineAll(baseOf(ids),LC||'work',wx(TODAY),false,true),me=fitScore(ids,wx(TODAY)),top=allO.length?Math.max(allO[0].raw,me):me;const isTop=me>=top-.01;return`<div class="verdict" style="--sc:${scoreCol(me)}"><b>${fmt10(me)}</b><span>/10</span>${isTop?' · the best combination for this base':' · best possible '+fmt10(top)}</div><div class="scale" aria-hidden="true"><span class="bar"></span><span class="lb"><span>4 · weak</span><span>7 · good</span><span>10 · best</span></span></div>`})()}${(()=>{const hw=harmony(ids).why.slice(0,3);return hw.length?`<ul class="why">${hw.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''})()}</div>
+    <div class="note" style="margin-top:2px">${(()=>{const cs=codesOf(G.base.split(','));const suit=(()=>{const P=ids.map(byId),o=P.find(i=>i&&i.cat==='outer'&&i.suit),b=P.find(i=>i&&i.cat==='bottom');return o&&b&&o.suit===b.suit})();const c0=suit?'formal':cs.find(x=>x!=='formal');return c0?esc(CODE_NAME[c0])+' · ':''})()}${p?'On you':'Photo to come'} · ${V.look.ds?esc(rel(V.look.ds))+', '+LW.max+'° '+esc(word(LW).replace(/rain from.*/,'rain')):c.ok?'good for today':esc(c.t.replace('\n',' ').toLowerCase())+' today'}</div>${(()=>{const allO=refineAll(baseOf(ids),LC||'work',LW,false,true),me=fitScore(ids,LW),top=allO.length?Math.max(allO[0].raw,me):me;const isTop=me>=top-.01;return`<div class="verdict" style="--sc:${scoreCol(me)}"><b>${fmt10(me)}</b><span>/10</span>${isTop?' · the best combination for this base':' · best possible '+fmt10(top)}</div><div class="scale" aria-hidden="true"><span class="bar"></span><span class="lb"><span>4 · weak</span><span>7 · good</span><span>10 · best</span></span></div>`})()}${(()=>{const hw=harmony(ids).why.slice(0,3);return hw.length?`<ul class="why">${hw.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''})()}</div>
   ${row('outer1','Knit layer',true)}${row('outer2','Jacket',true)}${row('outer3','Coat',true)}${row('shoes','Shoes')}${row('bag','Bag')}${row('socks','Socks',true)}
-  <div class="sticky row lookbar"><button class="btn ghost" data-act="look-plan">${ic('cal')}Plan a day</button><button class="btn" data-act="look-today">${ic('check')}Wear today</button></div>`;
+  ${V.look.ds?`<div class="sticky row lookbar"><button class="btn" data-act="look-useday">${ic('check')}Use for ${esc(rel(V.look.ds).toLowerCase())}</button></div>`:`<div class="sticky row lookbar"><button class="btn ghost" data-act="look-plan">${ic('cal')}Plan a day</button><button class="btn" data-act="look-today">${ic('check')}Wear today</button></div>`}`;
 }
 
 /* ---------- try-on & wishlist ---------- */
@@ -1684,7 +1688,7 @@ document.addEventListener('click',e=>{
     (L.items||[]).map(byId).filter(i=>i&&['outer','top','dress'].includes(i.cat)).forEach(i=>{if(d.feel==='warm')i.feelWarm=i.feelWarm==null?w.max:Math.min(i.feelWarm,w.max);if(d.feel==='cold')i.feelCold=i.feelCold==null?w.max:Math.max(i.feelCold,w.max)});
     save();toast(d.feel==='ok'?'Noted. Dresmi will keep dressing you like this':d.feel==='cold'?'Noted. Warmer looks from now on':'Noted. Lighter looks from now on');return render()}
   if(d.lf){V.looksF=d.lf;return render()}
-  if(d.look){V.look={base:d.look,ids:null,code:['formal','work','weekend'].includes(V.looksF)?V.looksF:null};return go('look')}
+  if(d.look){V.look={ds:null,base:d.look,ids:null,code:['formal','work','weekend'].includes(V.looksF)?V.looksF:null};return go('look')}
   if(d.addon!=null&&V.screen==='look'){const[c,id]=d.addon.split(':');const keep=V.look.ids.filter(x=>{const i=byId(x);return!i||grpOf(i)!==c});V.look.ids=id?keep.concat(id):keep;{const P=V.look.ids.map(byId),o=P.find(i=>i&&i.cat==='outer'&&i.suit),b=P.find(i=>i&&i.cat==='bottom'),code=o&&b&&o.suit===b.suit?'formal':V.look.code||((codesOf(baseOf(V.look.ids)).includes('weekend'))?'weekend':codesOf(baseOf(V.look.ids))[0]);const bg=P.find(i=>i&&i.cat==='bag');if(bg&&code&&bg.use&&!bg.use.includes(code)){const nb=S.items.find(i=>i.cat==='bag'&&avail(i)&&(!i.use||i.use.includes(code)));V.look.ids=V.look.ids.filter(x=>x!==bg.id).concat(nb?[nb.id]:[])}}if(c==='shoes'){const sh=byId(id),noS=V.look.ids.filter(x=>byId(x).cat!=='socks');V.look.ids=sh&&sh.kind==='loafers'?withSocks(noS):noS}const sc=$('#screen').scrollTop;render();$('#screen').scrollTop=sc;return}
   if(d.ver){V.look.key=d.ver;return render()}
   if(d.favlook){const k=d.favlook,x=S.favLooks.indexOf(k);x>=0?S.favLooks.splice(x,1):S.favLooks.push(k);save();toast(x>=0?'Removed from favourites':'Saved to your looks');return render()}
@@ -1720,7 +1724,8 @@ document.addEventListener('click',e=>{
     case'shuffle':{const ds=V.day||TODAY,L=S.looks[ds];if(L&&L.worn)return toast('Undo “worn” first to change today’s look');if(L&&L.items&&L.items.length){L.items=[]}S.shuffle[ds]=(S.shuffle[ds]||0)+1;save();return render()}
     case'to-today':return goToday();
     case'split':return setSplit(!V.split);
-    case'alts':return sheetAlts(d.date);
+    case'alts':{const ds=d.date,ids=lookFor(ds).ids.slice(),L=S.looks[ds],base=baseOf(ids).sort().join(',');V.look={base,ids,code:(L&&L.type)||dayType(ds),ds};return go('look')}
+    case'look-useday':{const ds=V.look.ds,L=S.looks[ds]||{type:dayType(ds)};S.looks[ds]=Object.assign(L,{items:V.look.ids.slice(),auto:false});save();toast('Saved for '+rel(ds).toLowerCase());return back()}
     case'use-alt':{const ds=d.date,L=S.looks[ds]||{type:dayType(ds)};S.looks[ds]=Object.assign(L,{items:d.x.split(','),auto:false});save();closeSheet();toast('Outfit updated');{const k=$('#tsc')?$('#tsc').scrollTop:0;render();if($('#tsc'))layoutToday(k)}return}
     case'ev-close':V.evOpen=null;{const k=$('#tsc')?$('#tsc').scrollTop:0;render();layoutToday(k)}return;
     case'ev-open':V.evOpen=V.evOpen===d.date?null:d.date;{const k=$('#tsc')?$('#tsc').scrollTop:0;render();layoutToday(k)}return;
