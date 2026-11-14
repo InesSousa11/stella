@@ -861,7 +861,9 @@ let PHOTOS=[
   {id:'look-4D9Gb',items:['i29','i35','i21','i15'],images:[{show:['i29','i35','i21','i15'],src:'photos/looks/look-4D9G-2-no-outer.webp'}]},
   {id:'look-2PCS',items:['i2','i22','i43','i35','i13','i15'],images:[{show:['i2','i22','i43','i35','i13','i15'],src:'photos/looks/look-2PCS-1-full.webp'},{show:['i22','i43','i35','i13','i15'],src:'photos/looks/look-2PCS-2-no-coat.webp'},{show:['i43','i35','i13','i15'],src:'photos/looks/look-2PCS-3-no-layers.webp'}]},
   {id:'look-2PCSb',items:['i22','i43','i35','i13','i15'],images:[{show:['i22','i43','i35','i13','i15'],src:'photos/looks/look-2PCS-2-no-coat.webp'},{show:['i43','i35','i13','i15'],src:'photos/looks/look-2PCS-3-no-layers.webp'}]},
-  {id:'look-2PCSc',items:['i43','i35','i13','i15'],images:[{show:['i43','i35','i13','i15'],src:'photos/looks/look-2PCS-3-no-layers.webp'}]}];
+  {id:'look-2PCSc',items:['i43','i35','i13','i15'],images:[{show:['i43','i35','i13','i15'],src:'photos/looks/look-2PCS-3-no-layers.webp'}]},
+  {id:'look-FTH6',items:['i31','i29','i8','i21','i15'],images:[{show:['i31','i29','i8','i21','i15'],src:'photos/looks/look-FTH6-1-full.webp'},{show:['i29','i8','i21','i15'],src:'photos/looks/look-FTH6-2-no-outer.webp'}]},
+  {id:'look-FTH6b',items:['i29','i8','i21','i15'],images:[{show:['i29','i8','i21','i15'],src:'photos/looks/look-FTH6-2-no-outer.webp'}]}];
 const same=(a,b)=>a.length===b.length&&a.every(x=>b.includes(x));
 const noAcc=ids=>(ids||[]).filter(id=>{const i=byId(id);return!(i&&i.cat==='socks')});
 const photoFor=ids=>PHOTOS.find(p=>same(p.items,noAcc(ids)));
