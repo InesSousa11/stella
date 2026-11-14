@@ -336,8 +336,8 @@ nav.tabs .on i{background:var(--clay)}
 .hero.photo .left::before{content:"";position:absolute;left:50%;width:calc(var(--hw,360px)*.56);transform:translateX(-50%);bottom:48px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(96,78,62,.26),rgba(96,78,62,0))}
 .hero .ff{display:none}
 .hero .fc{position:absolute;inset:62px 14px 44px;display:grid;grid-template-columns:repeat(2,auto);place-content:center;place-items:center;gap:10px}
-.hero .fc.fcl{position:absolute;inset:18px 14px 58px;display:grid;grid-template-columns:repeat(3,auto);place-content:center;place-items:center;gap:10px}
-.hero .fc.fcl img.gq{width:76px!important;height:76px!important}
+.hero .fc.fcl{position:absolute;inset:18px 18px 64px;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:10px}
+.hero .fc.fcl img.gq{width:88px!important;height:88px!important}
 .hero .fc img.gq{width:88px!important;height:88px!important}
 .hero .fc>*:last-child:nth-child(odd){grid-column:1/-1}
 .hero .pill .sm{display:none}
@@ -1131,7 +1131,7 @@ function heroFor(ids,hk,extra){
   if(p&&!img){V.hide[hk]=[];vis=ids.slice();img=imageFor(p,ids)}
   let chips='';if(p)ids.forEach(id=>{const on=vis.includes(id),nv=on?vis.filter(x=>x!==id):vis.concat(id);if(!imageFor(p,nv))return;const it=byId(id);
     chips+=`<button class="layer ${on?'on':''}" data-layer-t="${id}" data-hk="${esc(hk)}" aria-pressed="${on}" aria-label="${on?'Take off':'Put on'} the ${esc(it.name)}"><span class="box"></span>${esc(KNAME[it.kind]||it.name)}</button>`});
-  return{vis,html:`<div class="hero ${p?'photo':''}">${extra.cover?`<button class="cover" data-act="${extra.cover}" aria-label="Open in the dressing room">`:'<div class="cover">'}${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:`<span class="fc fcl">${withBag(ids).map(byId).filter(Boolean).sort((x,y)=>['outer','dress','top','bottom','shoes','socks','bag'].indexOf(x.cat)-['outer','dress','top','bottom','shoes','socks','bag'].indexOf(y.cat)).map(i=>g(i,96,96,'position:static')).join('')}</span>`}${extra.cover?'</button>':'</div>'}
+  return{vis,html:`<div class="hero ${p?'photo':''}">${extra.cover?`<button class="cover" data-act="${extra.cover}" aria-label="Open in the dressing room">`:'<div class="cover">'}${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:`<span class="fc fcl">${withBag(ids).map(byId).filter(Boolean).sort((x,y)=>['outer','dress','top','bottom','shoes','socks','bag'].indexOf(x.cat)-['outer','dress','top','bottom','shoes','socks','bag'].indexOf(y.cat)).map(i=>g(i,96,96,'position:static;--q:1')).join('')}</span>`}${extra.cover?'</button>':'</div>'}
     ${extra.top||''}${chips?`<div class="layers" role="group" aria-label="Layers" style="${extra.top?'':'top:14px'}">${chips}</div>`:p?'':'<span class="pill">Photo of this look coming soon</span>'}</div>`};
 }
 function lookIds(G){if(V.look.ids&&same(baseOf(V.look.ids),G.base.split(',')))return V.look.ids;
