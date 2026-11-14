@@ -644,7 +644,7 @@ const CATS=[['outer','Outerwear','Coats'],['top','Tops','Tops'],['dress','Dresse
 const KINDS={outer:['coat','trench','blazer'],top:['shirt','knit','cami'],dress:['dress'],bottom:['trousers','jeans','skirt'],shoes:['loafers','boots','sandals'],bag:['tote','bag']};
 const KNAME={coat:'Coat',trench:'Trench',blazer:'Blazer',shirt:'Shirt',knit:'Knit',cami:'Silk top',dress:'Dress',trousers:'Trousers',jeans:'Jeans',skirt:'Skirt',loafers:'Loafers',boots:'Boots',sandals:'Sandals',tote:'Tote',bag:'Shoulder bag'};
 const SW=[['#C49A72','Camel'],['#D8C3A2','Stone'],['#F3ECE1','Ivory'],['#E3CDB2','Oat'],['#8C4632','Rust'],['#7C3F2E','Brick'],['#B88A62','Tan'],['#3A302A','Espresso'],['#2B2420','Black'],['#4A5A78','Indigo'],['#6F7458','Olive'],['#B9B2A6','Grey']];
-const TYPES={work:['Work',I.suitcase],evening:['Evening'],weekend:['Weekend'],travel:['Travel']};
+const TYPES={work:['Work',I.suitcase],formal:['Business formal'],evening:['Evening'],weekend:['Weekend'],travel:['Travel']};
 function seed(){
   const T=TODAY;
   const items=[
@@ -655,7 +655,8 @@ function seed(){
     {id:'i5',name:'Ribbed knit jumper',short:'oat knit',cat:'top',kind:'knit',color:'#E3CDB2',colorName:'Oat',fabric:'Merino',warm:[4,16],care:'Hand wash',place:'Drawer'},
     {id:'i6',name:'Rust merino knit',short:'rust knit',cat:'top',kind:'knit',color:'#8C4632',colorName:'Rust',fabric:'Merino',warm:[2,15],care:'Hand wash',place:'Drawer',fav:true},
     {id:'i7',name:'Black silk top',short:'silk top',cat:'top',kind:'cami',color:'#2B2420',colorName:'Black',fabric:'Silk',warm:[14,30],care:'Hand wash',place:'Bedroom wardrobe'},
-    {id:'i8',name:'Wide black trousers',short:'black trousers',cat:'bottom',kind:'trousers',color:'#3A302A',colorName:'Espresso',fabric:'Wool crepe',warm:[0,24],care:'Dry clean',place:'Bedroom wardrobe'},
+    {id:'i8',name:'Black suit trousers',short:'suit trousers',cat:'bottom',kind:'trousers',color:'#1F1B19',colorName:'Black',fabric:'Crepe',brand:'Salsa Jeans',suit:'salsa',laundry:false,worn:0,last:null,warm:[4,26],care:'Dry clean',place:'Bedroom wardrobe',src:'photos/pieces/bottom-black-suit-trousers.webp'},
+    {id:'i22',name:'Black suit blazer',short:'black blazer',cat:'outer',kind:'blazer',color:'#1F1B19',colorName:'Black',fabric:'Crepe',brand:'Salsa Jeans',suit:'salsa',laundry:false,warm:[13,24],care:'Dry clean',place:'Bedroom wardrobe',src:'photos/pieces/outer-black-suit-blazer.webp'},
     {id:'i9',name:'Straight indigo jeans',short:'jeans',cat:'bottom',kind:'jeans',color:'#4A5A78',colorName:'Indigo',fabric:'Denim',warm:[0,26],care:'Machine wash cold',place:'Drawer'},
     {id:'i10',name:'Camel midi skirt',short:'midi skirt',cat:'bottom',kind:'skirt',color:'#B88A62',colorName:'Tan',fabric:'Suede',warm:[12,26],care:'Specialist clean',place:'Bedroom wardrobe'},
     {id:'i11',name:'Brick slip dress',short:'brick dress',cat:'dress',kind:'dress',color:'#7C3F2E',colorName:'Brick',fabric:'Satin',warm:[14,30],care:'Hand wash',place:'Bedroom wardrobe',fav:true},
@@ -665,7 +666,7 @@ function seed(){
     {id:'i13',name:'Black ankle boots',short:'ankle boots',cat:'shoes',kind:'boots',color:'#1F1B19',colorName:'Black',fabric:'Leather',warm:[-5,17],rain:true,care:'Polish & waterproof',place:'Shoe rack',src:'photos/pieces/shoes-black-ankle-boots.webp?v=2'},
     {id:'i15',name:'Black leather crossbody',short:'leather crossbody',cat:'bag',kind:'bag',color:'#1F1B19',colorName:'Black',fabric:'Leather',brand:'Massimo Dutti',use:['weekend','travel'],warm:[-10,40],care:'Condition',place:'Hall closet',src:'photos/pieces/bag-black-leather-crossbody.webp'},
     {id:'i16',name:'Black crescent bag',short:'black crescent bag',cat:'bag',kind:'bag',color:'#1F1B19',colorName:'Black',fabric:'Nylon',brand:'Uniqlo',use:['weekend','travel'],warm:[-10,40],care:'Machine wash cold',place:'Hall closet',src:'photos/pieces/bag-black-crescent.webp'},
-    {id:'i20',name:'Taupe crescent bag',short:'taupe crescent bag',cat:'bag',kind:'bag',color:'#8F7C68',colorName:'Taupe',fabric:'Nylon',brand:'Amazon',use:['work','evening'],warm:[-10,40],care:'Machine wash cold',place:'Hall closet',src:'photos/pieces/bag-taupe-crescent.webp'},
+    {id:'i20',name:'Taupe crescent bag',short:'taupe crescent bag',cat:'bag',kind:'bag',color:'#8F7C68',colorName:'Taupe',fabric:'Nylon',brand:'Amazon',use:['work','evening','formal'],warm:[-10,40],care:'Machine wash cold',place:'Hall closet',src:'photos/pieces/bag-taupe-crescent.webp'},
     {id:'i17',name:'White broderie blouse',short:'broderie blouse',cat:'top',kind:'shirt',color:'#F4EFE8',colorName:'White',fabric:'Cotton broderie',warm:[12,28],care:'Machine wash 30°',place:'Bedroom wardrobe',fav:true},
     {id:'i18',name:'Pinstripe wide trousers',short:'pinstripe trousers',cat:'bottom',kind:'trousers',color:'#7A6B5F',colorName:'Taupe',fabric:'Wool blend',warm:[4,24],care:'Dry clean',place:'Bedroom wardrobe'}
   ];
@@ -688,10 +689,10 @@ const MY_SHOES=[{id:'i19',name:'Brown mary janes',short:'brown mary janes',cat:'
     {id:'i13',name:'Black ankle boots',short:'ankle boots',cat:'shoes',kind:'boots',color:'#1F1B19',colorName:'Black',fabric:'Leather',warm:[-5,17],rain:true,care:'Polish & waterproof',place:'Shoe rack',src:'photos/pieces/shoes-black-ankle-boots.webp?v=2'}];
 const MY_BAGS=[{id:'i15',name:'Black leather crossbody',short:'leather crossbody',cat:'bag',kind:'bag',color:'#1F1B19',colorName:'Black',fabric:'Leather',brand:'Massimo Dutti',use:['weekend','travel'],warm:[-10,40],care:'Condition',place:'Hall closet',src:'photos/pieces/bag-black-leather-crossbody.webp'},
     {id:'i16',name:'Black crescent bag',short:'black crescent bag',cat:'bag',kind:'bag',color:'#1F1B19',colorName:'Black',fabric:'Nylon',brand:'Uniqlo',use:['weekend','travel'],warm:[-10,40],care:'Machine wash cold',place:'Hall closet',src:'photos/pieces/bag-black-crescent.webp'},
-    {id:'i20',name:'Taupe crescent bag',short:'taupe crescent bag',cat:'bag',kind:'bag',color:'#8F7C68',colorName:'Taupe',fabric:'Nylon',brand:'Amazon',use:['work','evening'],warm:[-10,40],care:'Machine wash cold',place:'Hall closet',src:'photos/pieces/bag-taupe-crescent.webp'}];
+    {id:'i20',name:'Taupe crescent bag',short:'taupe crescent bag',cat:'bag',kind:'bag',color:'#8F7C68',colorName:'Taupe',fabric:'Nylon',brand:'Amazon',use:['work','evening','formal'],warm:[-10,40],care:'Machine wash cold',place:'Hall closet',src:'photos/pieces/bag-taupe-crescent.webp'}];
 function migBags(T){if(!T||!T.items||(T.mig&&T.mig.bags1))return;T.mig=T.mig||{};T.items=T.items.filter(i=>i.cat!=='bag').concat(MY_BAGS.map(x=>Object.assign({worn:0,last:null},x)));const keep=new Set(MY_BAGS.map(x=>x.id));const fix=a=>Array.isArray(a)?a.filter(id=>!(/^i\d+$/.test(id)&&false)):a;T.mig.bags1=Date.now()}
-const MY_PIECES=[{id:'i2',name:'Beige gabardine',short:'gabardine',cat:'outer',kind:'trench',color:'#D9C6AA',colorName:'Beige',fabric:'Gabardine',brand:'Lanidor',warm:[10,21],rain:true,care:'Machine wash cold',place:'Hall closet',src:'photos/pieces/outer-gabardine.webp'}];
-function migPieces(T){if(!T||!T.items)return;T.mig=T.mig||{};if(T.mig.gab1)return;MY_PIECES.forEach(p=>{const i=T.items.find(x=>x.id===p.id);if(i)Object.assign(i,p);else T.items.push(Object.assign({worn:0,last:null},p))});T.mig.gab1=Date.now()}
+const MY_PIECES=[{id:'i2',name:'Beige gabardine',short:'gabardine',cat:'outer',kind:'trench',color:'#D9C6AA',colorName:'Beige',fabric:'Gabardine',brand:'Lanidor',warm:[10,21],rain:true,care:'Machine wash cold',place:'Hall closet',src:'photos/pieces/outer-gabardine.webp'},{id:'i8',name:'Black suit trousers',short:'suit trousers',cat:'bottom',kind:'trousers',color:'#1F1B19',colorName:'Black',fabric:'Crepe',brand:'Salsa Jeans',suit:'salsa',laundry:false,worn:0,last:null,warm:[4,26],care:'Dry clean',place:'Bedroom wardrobe',src:'photos/pieces/bottom-black-suit-trousers.webp'},{id:'i22',name:'Black suit blazer',short:'black blazer',cat:'outer',kind:'blazer',color:'#1F1B19',colorName:'Black',fabric:'Crepe',brand:'Salsa Jeans',suit:'salsa',laundry:false,warm:[13,24],care:'Dry clean',place:'Bedroom wardrobe',src:'photos/pieces/outer-black-suit-blazer.webp'}];
+function migPieces(T){if(!T||!T.items)return;T.mig=T.mig||{};if(T.mig.pieces2)return;MY_PIECES.forEach(p=>{const i=T.items.find(x=>x.id===p.id);if(i)Object.assign(i,p);else T.items.push(Object.assign({worn:0,last:null},p))});T.mig.gab1=T.mig.pieces2=Date.now()}
 function migShoes(T){if(!T||!T.items||(T.mig&&T.mig.shoes1))return;T.mig=T.mig||{};
   const keep=new Set(MY_SHOES.map(x=>x.id)),old=T.items.filter(i=>i.cat==='shoes');
   const map={};old.forEach(i=>{if(!keep.has(i.id))map[i.id]=i.kind==='boots'?'i13':'i19'});
@@ -706,7 +707,7 @@ const FRESH=!S;
 if(!S||S.v!==2)S=seed();
 if(FRESH)S.onboarded=false;else if(S.onboarded==null)S.onboarded=true;
 S.trips=S.trips||{};
-S.items&&S.items.forEach(i=>{const m=MY_BAGS.find(x=>x.id===i.id);if(m&&m.brand)i.brand=m.brand});if(!(S.mig&&S.mig.shoes1&&S.mig.bags1&&S.mig.gab1)){migShoes(S);migBags(S);migPieces(S);try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}}
+S.items&&S.items.forEach(i=>{const m=MY_BAGS.find(x=>x.id===i.id);if(m){if(m.brand)i.brand=m.brand;i.use=m.use}});if(!(S.mig&&S.mig.shoes1&&S.mig.bags1&&S.mig.pieces2)){migShoes(S);migBags(S);migPieces(S);try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}}
 S.wish=S.wish||[];S.profile=S.profile||{};
 function save(){S.updatedAt=Date.now();try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}if(typeof schedulePush==='function')schedulePush()}
 const byId=id=>S.items.find(i=>i.id===id);
@@ -766,7 +767,7 @@ function suggest(ds,type){
   const w=wx(ds),feel=w.max-2-feelBias(),k=S.shuffle[ds]||0,A=S.items.filter(avail),ids=[];
   /* prefer photographed looks that suit the day and were not worn recently */
   const pc=PHOTOS.filter(p=>p.items.every(id=>{const i=byId(id);return i&&avail(i)})&&check(p.items,w).ok&&(type!=='evening'||p.items.some(id=>byId(id).cat==='dress'||byId(id).kind==='cami'))&&p.items.every(id=>!LU[id]||gap(LU[id],ds)>=3||byId(id).cat==='bag'||byId(id).cat==='shoes'||byId(id).cat==='outer'));
-  if(pc.length&&k%2===0)return pc[(k/2)%pc.length].items.slice();
+  if(pc.length&&k%2===0&&type!=='formal')return pc[(k/2)%pc.length].items.slice();
   const fits=(i,t)=>t>=i.warm[0]-1&&t<=i.warm[1]+2&&!(i.feelWarm!=null&&t>=i.feelWarm-1)&&!(i.feelCold!=null&&t<=i.feelCold+1);
   let dress=null;
   if(type==='evening'&&feel>=13)dress=pick(A.filter(i=>i.cat==='dress'&&fits(i,feel)),k);
@@ -780,7 +781,15 @@ function suggest(ds,type){
     let o=A.filter(i=>i.cat==='outer'&&fits(i,(w.min+w.max)/2));if(w.rain>=40&&o.some(i=>i.rain))o=o.filter(i=>i.rain);
     const oo=pick(o,k)||pick(A.filter(i=>i.cat==='outer'),k);oo&&ids.unshift(oo.id);
   }
-  let sh=A.filter(i=>i.cat==='shoes'&&fits(i,feel));if(w.rain>=40){if(sh.some(i=>i.rain))sh=sh.filter(i=>i.rain);else if(sh.some(i=>!i.noRain))sh=sh.filter(i=>!i.noRain)}
+  /* suits: wear the full suit for business formal, and never the two halves together otherwise */
+  {const it=id=>byId(id),suitOf=c=>A.filter(i=>i.suit&&i.cat===c);
+   if(type==='formal'){const bl=suitOf('outer')[0],tr=bl&&A.find(i=>i.suit===bl.suit&&i.cat==='bottom');
+     if(bl&&tr){for(let j=ids.length-1;j>=0;j--){const c=it(ids[j]).cat;if(c==='outer'||c==='bottom'||c==='dress')ids.splice(j,1)}
+       if(!ids.some(id=>it(id).cat==='top')){const tp=pick(A.filter(i=>i.cat==='top'&&i.kind!=='knit'),k)||pick(A.filter(i=>i.cat==='top'),k);tp&&ids.push(tp.id)}
+       ids.unshift(bl.id);ids.push(tr.id)}}
+   else{const o=ids.map(it).find(i=>i.cat==='outer'),b=ids.map(it).find(i=>i.cat==='bottom');
+     if(o&&b&&o.suit&&o.suit===b.suit){const alt=pick(A.filter(i=>i.cat==='bottom'&&i.id!==b.id&&fits(i,feel)),k+1)||pick(A.filter(i=>i.cat==='bottom'&&i.id!==b.id),k);if(alt)ids[ids.indexOf(b.id)]=alt.id}}}
+  let sh=A.filter(i=>i.cat==='shoes'&&fits(i,feel)&&!(type==='formal'&&i.kind==='boots'&&!(w.rain>=40)));if(w.rain>=40){if(sh.some(i=>i.rain))sh=sh.filter(i=>i.rain);else if(sh.some(i=>!i.noRain))sh=sh.filter(i=>!i.noRain)}
   const s=pick(sh,k)||pick(A.filter(i=>i.cat==='shoes'),k);s&&ids.push(s.id);
   const b=bagFor(ids,type||dayType(ds),k);b&&ids.push(b.id);
   return ids;
@@ -800,7 +809,7 @@ function feelBias(){const r=Object.keys(S.looks).sort().reverse().map(d=>S.looks
 function feelDue(){const hr=new Date().getHours();const cands=[];if(hr>=17)cands.push(TODAY);cands.push(add(TODAY,-1));return cands.find(d=>{const L=S.looks[d];return L&&L.worn&&!L.feel})}
 function dayType(ds){const d=parse(ds).getDay();return d===0||d===6?'weekend':'work'}
 function planRange(from,to){let n=0;for(let d=from;d<=to;d=add(d,1)){const L=S.looks[d];if(L&&((L.items&&L.items.length)||L.worn))continue;const t=(L&&L.type)||dayType(d);S.looks[d]=Object.assign(L||{},{type:t,items:suggest(d,t),auto:true});n++}save();return n}
-function typeFromIds(ids){const s=slots(ids);if(s.dress)return'evening';if(s.bottom&&s.bottom.kind==='jeans')return'weekend';if(s.outer&&s.outer.kind==='blazer'||(s.bottom&&s.bottom.kind==='trousers'))return'work';return'weekend'}
+function typeFromIds(ids){const s=slots(ids);if(s.outer&&s.bottom&&s.outer.suit&&s.outer.suit===s.bottom.suit)return'formal';if(s.dress)return'evening';if(s.bottom&&s.bottom.kind==='jeans')return'weekend';if(s.outer&&s.outer.kind==='blazer'||(s.bottom&&s.bottom.kind==='trousers'))return'work';return'weekend'}
 function bagFor(ids,type,k){const s=slots(ids),t=type||typeFromIds(ids),bags=S.items.filter(i=>i.cat==='bag'&&avail(i));if(!bags.length)return null;
   const use=bags.filter(i=>!i.use||i.use.includes(t)),pool=use.length?use:bags;if(pool.length===1)return pool[0];
   /* casual: the leather crossbody goes with the dressier pieces, the nylon crescent with relaxed ones */
@@ -977,7 +986,7 @@ function scWishlist(){
 }
 function scWardrobe(){
   const Wd=V.ward,q=Wd.q.trim().toLowerCase();Wd.mode=Wd.mode||'mine';
-  let list=S.items.filter(i=>(Wd.cat==='all'||i.cat===Wd.cat||(Wd.cat==='fav'&&i.fav)||(Wd.cat==='wash'&&i.laundry)||(Wd.cat==='forgot'&&forgotten(i)))&&(!q||(i.name+' '+i.colorName+' '+i.fabric+' '+i.place).toLowerCase().includes(q)));
+  let list=S.items.filter(i=>(Wd.cat==='all'||i.cat===Wd.cat||(Wd.cat==='fav'&&i.fav)||(Wd.cat==='wash'&&i.laundry)||(Wd.cat==='forgot'&&forgotten(i)))&&(!q||(i.name+' '+i.colorName+' '+i.fabric+' '+i.place+' '+(i.brand||'')).toLowerCase().includes(q)));
   const wash=S.items.filter(i=>i.laundry).length;
   const nWash=S.items.filter(i=>i.laundry).length,nForg=S.items.filter(forgotten).length;
   const tabs=[['all','All'],['fav','Favourites'],['wash','In the wash'+(nWash?' · '+nWash:'')],['forgot','Not worn lately'+(nForg?' · '+nForg:'')],...CATS.map(c=>[c[0],c[2]])];
@@ -1291,7 +1300,7 @@ async function push(){if(!sb||!USER)return;SYNC={state:'syncing'};refreshSheet()
 async function pull(){if(!sb||!USER)return;SYNC={state:'syncing'};refreshSheet();
   try{const{data,error}=await sb.from('wardrobes').select('data,updated_at').eq('user_id',USER.id).maybeSingle();if(error)throw error;
     const remoteT=data?new Date(data.updated_at).getTime():0,firstHere=S.syncedUser!==USER.id;
-    if(data&&data.data&&(firstHere||remoteT>(S.updatedAt||0))){S=data.data;if(!(S.mig&&S.mig.shoes1&&S.mig.bags1&&S.mig.gab1)){migShoes(S);migBags(S);migPieces(S);setTimeout(()=>save(),0)}setTimeout(()=>{try{rebag();render()}catch(e){}},0);S.wish=S.wish||[];S.profile=S.profile||{};S.trips=S.trips||{};if(S.onboarded==null)S.onboarded=true;if(V.screen==='welcome'&&S.onboarded){V.screen='today';closeSheet()}S.syncedUser=USER.id;try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}
+    if(data&&data.data&&(firstHere||remoteT>(S.updatedAt||0))){S=data.data;if(!(S.mig&&S.mig.shoes1&&S.mig.bags1&&S.mig.pieces2)){migShoes(S);migBags(S);migPieces(S);setTimeout(()=>save(),0)}setTimeout(()=>{try{rebag();render()}catch(e){}},0);S.wish=S.wish||[];S.profile=S.profile||{};S.trips=S.trips||{};if(S.onboarded==null)S.onboarded=true;if(V.screen==='welcome'&&S.onboarded){V.screen='today';closeSheet()}S.syncedUser=USER.id;try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}
       await downloadImgs();SYNC={state:'ok',at:Date.now()};render(true);if(firstHere)toast('Your wardrobe is loaded from your account')}
     else{await push();return}
   }catch(e){SYNC={state:'err',err:e.message||String(e)}}refreshSheet()}
@@ -1435,7 +1444,7 @@ function parseICS(t){
     ev.push({date,time,title:sum.slice(0,40)});
   });return ev;
 }
-function typeOf(title,date){const t=title.toLowerCase();if(/dinner|drinks|party|date night|concert|theat|opera|gala|wedding|cocktail|birthday|bar\b/.test(t))return'evening';if(/flight|train|trip|airport|travel|hotel|holiday|vacation|férias|viagem/.test(t))return'travel';if(/meeting|office|work|interview|client|call|presentation|class|lecture|reunião|aula/.test(t))return'work';return dayType(date)}
+function typeOf(title,date){const t=title.toLowerCase();if(/formal|board meeting|conference|keynote|ceremony|graduation|award|black tie|cerimónia|conferência/.test(t))return'formal';if(/dinner|drinks|party|date night|concert|theat|opera|gala|wedding|cocktail|birthday|bar\b/.test(t))return'evening';if(/flight|train|trip|airport|travel|hotel|holiday|vacation|férias|viagem/.test(t))return'travel';if(/meeting|office|work|interview|client|call|presentation|class|lecture|reunião|aula/.test(t))return'work';return dayType(date)}
 function sheetNotices(){
   const n=upcomingNeeds();const t=S.looks[add(TODAY,1)];
   sheet(`<h2 class="h-l">Coming <i class="it">up</i></h2>
@@ -1447,7 +1456,7 @@ function sheetEvent(){
     <div class="field"><label for="e-title">What is it?</label><input id="e-title" placeholder="Dinner with Ana" maxlength="40"></div>
     <div class="two"><div class="field"><label for="e-date">Day</label><input id="e-date" type="date" value="${V.plan.sel>=TODAY?V.plan.sel:TODAY}" min="${TODAY}"></div>
     <div class="field"><label for="e-time">Time</label><input id="e-time" type="time" value="19:00"></div></div>
-    <div class="field"><label for="e-type">Kind of day</label><select id="e-type"><option value="work">Work</option><option value="evening">Evening</option><option value="weekend">Weekend</option><option value="travel">Travel</option></select></div>
+    <div class="field"><label for="e-type">Kind of day</label><select id="e-type"><option value="work">Work</option><option value="formal">Business formal</option><option value="evening">Evening</option><option value="weekend">Weekend</option><option value="travel">Travel</option></select></div>
     <p class="note" id="e-err" hidden>Give the plan a name.</p>
     <button class="btn" data-act="save-event">Add plan</button>`,()=>setTimeout(()=>$('#e-title').focus(),50));
 }
