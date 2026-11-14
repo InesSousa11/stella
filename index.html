@@ -208,6 +208,9 @@ nav.tabs .on i{background:var(--clay)}
 .datenav{display:flex;align-items:center;gap:4px;justify-content:center}
 .datenav button{width:32px;height:32px;display:grid;place-items:center}
 .datenav svg{width:14px;height:14px;fill:none;stroke:var(--muted);stroke-width:1.6;stroke-linecap:round}
+.screen.isLook{padding-bottom:0!important}
+.lookbar{padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:3;background:linear-gradient(to bottom,rgba(246,241,234,0),var(--linen) 22%)!important;margin-left:-24px;margin-right:-24px;padding-left:24px;padding-right:24px}
+.lookbar .btn{gap:8px}.lookbar .btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .sticky{position:sticky;bottom:0;padding-top:10px;background:linear-gradient(to bottom,rgba(246,241,234,0),var(--linen) 30%);margin-top:auto}
 /* piece */
 .ptile{position:relative;height:340px;border-radius:30px;background:var(--oat);display:grid;place-items:center;flex-shrink:0;margin:0 -6px}
@@ -1269,7 +1272,7 @@ function scLook(){
   <div><h2 class="h-m" style="font-size:24px">${esc(t[0])} <i class="it">${esc(t[1])}</i></h2>
     <div class="note" style="margin-top:2px">${(()=>{const cs=codesOf(G.base.split(','));const suit=(()=>{const P=ids.map(byId),o=P.find(i=>i&&i.cat==='outer'&&i.suit),b=P.find(i=>i&&i.cat==='bottom');return o&&b&&o.suit===b.suit})();const c0=suit?'formal':cs.find(x=>x!=='formal');return c0?esc(CODE_NAME[c0])+' · ':''})()}${p?'On you':'Photo to come'} · ${c.ok?'good for today':esc(c.t.replace('\n',' ').toLowerCase())+' today'}</div>${(()=>{const allO=refineAll(baseOf(ids),LC||'work',wx(TODAY),false,true),me=fitScore(ids,wx(TODAY)),top=allO.length?Math.max(allO[0].raw,me):me;const isTop=me>=top-.01;return`<div class="verdict" style="--sc:${scoreCol(me)}"><b>${fmt10(me)}</b><span>/10</span>${isTop?' · the best combination for this base':' · best possible '+fmt10(top)}</div><div class="scale" aria-hidden="true"><span class="bar"></span><span class="lb"><span>4 · weak</span><span>7 · good</span><span>10 · best</span></span></div>`})()}${(()=>{const hw=harmony(ids).why.slice(0,3);return hw.length?`<ul class="why">${hw.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''})()}</div>
   ${row('outer1','Knit layer',true)}${row('outer2','Jacket',true)}${row('outer3','Coat',true)}${row('shoes','Shoes')}${row('bag','Bag')}${row('socks','Socks',true)}
-  <div class="row"><button class="btn" data-act="look-plan">Plan it for a day</button><button class="sq" data-act="look-today" aria-label="Wear it today">${ic('check')}</button></div>`;
+  <div class="sticky row lookbar"><button class="btn ghost" data-act="look-plan">${ic('cal')}Plan a day</button><button class="btn" data-act="look-today">${ic('check')}Wear today</button></div>`;
 }
 
 /* ---------- try-on & wishlist ---------- */
@@ -1655,7 +1658,7 @@ function render(scrollTop){
   document.querySelectorAll('#tabs button').forEach(b=>{const on=b.dataset.go===tab;b.classList.toggle('on',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')});
   if(scrollTop)sc.scrollTop=0;
   {const tb=$('#tabs');if(tb&&tb.offsetHeight)document.documentElement.style.setProperty('--navH',tb.offsetHeight+'px')}
-  sc.classList.toggle('isToday',V.screen==='today');TL=null;if(V.screen==='today')layoutToday();
+  sc.classList.toggle('isToday',V.screen==='today');sc.classList.toggle('isLook',V.screen==='look');TL=null;if(V.screen==='today')layoutToday();
   const q=$('#q');if(q){q.addEventListener('input',e=>{V.ward.q=e.target.value;const p=e.target.selectionStart;render();const n=$('#q');n.focus();n.setSelectionRange(p,p)});if(keep)q.focus()}
 }
 
