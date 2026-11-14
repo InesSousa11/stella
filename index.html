@@ -336,6 +336,8 @@ nav.tabs .on i{background:var(--clay)}
 .hero.photo .left::before{content:"";position:absolute;left:50%;width:calc(var(--hw,360px)*.56);transform:translateX(-50%);bottom:48px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(96,78,62,.26),rgba(96,78,62,0))}
 .hero .ff{display:none}
 .hero .fc{position:absolute;inset:62px 14px 44px;display:grid;grid-template-columns:repeat(2,auto);place-content:center;place-items:center;gap:10px}
+.hero .fc.fcl{position:absolute;inset:18px 14px 58px;display:grid;grid-template-columns:repeat(3,auto);place-content:center;place-items:center;gap:10px}
+.hero .fc.fcl img.gq{width:76px!important;height:76px!important}
 .hero .fc img.gq{width:88px!important;height:88px!important}
 .hero .fc>*:last-child:nth-child(odd){grid-column:1/-1}
 .hero .pill .sm{display:none}
@@ -1078,15 +1080,26 @@ function scPiece(){
 /* ---------- looks: every outfit, grouped so versions (other shoes, other bag) sit under one card ---------- */
 const keyOf=ids=>ids.slice().sort().join(',');
 const isFavKey=k=>S.favLooks.includes(k);
+function lookIdeas(){const A=S.items.filter(i=>!i.stored),by=c=>A.filter(i=>i.cat===c),out=[];
+  const tops=by('top'),bots=by('bottom'),outs=by('outer'),shoes=by('shoes').filter(i=>i.kind!=='boots'),boots=by('shoes').filter(i=>i.kind==='boots');
+  let n=0;const add=(ids,type,o)=>{const base=ids.slice();const sv=[];sv.push(shoes[n%shoes.length]);if(shoes.length>1)sv.push(shoes[(n+1)%shoes.length]);if(boots.length&&(!o||o.rain))sv.push(boots[0]);n++;
+    sv.filter(Boolean).forEach((sh,j)=>{const ids2=base.concat(sh.id),b=bagFor(ids2,type,j);out.push(withSocks(b?ids2.concat(b.id):ids2))})};
+  tops.forEach(t=>bots.forEach(b=>{[null,...outs].forEach(o=>{
+    if(o&&o.suit&&b.suit)return;if(o&&o.kind==='cardigan'&&t.set&&t.set!==o.set)return;
+    add((o?[o.id]:[]).concat(t.id,b.id),typeFromIds((o?[o.id]:[]).concat(t.id,b.id)),o)})}));
+  const bl=outs.find(i=>i.suit),tr=bl&&bots.find(i=>i.suit===bl.suit);
+  if(bl&&tr)tops.filter(t=>t.kind!=='knit').forEach(t=>add([bl.id,t.id,tr.id],'formal',bl));
+  return out}
 function allLooks(){
   const m=new Map();
   const addL=(ids,src)=>{ids=ids.filter(id=>byId(id));if(ids.length<2||!ids.some(id=>{const c=byId(id).cat;return c==='top'||c==='dress'}))return;const k=keyOf(ids);if(!m.has(k))m.set(k,{key:k,ids:ids.slice(),src:new Set()});m.get(k).src.add(src)};
   PHOTOS.forEach(p=>addL(p.items,'photo'));
   S.favLooks.forEach(k=>addL(k.split(','),'fav'));
   Object.keys(S.looks).sort().reverse().forEach(d=>{const L=S.looks[d];if(L.items&&L.items.length&&(L.worn||!L.auto))addL(L.items,L.worn?'worn':'planned')});
+  lookIdeas().forEach(ids=>addL(ids,'idea'));
   const grp=new Map();
-  m.forEach(l=>{l.photo=!!photoFor(l.ids);l.fav=isFavKey(l.key);const base=l.ids.filter(id=>!['shoes','bag'].includes(byId(id).cat)).sort().join(',');if(!grp.has(base))grp.set(base,[]);grp.get(base).push(l)});
-  const sc=l=>(l.photo?4:0)+(l.fav?2:0)+(l.src.has('worn')?1:0);
+  m.forEach(l=>{l.photo=!!photoFor(l.ids);l.fav=isFavKey(l.key);const base=l.ids.filter(id=>!['shoes','bag','socks'].includes(byId(id).cat)).sort().join(',');if(!grp.has(base))grp.set(base,[]);grp.get(base).push(l)});
+  const sc=l=>(l.photo?8:0)+(l.fav?4:0)+(l.src.has('worn')?2:0)+(l.src.has('idea')?0:1);
   return[...grp.entries()].map(([base,vs])=>{vs.sort((a,b)=>sc(b)-sc(a));return{base,variants:vs,main:vs[0],fav:vs.some(v=>v.fav),photo:vs.some(v=>v.photo)}});
 }
 function versionsNote(G){const n=c=>new Set(G.variants.map(v=>(v.ids.map(byId).find(i=>i.cat===c)||{}).id)).size;const a=[];if(n('shoes')>1)a.push(n('shoes')+' shoe options');if(n('bag')>1)a.push(n('bag')+' bags');return a.join(' · ')}
@@ -1101,7 +1114,7 @@ function scLooks(){
     return`<div class="lcard"><button class="im" data-look="${esc(G.base)}" aria-label="Open look: ${esc(t.join(' '))}">${lookThumb(l.ids)}</button>
       ${G.photo?'<span class="onme">On you</span>':''}
       <button class="hb ${l.fav?'on':''}" data-favlook="${esc(l.key)}" aria-pressed="${l.fav}" aria-label="${l.fav?'Remove from favourites':'Add to favourites'}">${ic('heart')}</button>
-      <span class="nm">${esc(t[0])} <i class="it">${esc(t[1])}</i></span><span class="mt">${vn||esc(G.main.src.has('worn')?'Worn before':G.photo?'Ready to wear':'Saved look')}</span></div>`}).join('');
+      <span class="nm">${esc(t[0])} <i class="it">${esc(t[1])}</i></span><span class="mt">${vn||esc(G.main.src.has('worn')?'Worn before':G.photo?'Ready to wear':G.variants.every(v=>v.src.has('idea')&&v.src.size===1)?'Photo to come':'Saved look')}</span></div>`}).join('');
   return`
   <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-top:8px">
     <div><div class="eyebrow">${L.length} look${L.length===1?'':'s'} · ${L.filter(x=>x.fav).length} favourite${L.filter(x=>x.fav).length===1?'':'s'}</div><h1 class="h-xl" style="margin-top:2px">Your <i class="it">looks</i></h1></div></div>
@@ -1115,7 +1128,7 @@ function heroFor(ids,hk,extra){
   if(p&&!img){V.hide[hk]=[];vis=ids.slice();img=imageFor(p,ids)}
   let chips='';if(p)ids.forEach(id=>{const on=vis.includes(id),nv=on?vis.filter(x=>x!==id):vis.concat(id);if(!imageFor(p,nv))return;const it=byId(id);
     chips+=`<button class="layer ${on?'on':''}" data-layer-t="${id}" data-hk="${esc(hk)}" aria-pressed="${on}" aria-label="${on?'Take off':'Put on'} the ${esc(it.name)}"><span class="box"></span>${esc(KNAME[it.kind]||it.name)}</button>`});
-  return{vis,html:`<div class="hero ${p?'photo':''}">${extra.cover?`<button class="cover" data-act="${extra.cover}" aria-label="Open in the dressing room">`:'<div class="cover">'}${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:flatlay(ids)}${extra.cover?'</button>':'</div>'}
+  return{vis,html:`<div class="hero ${p?'photo':''}">${extra.cover?`<button class="cover" data-act="${extra.cover}" aria-label="Open in the dressing room">`:'<div class="cover">'}${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:`<span class="fc fcl">${withBag(ids).map(byId).filter(Boolean).sort((x,y)=>['outer','dress','top','bottom','shoes','socks','bag'].indexOf(x.cat)-['outer','dress','top','bottom','shoes','socks','bag'].indexOf(y.cat)).map(i=>g(i,96,96,'position:static')).join('')}</span>`}${extra.cover?'</button>':'</div>'}
     ${extra.top||''}${chips?`<div class="layers" role="group" aria-label="Layers" style="${extra.top?'':'top:14px'}">${chips}</div>`:p?'':'<span class="pill">Photo of this look coming soon</span>'}</div>`};
 }
 function scLook(){
