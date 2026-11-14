@@ -336,9 +336,9 @@ nav.tabs .on i{background:var(--clay)}
 .hero.photo .left::before{content:"";position:absolute;left:50%;width:calc(var(--hw,360px)*.56);transform:translateX(-50%);bottom:48px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(96,78,62,.26),rgba(96,78,62,0))}
 .hero .ff{display:none}
 .hero .fc{position:absolute;inset:62px 14px 44px;display:grid;grid-template-columns:repeat(2,auto);place-content:center;place-items:center;gap:10px}
-.hero .fc.fcl{position:absolute;inset:18px 18px 64px;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:10px}
-.hero .fc.fcl img.gq{width:88px!important;height:88px!important}
-.hero .fc img.gq{width:88px!important;height:88px!important}
+.hero .fc.fcl{position:absolute;inset:18px 30px 64px;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:10px}
+.hero .fc.fcl img.gq{width:var(--t,88px)!important;height:var(--t,88px)!important}
+.hero .fc img.gq{width:var(--t,88px)!important;height:var(--t,88px)!important}
 .hero .fc>*:last-child:nth-child(odd){grid-column:1/-1}
 .hero .pill .sm{display:none}
 
@@ -791,6 +791,9 @@ function suggest(ds,type){
   if(w.min<15||w.rain>=40){
     let o=A.filter(i=>i.cat==='outer'&&fits(i,(w.min+w.max)/2));if(w.rain>=40&&o.some(i=>i.rain))o=o.filter(i=>i.rain);
     const oo=pick(o,k)||pick(A.filter(i=>i.cat==='outer'),k);oo&&ids.unshift(oo.id);
+    /* layering: a knit under the coat when it is cold, a coat over the knit when it rains */
+    if(oo&&LVL(oo)===3&&w.min<12){const t0=ids.map(byId).find(i=>i.cat==='top');const cg=A.filter(i=>i.kind==='cardigan'&&(!t0||!t0.set||t0.set===i.set));const c=pick(cg,k);if(c)ids.splice(1,0,c.id)}
+    if(oo&&LVL(oo)<3&&w.rain>=40){const co=A.filter(i=>i.cat==='outer'&&LVL(i)===3&&i.rain)[0];if(co)ids.unshift(co.id)}
   }
   /* suits: wear the full suit for business formal, and never the two halves together otherwise */
   {const it=id=>byId(id),suitOf=c=>A.filter(i=>i.suit&&i.cat===c);
@@ -809,6 +812,8 @@ function suggest(ds,type){
   const b=bagFor(ids,type||dayType(ds),k);b&&ids.push(b.id);{const ws=withSocks(ids);if(ws!==ids)ids.push(ws[ws.length-1])}
   return ids;
 }
+const LVL=i=>i.kind==='cardigan'?1:i.kind==='blazer'?2:3;
+const grpOf=i=>i.cat==='outer'?'outer'+LVL(i):i.cat;
 const slots=ids=>{const o={};ids.map(byId).filter(Boolean).forEach(i=>{o[i.cat]=i});return o};
 function check(ids,w){
   const s=slots(ids),warmTop=s.top&&s.top.kind==='knit'&&!s.top.set;
@@ -886,7 +891,7 @@ function scToday(){
   if(false)ids.forEach(id=>{const on=vis.includes(id),nv=on?vis.filter(x=>x!==id):vis.concat(id);if(!imageFor(p,nv))return;const it=byId(id);
     chips+=`<button class="layer ${on?'on':''}" data-layer-t="${id}" data-hk="${ds}" aria-pressed="${on}" aria-label="${on?'Take off':'Put on'} the ${esc(it.name)}"><span class="box"></span>${esc(KNAME[it.kind]||it.name)}</button>`});
   const order=['outer','top','dress','bottom','shoes','socks','bag'];
-  const pieces=ids.map(byId).filter(Boolean).sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat));
+  const pieces=ids.map(byId).filter(Boolean).sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat)||(a.cat==='outer'?LVL(b)-LVL(a):0));
   const meta=`${planned?(L.auto?'Planned by Dresmi':'Planned by you'):isT?'Suggested for today':'Suggested'} · ${c.ok?(w.rain>=50?'rain-ready':'right for the weather'):esc(c.t.replace('\n',' ').toLowerCase())} · ${layers} layer${layers===1?'':'s'}`;
   return`
   <div class="fold today">
@@ -900,7 +905,7 @@ function scToday(){
   </div>
   <div class="hero split-able ${p?'photo':''} ${V.split?'split':''} " id="hero">
     <div class="left">
-      <button class="cover" data-act="dress-day" data-date="${ds}" aria-label="Open this look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:`<span class="ff">${flatlay(ids)}</span><span class="fc">${pieces.map(i=>g(i,i.cat==='shoes'?84:96,i.cat==='shoes'?56:i.cat==='bottom'?120:100,'position:static')).join('')}</span>`}</button>
+      <button class="cover" data-act="dress-day" data-date="${ds}" aria-label="Open this look in the dressing room">${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:`<span class="ff">${flatlay(ids)}</span><span class="fc" style="${pieces.length>6?'grid-template-columns:repeat(3,auto);--t:72px':''}">${pieces.map(i=>g(i,i.cat==='shoes'?84:96,i.cat==='shoes'?56:i.cat==='bottom'?120:100,'position:static')).join('')}</span>`}</button>
       <span class="pill topL ${window.EVS2==='2'&&evList(ds,L).length?'joined':''}">${ic(wIcon(w))}<span class="lg">${w.max}° · ${esc(word(w))}${w.est?' · estimate':''}</span><span class="sm">${w.max}°</span></span>
       <button class="heart topR ${isFav?'on':''}" data-act="fav-look" aria-label="${isFav?'Remove from saved looks':'Save this look'}" aria-pressed="${isFav}">${ic('heart')}</button>
       ${p?'':'<span class="pill soon2">Photo coming soon</span>'}
@@ -1089,7 +1094,7 @@ function lookIdeas(){const A=S.items.filter(i=>!i.stored),out=[];A.filter(i=>i.c
 /* default additions for a base: layer for today's weather, then shoes, bag and socks */
 function dressBase(base,type){const w=wx(TODAY),A=S.items.filter(avail),ids=base.slice(),feel=w.max-2,t=type||typeFromIds(base);
   const bb=base.map(byId),hasSuitB=bb.find(i=>i.suit);
-  if(w.min<15||w.rain>=40){let o=A.filter(i=>i.cat==='outer'&&!(hasSuitB&&i.suit===hasSuitB.suit&&t!=='formal')&&(w.min+w.max)/2>=i.warm[0]-1&&(w.min+w.max)/2<=i.warm[1]+2);if(w.rain>=40&&o.some(i=>i.rain))o=o.filter(i=>i.rain);if(o[0])ids.unshift(o[0].id)}
+  if(w.min<15||w.rain>=40){let o=A.filter(i=>i.cat==='outer'&&!(hasSuitB&&i.suit===hasSuitB.suit&&t!=='formal')&&(w.min+w.max)/2>=i.warm[0]-1&&(w.min+w.max)/2<=i.warm[1]+2);if(w.rain>=40&&o.some(i=>i.rain))o=o.filter(i=>i.rain);if(o[0]){ids.unshift(o[0].id);if(LVL(o[0])===3&&w.min<12){const c=A.find(i=>i.kind==='cardigan');if(c)ids.splice(1,0,c.id)}}}
   let sh=A.filter(i=>i.cat==='shoes'&&feel>=i.warm[0]-1&&feel<=i.warm[1]+2);if(w.rain>=40){if(sh.some(i=>i.rain))sh=sh.filter(i=>i.rain);else sh=sh.filter(i=>!i.noRain)}
   const s0=sh[0]||A.find(i=>i.cat==='shoes');if(s0)ids.push(s0.id);const bg=bagFor(ids,t);if(bg)ids.push(bg.id);return withSocks(ids)}
 function allLooks(){
@@ -1131,7 +1136,7 @@ function heroFor(ids,hk,extra){
   if(p&&!img){V.hide[hk]=[];vis=ids.slice();img=imageFor(p,ids)}
   let chips='';if(p)ids.forEach(id=>{const on=vis.includes(id),nv=on?vis.filter(x=>x!==id):vis.concat(id);if(!imageFor(p,nv))return;const it=byId(id);
     chips+=`<button class="layer ${on?'on':''}" data-layer-t="${id}" data-hk="${esc(hk)}" aria-pressed="${on}" aria-label="${on?'Take off':'Put on'} the ${esc(it.name)}"><span class="box"></span>${esc(KNAME[it.kind]||it.name)}</button>`});
-  return{vis,html:`<div class="hero ${p?'photo':''}">${extra.cover?`<button class="cover" data-act="${extra.cover}" aria-label="Open in the dressing room">`:'<div class="cover">'}${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:`<span class="fc fcl">${withBag(ids).map(byId).filter(Boolean).sort((x,y)=>['outer','dress','top','bottom','shoes','socks','bag'].indexOf(x.cat)-['outer','dress','top','bottom','shoes','socks','bag'].indexOf(y.cat)).map(i=>g(i,96,96,'position:static;--q:1')).join('')}</span>`}${extra.cover?'</button>':'</div>'}
+  return{vis,html:`<div class="hero ${p?'photo':''}">${extra.cover?`<button class="cover" data-act="${extra.cover}" aria-label="Open in the dressing room">`:'<div class="cover">'}${img?`<img class="ph" src="${esc(img)}" alt="You wearing ${esc(vis.map(id=>byId(id).name).join(', '))}">`:`<span class="fc fcl" style="--t:${withBag(ids).length>6?66:withBag(ids).length>3?84:96}px">${withBag(ids).map(byId).filter(Boolean).sort((x,y)=>['outer','dress','top','bottom','shoes','socks','bag'].indexOf(x.cat)-['outer','dress','top','bottom','shoes','socks','bag'].indexOf(y.cat)||(x.cat==='outer'?LVL(y)-LVL(x):0)).map(i=>g(i,96,96,'position:static;--q:1')).join('')}</span>`}${extra.cover?'</button>':'</div>'}
     ${extra.top||''}${chips?`<div class="layers" role="group" aria-label="Layers" style="${extra.top?'':'top:14px'}">${chips}</div>`:p?'':'<span class="pill">Photo of this look coming soon</span>'}</div>`};
 }
 function lookIds(G){if(V.look.ids&&same(baseOf(V.look.ids),G.base.split(',')))return V.look.ids;
@@ -1142,14 +1147,14 @@ function scLook(){
   const ids=lookIds(G),key=keyOf(ids),fav=isFavKey(key);
   const h=heroFor(ids,'L'+key,{cover:'look-dress',top:`<button class="heart topR ${fav?'on':''}" data-favlook="${esc(key)}" aria-pressed="${fav}" aria-label="${fav?'Remove from favourites':'Add to favourites'}">${ic('heart')}</button>`});
   const t=titleOf(baseOf(ids)),c=check(ids,wx(TODAY)),s=slots(ids),p=photoFor(ids);
-  const row=(cat,label,none)=>{const opts=S.items.filter(i=>i.cat===cat);if(!opts.length)return'';const cur=s[cat];
+  const row=(cat,label,none)=>{const opts=S.items.filter(i=>grpOf(i)===cat);if(!opts.length)return'';const cur=ids.map(byId).find(i=>i&&grpOf(i)===cat);
     return`<div><div class="flabel" style="margin-bottom:8px">${label}</div><div class="vers">${none?`<button class="ver ${cur?'':'on'}" data-addon="${cat}:" aria-pressed="${!cur}"><span class="t"><span class="none">None</span></span>&nbsp;</button>`:''}${opts.map(i=>`<button class="ver ${cur&&cur.id===i.id?'on':''} ${avail(i)?'':'off'}" data-addon="${cat}:${i.id}" aria-pressed="${!!(cur&&cur.id===i.id)}" aria-label="${esc(i.name)}"><span class="t">${g(i,56,56,'position:static;--q:1')}</span>${esc(i.short)}</button>`).join('')}</div></div>`};
   return`
   <div class="top"><button class="ib" data-act="back" aria-label="Back">${ic('back')}</button><h1 class="h-l">Look</h1><button class="ib" data-act="look-dress" aria-label="Open in the dressing room">${ic('sparkle')}</button></div>
   ${h.html}
   <div><h2 class="h-m" style="font-size:24px">${esc(t[0])} <i class="it">${esc(t[1])}</i></h2>
     <div class="note" style="margin-top:2px">${p?'On you':'Photo to come'} · ${c.ok?'good for today':esc(c.t.replace('\n',' ').toLowerCase())+' today'}</div></div>
-  ${row('outer','Layer',true)}${row('shoes','Shoes')}${row('bag','Bag')}${row('socks','Socks',true)}
+  ${row('outer1','Knit layer',true)}${row('outer2','Jacket',true)}${row('outer3','Coat',true)}${row('shoes','Shoes')}${row('bag','Bag')}${row('socks','Socks',true)}
   <div class="row"><button class="btn" data-act="look-plan">Plan it for a day</button><button class="sq" data-act="look-today" aria-label="Wear it today">${ic('check')}</button></div>`;
 }
 
@@ -1555,7 +1560,7 @@ document.addEventListener('click',e=>{
     save();toast(d.feel==='ok'?'Noted. Dresmi will keep dressing you like this':d.feel==='cold'?'Noted. Warmer looks from now on':'Noted. Lighter looks from now on');return render()}
   if(d.lf){V.looksF=d.lf;return render()}
   if(d.look){V.look={base:d.look,ids:null};return go('look')}
-  if(d.addon!=null&&V.screen==='look'){const[c,id]=d.addon.split(':');const keep=V.look.ids.filter(x=>{const i=byId(x);return!i||i.cat!==c});V.look.ids=id?keep.concat(id):keep;if(c==='shoes'){const sh=byId(id),noS=V.look.ids.filter(x=>byId(x).cat!=='socks');V.look.ids=sh&&sh.kind==='loafers'?withSocks(noS):noS}const sc=$('#screen').scrollTop;render();$('#screen').scrollTop=sc;return}
+  if(d.addon!=null&&V.screen==='look'){const[c,id]=d.addon.split(':');const keep=V.look.ids.filter(x=>{const i=byId(x);return!i||grpOf(i)!==c});V.look.ids=id?keep.concat(id):keep;if(c==='shoes'){const sh=byId(id),noS=V.look.ids.filter(x=>byId(x).cat!=='socks');V.look.ids=sh&&sh.kind==='loafers'?withSocks(noS):noS}const sc=$('#screen').scrollTop;render();$('#screen').scrollTop=sc;return}
   if(d.ver){V.look.key=d.ver;return render()}
   if(d.favlook){const k=d.favlook,x=S.favLooks.indexOf(k);x>=0?S.favLooks.splice(x,1):S.favLooks.push(k);save();toast(x>=0?'Removed from favourites':'Saved to your looks');return render()}
   if(d.wmode){V.ward.mode=d.wmode;return render()}
