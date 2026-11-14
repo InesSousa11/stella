@@ -336,7 +336,7 @@ nav.tabs .on i{background:var(--clay)}
 .hero.photo .left::before{content:"";position:absolute;left:50%;width:calc(var(--hw,360px)*.56);transform:translateX(-50%);bottom:48px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(96,78,62,.26),rgba(96,78,62,0))}
 .hero .ff{display:none}
 .hero .fc{position:absolute;inset:62px 14px 44px;display:grid;grid-template-columns:repeat(2,auto);place-content:center;place-items:center;gap:10px}
-.hero .fc.fcl{position:absolute;inset:18px 30px 64px;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:10px}
+.hero .fc.fcl{position:absolute;inset:18px 12px 64px;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:10px}
 .hero .fc.fcl img.gq{width:var(--t,88px)!important;height:var(--t,88px)!important}
 .hero .fc img.gq{width:var(--t,88px)!important;height:var(--t,88px)!important}
 .hero .fc>*:last-child:nth-child(odd){grid-column:1/-1}
@@ -658,7 +658,7 @@ const CATS=[['outer','Outerwear','Coats'],['top','Tops','Tops'],['dress','Dresse
 const KINDS={outer:['coat','trench','blazer','cardigan'],top:['shirt','knit','cami'],dress:['dress'],bottom:['trousers','jeans','skirt'],shoes:['loafers','boots','sandals'],bag:['tote','bag'],socks:['socks']};
 const KNAME={coat:'Coat',trench:'Trench',blazer:'Blazer',cardigan:'Cardigan',shirt:'Shirt',knit:'Knit',cami:'Silk top',dress:'Dress',trousers:'Trousers',jeans:'Jeans',skirt:'Skirt',loafers:'Loafers',boots:'Boots',sandals:'Sandals',tote:'Tote',bag:'Shoulder bag'};
 const SW=[['#C49A72','Camel'],['#D8C3A2','Stone'],['#F3ECE1','Ivory'],['#E3CDB2','Oat'],['#8C4632','Rust'],['#7C3F2E','Brick'],['#B88A62','Tan'],['#3A302A','Espresso'],['#2B2420','Black'],['#4A5A78','Indigo'],['#6F7458','Olive'],['#B9B2A6','Grey']];
-const TYPES={work:['Work',I.suitcase],formal:['Business formal'],evening:['Evening'],weekend:['Weekend'],travel:['Travel']};
+const TYPES={work:['Business casual',I.suitcase],formal:['Business formal'],evening:['Evening'],weekend:['Casual'],travel:['Travel']};
 function seed(){
   const T=TODAY;
   const items=[
@@ -1038,7 +1038,7 @@ function scPlan(){
   const mini=(kind,col,w,h)=>g({kind,color:col},w,h,'position:static');
   return`
   <div class="top"><button class="ib" data-go="today" aria-label="Back to today">${ic('back')}</button><h1 class="h-l">Plan</h1><button class="ib addbtn" data-act="add-event" aria-label="Add an event">${ic('plus')}</button></div>
-  <div class="circles">${circ('all','All looks','<span class="all">All</span>')}${circ('work','Work',mini('coat','#C49A72',30,38))}${circ('evening','Evening',mini('dress','#7C3F2E',26,34))}${circ('weekend','Weekend',mini('knit','#E3CDB2',34,32))}${circ('travel','Travel','<svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:none;stroke:var(--clay-ink);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round">'+I.suitcase+'</svg>')}</div>
+  <div class="circles">${circ('all','All looks','<span class="all">All</span>')}${circ('work','Business',mini('coat','#C49A72',30,38))}${circ('evening','Evening',mini('dress','#7C3F2E',26,34))}${circ('weekend','Casual',mini('knit','#E3CDB2',34,32))}${circ('travel','Travel','<svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:none;stroke:var(--clay-ink);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round">'+I.suitcase+'</svg>')}</div>
   <div class="cal"><div class="calhead"><button class="ib" data-act="month" data-d="-1" aria-label="Previous month">${ic('left')}</button><h2 class="h-m">${MON[m-1]} <i class="it">${y}</i></h2><button class="ib" data-act="month" data-d="1" aria-label="Next month">${ic('right')}</button></div><div class="grid7">${cells}</div></div>
   <div class="legend"><span><b style="background:var(--blush)"></b>Today</span><span><b style="background:var(--oat)"></b>Planned</span><span><b style="border:1px dashed var(--clay-ink)"></b>Needs a look</span><span><b style="width:5px;height:5px;background:var(--clay)"></b>Worn</span></div>
   ${evs.length?`<div class="evcards">${dayHead}${evCards}${tripBtn}</div>`:card}
@@ -1140,9 +1140,22 @@ const keyOf=ids=>ids.slice().sort().join(',');
 const isFavKey=k=>S.favLooks.includes(k);
 const BASEC=['top','dress','bottom'];
 const baseOf=ids=>ids.filter(id=>{const i=byId(id);return i&&BASEC.includes(i.cat)});
+/* Dress codes (Stitch Fix, Fairygodboss):
+   business formal = a matching suit, collared shirt or dressy blouse, closed-toe flats or heels, neutral colours, no denim or knits;
+   business casual = tailored trousers or skirt (or dark jeans) with a shirt, blouse or knit, optional blazer or cardigan, suit pieces worn separately;
+   casual = jeans or relaxed bottoms with shirts, knits or tees, flats, boots or sneakers. */
+function codesOf(baseIds){const P=baseIds.map(byId).filter(Boolean),t=P.find(i=>i.cat==='top'),b=P.find(i=>i.cat==='bottom'),d=P.find(i=>i.cat==='dress'),out=[];
+  const A=S.items,tailored=b&&(b.kind==='trousers'||b.kind==='skirt'),dressyTop=t&&(t.kind==='shirt'||t.kind==='cami');
+  if(b&&b.suit&&dressyTop&&A.some(i=>i.cat==='outer'&&i.suit===b.suit))out.push('formal');
+  if((tailored||(b&&b.kind==='jeans'))&&t)out.push('work');
+  if(d&&d.kind==='dress')out.push('work');
+  if(b&&(b.kind==='jeans'||b.casual)&&t)out.push('weekend');
+  return out}
+const CODE_NAME={formal:'Business formal',work:'Business casual',weekend:'Casual'};
 function lookIdeas(){const A=S.items.filter(i=>!i.stored),out=[];A.filter(i=>i.cat==='top').forEach(t=>A.filter(i=>i.cat==='bottom').forEach(b=>out.push([t.id,b.id])));A.filter(i=>i.cat==='dress').forEach(d=>out.push([d.id]));return out}
 /* default additions for a base: layer for today's weather, then shoes, bag and socks */
 function dressBase(base,type){const w=wx(TODAY),A=S.items.filter(avail),ids=base.slice(),feel=w.max-2,t=type||typeFromIds(base);
+  if(t==='formal'){const b=base.map(byId).find(i=>i.cat==='bottom'),bl=b&&A.find(i=>i.cat==='outer'&&i.suit&&i.suit===b.suit);if(bl){ids.unshift(bl.id);if(w.rain>=40){const co=A.find(i=>i.cat==='outer'&&LVL(i)===3&&i.rain);if(co)ids.unshift(co.id)}const sh=A.filter(i=>i.cat==='shoes'&&i.kind!=='boots'&&!(w.rain>=40&&i.noRain));const s0=sh[0]||A.find(i=>i.cat==='shoes');if(s0)ids.push(s0.id);const bg=bagFor(ids,'formal');if(bg)ids.push(bg.id);return refine(ids,'formal',w,0)}}
   const bb=base.map(byId),hasSuitB=bb.find(i=>i.suit);
   if(w.min<15||w.rain>=40){let o=A.filter(i=>i.cat==='outer'&&!(hasSuitB&&i.suit===hasSuitB.suit&&t!=='formal')&&(w.min+w.max)/2>=i.warm[0]-1&&(w.min+w.max)/2<=i.warm[1]+2);if(w.rain>=40&&o.some(i=>i.rain))o=o.filter(i=>i.rain);if(o[0]){ids.unshift(o[0].id);if(LVL(o[0])===3&&w.min<12){const c=A.find(i=>i.kind==='cardigan');if(c)ids.splice(1,0,c.id)}}}
   let sh=A.filter(i=>i.cat==='shoes'&&feel>=i.warm[0]-1&&feel<=i.warm[1]+2);if(w.rain>=40){if(sh.some(i=>i.rain))sh=sh.filter(i=>i.rain);else sh=sh.filter(i=>!i.noRain)}
@@ -1160,16 +1173,16 @@ function allLooks(){
   return[...grp.entries()].map(([base,vs])=>{vs.sort((a,b)=>sc(b)-sc(a));return{base,variants:vs,main:vs[0],fav:vs.some(v=>v.fav),photo:vs.some(v=>v.photo)}});
 }
 function versionsNote(G){const n=c=>new Set(G.variants.map(v=>(v.ids.map(byId).find(i=>i.cat===c)||{}).id)).size;const a=[];if(n('shoes')>1)a.push(n('shoes')+' shoe options');if(n('bag')>1)a.push(n('bag')+' bags');return a.join(' · ')}
-function baseThumb(ids){const s=slots(ids);return`<span class="flat flatb">${['dress','top','bottom'].filter(k=>s[k]).map(k=>g(s[k],100,100,'position:static;--q:1')).join('')}</span>`}
+function baseThumb(ids){const s=slots(ids),ks=['outer','dress','top','bottom'].filter(k=>s[k]),z=ks.length>2?72:100;return`<span class="flat flatb" style="padding:10px">${ks.map(k=>g(s[k],z,z,'position:static;--q:1')).join('')}</span>`}
 function lookThumb(ids){const p=photoFor(ids);if(p){const src=imageFor(p,ids);if(src)return`<img src="${esc(src)}" alt="">`}
   const s=slots(withBag(ids));return`<span class="flat">${['outer','dress','top','bottom','shoes','socks','bag'].filter(k=>s[k]).map(k=>g(s[k],k==='shoes'||k==='bag'?56:58,k==='shoes'||k==='bag'?40:70,'position:static;--q:1')).join('')}</span>`}
 function scLooks(){
   const L=allLooks(),hasFav=L.some(x=>x.fav);if(!V.looksF)V.looksF=hasFav?'fav':'all';
   const w=wx(TODAY),F=V.looksF;
-  const list=L.filter(G=>F==='all'||(F==='fav'&&G.fav)||(F==='onme'&&G.photo)||(F==='today'&&G.main.ids.every(id=>avail(byId(id)))&&check(G.main.ids,w).ok));
+  const list=L.filter(G=>(CODE_NAME[F]&&codesOf(G.base.split(',')).includes(F))||F==='all'||(F==='fav'&&G.fav)||(F==='onme'&&G.photo)||(F==='today'&&G.main.ids.every(id=>avail(byId(id)))&&check(G.main.ids,w).ok));
   const chip=(k,t)=>`<button class="chip ${F===k?'on':''}" data-lf="${k}" aria-pressed="${F===k}">${t}</button>`;
   const cards=list.map(G=>{const l=G.variants.find(v=>v.fav)||G.main,t=titleOf(baseOf(l.ids)),vn='';
-    return`<div class="lcard"><button class="im" data-look="${esc(G.base)}" aria-label="Open look: ${esc(t.join(' '))}">${G.photo?lookThumb(l.ids):baseThumb(G.base.split(','))}</button>
+    return`<div class="lcard"><button class="im" data-look="${esc(G.base)}" aria-label="Open look: ${esc(t.join(' '))}">${G.photo?lookThumb(l.ids):baseThumb(F==='formal'?(()=>{const bs=G.base.split(','),b=bs.map(byId).find(i=>i.cat==='bottom'),bl=b&&S.items.find(i=>i.cat==='outer'&&i.suit&&i.suit===b.suit);return bl?[bl.id].concat(bs):bs})():G.base.split(','))}</button>
       ${G.photo?'<span class="onme">On you</span>':''}
       <button class="hb ${l.fav?'on':''}" data-favlook="${esc(l.key)}" aria-pressed="${l.fav}" aria-label="${l.fav?'Remove from favourites':'Add to favourites'}">${ic('heart')}</button>
       <span class="nm">${esc(t[0])} <i class="it">${esc(t[1])}</i></span><span class="mt">${vn||esc(G.photo?'On you':G.variants.some(v=>v.src.has('worn'))?'Worn before':G.variants.some(v=>v.fav)?'Saved look':'Photo to come')}</span></div>`}).join('');
@@ -1178,8 +1191,8 @@ function scLooks(){
     <div><div class="eyebrow">${L.length} look${L.length===1?'':'s'} · ${L.filter(x=>x.fav).length} favourite${L.filter(x=>x.fav).length===1?'':'s'}</div><h1 class="h-xl" style="margin-top:2px">Your <i class="it">looks</i></h1></div></div>
   <button class="trycard" data-act="stats"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V5M19 20v-6"/></svg></span><span style="flex:1;min-width:0"><b style="font-weight:500;display:block">Your style</b><span class="note">What you wear most, your colours and cost per wear.</span></span><span class="chev">${ic('right')}</span></button>
   <button class="trycard" data-act="try-new"><span class="ti">${ic('sparkle')}</span><span style="flex:1;min-width:0"><b style="font-weight:500;display:block">Try on something new</b><span class="note">Paste a store link or add a photo and see it on you before you buy.</span></span><span class="chev">${ic('right')}</span></button>
-  <div class="chips" role="group" aria-label="Filter looks">${chip('fav','Favourites')}${chip('all','All')}${chip('onme','On you')}${chip('today','Good for today')}</div>
-  ${cards?`<div class="lgrid">${cards}</div>`:`<div class="empty"><h3>${F==='fav'?'No favourites yet':'Nothing here yet'}</h3>${F==='fav'?'Tap the heart on any look, on Today or here, and it will be kept in this list.':'Looks you plan, wear or save show up here.'}</div>`}`;
+  <div class="chips" role="group" aria-label="Filter looks">${chip('all','All')}${chip('formal','Business formal')}${chip('work','Business casual')}${chip('weekend','Casual')}${chip('fav','Favourites')}${chip('onme','On you')}${chip('today','Good for today')}</div>
+  ${cards?`<div class="lgrid">${cards}</div>`:`<div class="empty"><h3>${F==='fav'?'No favourites yet':CODE_NAME[F]?'No '+CODE_NAME[F].toLowerCase()+' looks yet':'Nothing here yet'}</h3>${CODE_NAME[F]?`<p>${F==='formal'?'You need a suit: a blazer with matching trousers or skirt, plus a shirt or blouse.':F==='work'?'You need tailored trousers, a skirt or dark jeans with a shirt, blouse or knit.':'You need casual bottoms like jeans or relaxed trousers. Add some to your wardrobe and casual looks will appear here.'}</p>`:''}${CODE_NAME[F]?'':F==='fav'?'Tap the heart on any look, on Today or here, and it will be kept in this list.':'Looks you plan, wear or save show up here.'}</div>`}`;
 }
 function heroFor(ids,hk,extra){
   const p=photoFor(ids),hid=(V.hide[hk]||[]).filter(id=>ids.includes(id));let vis=ids.filter(id=>!hid.includes(id)),img=p&&imageFor(p,vis);
@@ -1190,6 +1203,7 @@ function heroFor(ids,hk,extra){
     ${extra.top||''}${chips?`<div class="layers" role="group" aria-label="Layers" style="${extra.top?'':'top:14px'}">${chips}</div>`:p?'':'<span class="pill">Photo of this look coming soon</span>'}</div>`};
 }
 function lookIds(G){if(V.look.ids&&same(baseOf(V.look.ids),G.base.split(',')))return V.look.ids;
+  if(V.look.code){V.look.ids=dressBase(G.base.split(','),V.look.code);return V.look.ids}
   const pref=G.variants.find(v=>v.photo)||G.variants.find(v=>v.fav)||G.variants.find(v=>v.src.has('worn')||v.src.has('planned'));
   V.look.ids=pref&&pref.ids.length>G.base.split(',').length?pref.ids.slice():dressBase(G.base.split(','));return V.look.ids}
 function scLook(){
@@ -1203,7 +1217,7 @@ function scLook(){
   <div class="top"><button class="ib" data-act="back" aria-label="Back">${ic('back')}</button><h1 class="h-l">Look</h1><button class="ib" data-act="look-dress" aria-label="Open in the dressing room">${ic('sparkle')}</button></div>
   ${h.html}
   <div><h2 class="h-m" style="font-size:24px">${esc(t[0])} <i class="it">${esc(t[1])}</i></h2>
-    <div class="note" style="margin-top:2px">${p?'On you':'Photo to come'} · ${c.ok?'good for today':esc(c.t.replace('\n',' ').toLowerCase())+' today'}</div>${(()=>{const hw=harmony(ids).why.slice(0,3);return hw.length?`<ul class="why">${hw.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''})()}</div>
+    <div class="note" style="margin-top:2px">${(()=>{const cs=codesOf(G.base.split(','));const suit=(()=>{const P=ids.map(byId),o=P.find(i=>i&&i.cat==='outer'&&i.suit),b=P.find(i=>i&&i.cat==='bottom');return o&&b&&o.suit===b.suit})();const c0=suit?'formal':cs.find(x=>x!=='formal');return c0?esc(CODE_NAME[c0])+' · ':''})()}${p?'On you':'Photo to come'} · ${c.ok?'good for today':esc(c.t.replace('\n',' ').toLowerCase())+' today'}</div>${(()=>{const hw=harmony(ids).why.slice(0,3);return hw.length?`<ul class="why">${hw.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''})()}</div>
   ${row('outer1','Knit layer',true)}${row('outer2','Jacket',true)}${row('outer3','Coat',true)}${row('shoes','Shoes')}${row('bag','Bag')}${row('socks','Socks',true)}
   <div class="row"><button class="btn" data-act="look-plan">Plan it for a day</button><button class="sq" data-act="look-today" aria-label="Wear it today">${ic('check')}</button></div>`;
 }
@@ -1541,7 +1555,7 @@ function sheetEvent(){
     <div class="field"><label for="e-title">What is it?</label><input id="e-title" placeholder="Dinner with Ana" maxlength="40"></div>
     <div class="two"><div class="field"><label for="e-date">Day</label><input id="e-date" type="date" value="${V.plan.sel>=TODAY?V.plan.sel:TODAY}" min="${TODAY}"></div>
     <div class="field"><label for="e-time">Time</label><input id="e-time" type="time" value="19:00"></div></div>
-    <div class="field"><label for="e-type">Kind of day</label><select id="e-type"><option value="work">Work</option><option value="formal">Business formal</option><option value="evening">Evening</option><option value="weekend">Weekend</option><option value="travel">Travel</option></select></div>
+    <div class="field"><label for="e-type">Kind of day</label><select id="e-type"><option value="formal">Business formal</option><option value="work">Business casual</option><option value="evening">Evening</option><option value="weekend">Casual</option><option value="travel">Travel</option></select></div>
     <p class="note" id="e-err" hidden>Give the plan a name.</p>
     <button class="btn" data-act="save-event">Add plan</button>`,()=>setTimeout(()=>$('#e-title').focus(),50));
 }
@@ -1609,7 +1623,7 @@ document.addEventListener('click',e=>{
     (L.items||[]).map(byId).filter(i=>i&&['outer','top','dress'].includes(i.cat)).forEach(i=>{if(d.feel==='warm')i.feelWarm=i.feelWarm==null?w.max:Math.min(i.feelWarm,w.max);if(d.feel==='cold')i.feelCold=i.feelCold==null?w.max:Math.max(i.feelCold,w.max)});
     save();toast(d.feel==='ok'?'Noted. Dresmi will keep dressing you like this':d.feel==='cold'?'Noted. Warmer looks from now on':'Noted. Lighter looks from now on');return render()}
   if(d.lf){V.looksF=d.lf;return render()}
-  if(d.look){V.look={base:d.look,ids:null};return go('look')}
+  if(d.look){V.look={base:d.look,ids:null,code:['formal','work','weekend'].includes(V.looksF)?V.looksF:null};return go('look')}
   if(d.addon!=null&&V.screen==='look'){const[c,id]=d.addon.split(':');const keep=V.look.ids.filter(x=>{const i=byId(x);return!i||grpOf(i)!==c});V.look.ids=id?keep.concat(id):keep;if(c==='shoes'){const sh=byId(id),noS=V.look.ids.filter(x=>byId(x).cat!=='socks');V.look.ids=sh&&sh.kind==='loafers'?withSocks(noS):noS}const sc=$('#screen').scrollTop;render();$('#screen').scrollTop=sc;return}
   if(d.ver){V.look.key=d.ver;return render()}
   if(d.favlook){const k=d.favlook,x=S.favLooks.indexOf(k);x>=0?S.favLooks.splice(x,1):S.favLooks.push(k);save();toast(x>=0?'Removed from favourites':'Saved to your looks');return render()}
