@@ -43,6 +43,9 @@ nav.tabs{position:absolute!important}
   color-scheme:light;
 }
 [hidden]{display:none!important}
+img.gp{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block}
+:has(>img.gp){position:relative;overflow:hidden}
+.fc img.gp,.ff img.gp{position:static;width:92px;height:92px;border-radius:16px;flex:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 html,body{height:100%}
 body{background:var(--linen);color:var(--ink);font:400 15px/1.4 var(--sans);-webkit-tap-highlight-color:transparent}
@@ -625,7 +628,7 @@ function shape(k,c){
   }
   return'';
 }
-function g(it,w,h,style){const src=(it.img&&IMG[it.img])||(it.src&&!it.src.includes('?')?it.src+'?v=2':it.src);if(src)return`<img class="g" src="${src}" alt="" style="width:${w}px;height:${h}px;object-fit:contain;${style||''}">`;const v=VB[it.kind]||[100,100];return`<svg class="g" viewBox="0 0 ${v[0]} ${v[1]}" style="width:${w}px;height:${h}px;${style||''}" aria-hidden="true">${shape(it.kind,it.color)}</svg>`}
+function g(it,w,h,style){const src=(it.img&&IMG[it.img])||(it.src?it.src.replace(/\?v=\d+$/,'')+'?v=3':'');if(it.src&&!(it.img&&IMG[it.img]))return`<img class="g gp" src="${src}" alt="" loading="lazy">`;if(src)return`<img class="g" src="${src}" alt="" style="width:${w}px;height:${h}px;object-fit:contain;${style||''}">`;const v=VB[it.kind]||[100,100];return`<svg class="g" viewBox="0 0 ${v[0]} ${v[1]}" style="width:${w}px;height:${h}px;${style||''}" aria-hidden="true">${shape(it.kind,it.color)}</svg>`}
 
 /* ---------- image store (photos you add stay on this device) ---------- */
 const IMG={};let DB=null;
