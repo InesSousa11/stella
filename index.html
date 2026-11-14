@@ -485,6 +485,12 @@ nav.tabs .on i{background:var(--clay)}
 .ver{flex-shrink:0;width:84px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--muted);text-align:center}
 .ver span.t{width:72px;height:72px;border-radius:18px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center}
 .ver.on span.t{border:1.5px solid var(--clay)}
+.ver span.t{border:2px solid var(--sc,var(--line))!important}
+.ver.on span.t{border-width:4px!important;box-shadow:0 8px 16px -10px var(--sc)}
+.ver.on{font-weight:600}
+.ver .sc{display:inline-flex;align-items:center;gap:4px;margin-top:4px;font-size:12px;font-weight:600;color:var(--sc);font-variant-numeric:tabular-nums}
+.ver .sc em{font-style:normal;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:#FFFDFA;background:var(--sc);padding:1px 5px;border-radius:6px}
+.verdict b{font-size:16px;color:var(--sc)}.verdict span{color:var(--muted);margin-left:1px}
 .ver .rt{display:block;margin-top:3px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-weight:500}
 .ver .rt.best{color:var(--clay-ink)}.ver .rt.good{color:var(--muted)}
 .verdict{margin-top:10px;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:5px 11px;border-radius:12px;background:var(--oat);color:var(--ink)}
@@ -864,25 +870,35 @@ function harmony(ids){const P=ids.map(byId).filter(Boolean),G=P.filter(i=>['oute
   return{s,why}}
 const cap=t=>t?t[0].toUpperCase()+t.slice(1):t;
 /* choose shoes, bag and knit layer that suit the base best; k rotates between near-equal choices */
+/* layers the weather calls for: 0 when warm, up to 3 when cold */
+function layerNeed(w){const m=(w.min+w.max)/2;return m>=21?0:m>=16?1:m>=11?2:3}
+function fitScore(ids,w){const h=harmony(ids).s,n=ids.map(byId).filter(i=>i&&i.cat==='outer').length,need=layerNeed(w);return h-Math.abs(n-need)*1.5}
+/* 0–10 for people */
+const S10=raw=>Math.max(0,Math.min(10,5+raw*.7));
+const fmt10=raw=>S10(raw).toFixed(1);
+/* colour for a score: weak clay, middling sand, strong olive */
+function scoreCol(raw){const v=S10(raw),mix=(a,b,t)=>a.map((x,i)=>Math.round(x+(b[i]-x)*t)),C=[[176,96,70],[205,170,120],[111,128,82]];
+  const c=v<6.5?mix(C[0],C[1],Math.max(0,(v-3.5)/3)):mix(C[1],C[2],Math.min(1,(v-6.5)/2.5));return`rgb(${c.join(',')})`}
 /* every allowed combination of layers, shoes and bag for a base, best first.
    Layers keep the levels the weather asked for, but any piece of that level can compete. */
-function refineAll(ids,type,w,recent){const A=S.items.filter(avail),P=ids.map(byId).filter(Boolean),base=P.filter(i=>!['shoes','bag','socks','outer'].includes(i.cat));
+function refineAll(ids,type,w,recent,free){const A=S.items.filter(avail),P=ids.map(byId).filter(Boolean),base=P.filter(i=>!['shoes','bag','socks','outer'].includes(i.cat));
   const feel=w.max-2,mid=(w.min+w.max)/2,bot=base.find(i=>i.cat==='bottom'),top=base.find(i=>i.cat==='top');
   let shoes=A.filter(i=>i.cat==='shoes'&&feel>=i.warm[0]-1&&feel<=i.warm[1]+2&&!(type==='formal'&&i.kind==='boots'&&w.rain<40));
   if(w.rain>=40){if(shoes.some(i=>i.rain))shoes=shoes.filter(i=>i.rain);else if(shoes.some(i=>!i.noRain))shoes=shoes.filter(i=>!i.noRain)}
   if(!shoes.length)shoes=A.filter(i=>i.cat==='shoes').slice(0,1);
   const bags0=A.filter(i=>i.cat==='bag'),bu=bags0.filter(i=>!i.use||i.use.includes(type)),bags=bu.length?bu:bags0;
-  const lv=[...new Set(P.filter(i=>i.cat==='outer').map(LVL))];
+  const lv=free?[1,2,3]:[...new Set(P.filter(i=>i.cat==='outer').map(LVL))];
   const layerOpts=lv.map(L=>{let c=A.filter(i=>i.cat==='outer'&&LVL(i)===L&&mid>=i.warm[0]-2&&mid<=i.warm[1]+3);
     if(L===1)c=c.filter(i=>!top||!top.set||top.kind!=='knit'||top.set===i.set);
     if(L===2)c=c.filter(i=>type==='formal'?(bot&&i.suit===bot.suit):!(bot&&i.suit&&i.suit===bot.suit));
     if(L===3&&w.rain>=40&&c.some(i=>i.rain))c=c.filter(i=>i.rain);
-    const cur=P.find(i=>i.cat==='outer'&&LVL(i)===L);if(!c.length&&cur)c=[cur];return c});
-  let layerSets=[[]];layerOpts.forEach(c=>{const n=[];layerSets.forEach(ls=>c.forEach(o=>n.push(ls.concat(o))));layerSets=n});
+    const cur=P.find(i=>i.cat==='outer'&&LVL(i)===L);if(!c.length&&cur)c=[cur];
+    if(free){const must=(L===2&&type==='formal'&&c.length)||(L===3&&w.rain>=40&&c.some(i=>i.rain));return must?c:[null].concat(c)}return c});
+  let layerSets=[[]];layerOpts.forEach(c=>{const n=[];layerSets.forEach(ls=>c.forEach(o=>n.push(o?ls.concat(o):ls)));layerSets=n});
   const pen=id=>{if(!recent||!LU[id])return 0;const g=gap(LU[id],LUD);return g<=1?1.2:g<=2?.6:0};
   const out=[];layerSets.forEach(ls=>(shoes.length?shoes:[null]).forEach(a=>(bags.length?bags:[null]).forEach(b=>{
     const x=ls.slice().sort((p,q)=>LVL(q)-LVL(p)).map(i=>i.id).concat(base.map(i=>i.id));if(a)x.push(a.id);if(b)x.push(b.id);
-    const hm=harmony(x),h=hm.s-(a?pen(a.id):0)-(b?pen(b.id):0)-ls.reduce((t,o)=>t+pen(o.id)*.5,0);out.push({x:withSocks(x),h,raw:hm.s})})));
+    const xs=withSocks(x),hs=fitScore(xs,w),hm={s:hs},h=hm.s-(a?pen(a.id):0)-(b?pen(b.id):0)-ls.reduce((t,o)=>t+pen(o.id)*.5,0);out.push({x:withSocks(x),h,raw:hm.s})})));
   out.sort((p,q)=>q.h-p.h);return out}
 function refine(ids,type,w,k,recent){const o=refineAll(ids,type,w,recent);if(!o.length)return withSocks(ids);const good=o.filter(v=>v.h>=o[0].h-.75);return good[(k||0)%good.length].x}
 /* how an option compares with the best for its slot */
@@ -1181,12 +1197,7 @@ function codesOf(baseIds){const P=baseIds.map(byId).filter(Boolean),t=P.find(i=>
 const CODE_NAME={formal:'Business formal',work:'Business casual',weekend:'Casual'};
 function lookIdeas(){const A=S.items.filter(i=>!i.stored),out=[];A.filter(i=>i.cat==='top').forEach(t=>A.filter(i=>i.cat==='bottom').forEach(b=>out.push([t.id,b.id])));A.filter(i=>i.cat==='dress').forEach(d=>out.push([d.id]));return out}
 /* default additions for a base: layer for today's weather, then shoes, bag and socks */
-function dressBase(base,type){const w=wx(TODAY),A=S.items.filter(avail),ids=base.slice(),feel=w.max-2,t=type||typeFromIds(base);
-  if(t==='formal'){const b=base.map(byId).find(i=>i.cat==='bottom'),bl=b&&A.find(i=>i.cat==='outer'&&i.suit&&i.suit===b.suit);if(bl){ids.unshift(bl.id);if(w.rain>=40){const co=A.find(i=>i.cat==='outer'&&LVL(i)===3&&i.rain);if(co)ids.unshift(co.id)}const sh=A.filter(i=>i.cat==='shoes'&&i.kind!=='boots'&&!(w.rain>=40&&i.noRain));const s0=sh[0]||A.find(i=>i.cat==='shoes');if(s0)ids.push(s0.id);const bg=bagFor(ids,'formal');if(bg)ids.push(bg.id);return refine(ids,'formal',w,0)}}
-  const bb=base.map(byId),hasSuitB=bb.find(i=>i.suit);
-  if(w.min<15||w.rain>=40){let o=A.filter(i=>i.cat==='outer'&&!(hasSuitB&&i.suit===hasSuitB.suit&&t!=='formal')&&(w.min+w.max)/2>=i.warm[0]-1&&(w.min+w.max)/2<=i.warm[1]+2);if(w.rain>=40&&o.some(i=>i.rain))o=o.filter(i=>i.rain);if(o[0]){ids.unshift(o[0].id);if(LVL(o[0])===3&&w.min<12){const c=A.find(i=>i.kind==='cardigan');if(c)ids.splice(1,0,c.id)}}}
-  let sh=A.filter(i=>i.cat==='shoes'&&feel>=i.warm[0]-1&&feel<=i.warm[1]+2);if(w.rain>=40){if(sh.some(i=>i.rain))sh=sh.filter(i=>i.rain);else sh=sh.filter(i=>!i.noRain)}
-  const s0=sh[0]||A.find(i=>i.cat==='shoes');if(s0)ids.push(s0.id);const bg=bagFor(ids,t);if(bg)ids.push(bg.id);return refine(ids,t,w,0)}
+function dressBase(base,type){const w=wx(TODAY),t=type||typeFromIds(base);const o=refineAll(base,t,w,false,true);return o.length?o[0].x:withSocks(base)}
 function allLooks(){
   const m=new Map();
   const addL=(ids,src)=>{ids=ids.filter(id=>byId(id));if(ids.length<1||!ids.some(id=>{const c=byId(id).cat;return c==='top'||c==='dress'}))return;const k=keyOf(ids);if(!m.has(k))m.set(k,{key:k,ids:ids.slice(),src:new Set()});m.get(k).src.add(src)};
@@ -1242,15 +1253,15 @@ function scLook(){
   const swap=(cat,id)=>{let x=ids.filter(v=>{const i=byId(v);return!i||grpOf(i)!==cat});if(id)x=x.concat(id);if(cat==='shoes'){const sh=byId(id);x=x.filter(v=>byId(v).cat!=='socks');if(sh&&sh.kind==='loafers')x=withSocks(x)}return x};
   const row=(cat,label,none)=>{let opts=S.items.filter(i=>grpOf(i)===cat&&!(cat==='bag'&&LC&&i.use&&!i.use.includes(LC)));if(cat==='outer2'&&LC!=='formal'){const b=s.bottom;opts=opts.filter(i=>!(b&&i.suit&&i.suit===b.suit))}
     if(!opts.length)return'';const cur=ids.map(byId).find(i=>i&&grpOf(i)===cat);
-    const cand=(none?[null]:[]).concat(opts).map(i=>({i,h:harmony(swap(cat,i&&i.id)).s}));const best=Math.max(...cand.map(c=>c.h));
-    const shown=cand.map(c=>Object.assign(c,{r:rateOf(c.h,best)})).filter(c=>c.r!=='no'||(c.i?cur&&cur.id===c.i.id:!cur));
-    const tag=r=>RATE_NAME[r]?`<span class="rt ${r}">${RATE_NAME[r]}</span>`:'<span class="rt">—</span>';
-    return`<div><div class="flabel" style="margin-bottom:8px">${label}</div><div class="vers">${shown.map(c=>c.i?`<button class="ver ${cur&&cur.id===c.i.id?'on':''} ${avail(c.i)?'':'off'}" data-addon="${cat}:${c.i.id}" aria-pressed="${!!(cur&&cur.id===c.i.id)}" aria-label="${esc(c.i.name)}, ${RATE_NAME[c.r]||'weak'} match"><span class="t">${g(c.i,56,56,'position:static;--q:1')}</span>${esc(c.i.short)}${tag(c.r)}</button>`:`<button class="ver ${cur?'':'on'}" data-addon="${cat}:" aria-pressed="${!cur}" aria-label="None, ${RATE_NAME[c.r]||'weak'} match"><span class="t"><span class="none">None</span></span>&nbsp;${tag(c.r)}</button>`).join('')}</div></div>`};
+    const W0=wx(TODAY),cand=(none?[null]:[]).concat(opts).map(i=>({i,h:fitScore(swap(cat,i&&i.id),W0)}));const best=Math.max(...cand.map(c=>c.h));
+    const shown=cand.map(c=>Object.assign(c,{r:rateOf(c.h,best)})).filter(c=>S10(c.h)>=4||c.r!=='no'&&S10(c.h)>=3||(c.i?cur&&cur.id===c.i.id:!cur));
+    const tag=c=>`<span class="sc" style="--sc:${scoreCol(c.h)}">${fmt10(c.h)}${c.h>=best-.01?'<em>top</em>':''}</span>`;
+    return`<div><div class="flabel" style="margin-bottom:8px">${label}</div><div class="vers">${shown.map(c=>c.i?`<button class="ver ${cur&&cur.id===c.i.id?'on':''} ${avail(c.i)?'':'off'}" data-addon="${cat}:${c.i.id}" aria-pressed="${!!(cur&&cur.id===c.i.id)}" aria-label="${esc(c.i.name)}, scores ${fmt10(c.h)} out of 10"><span class="t" style="--sc:${scoreCol(c.h)}">${g(c.i,56,56,'position:static;--q:1')}</span>${esc(c.i.short)}${tag(c)}</button>`:`<button class="ver ${cur?'':'on'}" data-addon="${cat}:" aria-pressed="${!cur}" aria-label="None, scores ${fmt10(c.h)} out of 10"><span class="t" style="--sc:${scoreCol(c.h)}"><span class="none">None</span></span>None${tag(c)}</button>`).join('')}</div></div>`};
   return`
   <div class="top"><button class="ib" data-act="back" aria-label="Back">${ic('back')}</button><h1 class="h-l">Look</h1><button class="ib" data-act="look-dress" aria-label="Open in the dressing room">${ic('sparkle')}</button></div>
   ${h.html}
   <div><h2 class="h-m" style="font-size:24px">${esc(t[0])} <i class="it">${esc(t[1])}</i></h2>
-    <div class="note" style="margin-top:2px">${(()=>{const cs=codesOf(G.base.split(','));const suit=(()=>{const P=ids.map(byId),o=P.find(i=>i&&i.cat==='outer'&&i.suit),b=P.find(i=>i&&i.cat==='bottom');return o&&b&&o.suit===b.suit})();const c0=suit?'formal':cs.find(x=>x!=='formal');return c0?esc(CODE_NAME[c0])+' · ':''})()}${p?'On you':'Photo to come'} · ${c.ok?'good for today':esc(c.t.replace('\n',' ').toLowerCase())+' today'}</div>${(()=>{const allO=refineAll(ids,LC||'work',wx(TODAY),false),me=harmony(ids).s,top=allO.length?Math.max(allO[0].raw,me):me;const r=rateOf(me,top);return`<div class="verdict ${r}">${r==='best'?'Top match for this base':r==='good'?'A good match: one of the strongest options':r==='ok'?'Works, but there are stronger options below':'Weak match: try the options marked Best'}</div>`})()}${(()=>{const hw=harmony(ids).why.slice(0,3);return hw.length?`<ul class="why">${hw.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''})()}</div>
+    <div class="note" style="margin-top:2px">${(()=>{const cs=codesOf(G.base.split(','));const suit=(()=>{const P=ids.map(byId),o=P.find(i=>i&&i.cat==='outer'&&i.suit),b=P.find(i=>i&&i.cat==='bottom');return o&&b&&o.suit===b.suit})();const c0=suit?'formal':cs.find(x=>x!=='formal');return c0?esc(CODE_NAME[c0])+' · ':''})()}${p?'On you':'Photo to come'} · ${c.ok?'good for today':esc(c.t.replace('\n',' ').toLowerCase())+' today'}</div>${(()=>{const allO=refineAll(baseOf(ids),LC||'work',wx(TODAY),false,true),me=fitScore(ids,wx(TODAY)),top=allO.length?Math.max(allO[0].raw,me):me;const isTop=me>=top-.01;return`<div class="verdict" style="--sc:${scoreCol(me)}"><b>${fmt10(me)}</b><span>/10</span>${isTop?' · the best combination for this base':' · best possible '+fmt10(top)}</div>`})()}${(()=>{const hw=harmony(ids).why.slice(0,3);return hw.length?`<ul class="why">${hw.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''})()}</div>
   ${row('outer1','Knit layer',true)}${row('outer2','Jacket',true)}${row('outer3','Coat',true)}${row('shoes','Shoes')}${row('bag','Bag')}${row('socks','Socks',true)}
   <div class="row"><button class="btn" data-act="look-plan">Plan it for a day</button><button class="sq" data-act="look-today" aria-label="Wear it today">${ic('check')}</button></div>`;
 }
