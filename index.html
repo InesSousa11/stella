@@ -354,8 +354,8 @@ nav.tabs .on i{background:var(--clay)}
 .hero .right .pp-head{padding:2px 2px 4px}
 .hero .right .note{font-size:12px;line-height:1.35}
 .pr{display:block;padding:0;border-radius:18px;flex:none;position:relative}
-.pr .cuf{position:absolute;left:6px;bottom:6px;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;font-size:9px;letter-spacing:.02em;padding:1px 6px 1px 4px;border-radius:8px;background:rgba(255,253,250,.86);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:var(--muted);font-weight:400;pointer-events:none;box-shadow:0 1px 3px rgba(43,36,32,.08)}
-.pr .cuf::before{content:'';width:6px;height:6px;border-radius:50%;background:#8A5A3C;flex:none}
+.pr .t:has(.cuf){position:relative;overflow:hidden}
+.pr .cuf{position:absolute;right:0;bottom:0;width:20px;height:20px;background:linear-gradient(135deg,transparent 50%,#8A5A3C 50%);pointer-events:none}
 .pr.more .t{display:grid;place-items:center;background:transparent;border:1.5px dashed var(--clay);box-shadow:none}
 .pr.more .t svg{width:22px;height:22px;fill:none;stroke:var(--clay-ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .pr.more .ml{display:block;text-align:center;font-size:11px;color:var(--clay-ink);margin-top:3px}
@@ -1030,8 +1030,8 @@ function scToday(){
     <span class="divider" aria-hidden="true"></span>
     <div class="right" aria-label="The pieces in this look" ${V.split?'':'aria-hidden="true"'}>
       ${pieces.map(i=>{const on=vis.includes(i.id);return canT(i.id)
-        ?`<button class="pr tog ${on?'':'off'}" data-layer-t="${i.id}" data-hk="${ds}" aria-pressed="${on}" aria-label="${on?'Take off':'Put on'} the ${esc(i.name)}${on&&i.cuffTrim&&harmony(vis).cuff?', sleeves turned up':''}" ${V.split?'':'tabindex="-1"'}><span class="t">${g(i,52,56,'position:static')}</span>${on&&i.cuffTrim&&harmony(vis).cuff?'<span class="cuf">cuffed</span>':''}<span class="bd">${ic(on?'check':'plus')}</span></button>`
-        :`<span class="pr fixed" role="img" aria-label="${esc(i.name)}${i.cuffTrim&&harmony(vis).cuff?', sleeves turned up':''}"><span class="t">${g(i,46,50,'position:static')}</span>${i.cuffTrim&&harmony(vis).cuff?'<span class="cuf">cuffed</span>':''}</span>`}).join('')}
+        ?`<button class="pr tog ${on?'':'off'}" data-layer-t="${i.id}" data-hk="${ds}" aria-pressed="${on}" aria-label="${on?'Take off':'Put on'} the ${esc(i.name)}${on&&i.cuffTrim&&harmony(vis).cuff?', sleeves turned up':''}" ${V.split?'':'tabindex="-1"'}><span class="t">${g(i,52,56,'position:static')}${on&&i.cuffTrim&&harmony(vis).cuff?'<span class="cuf" aria-hidden="true"></span>':''}</span><span class="bd">${ic(on?'check':'plus')}</span></button>`
+        :`<span class="pr fixed" role="img" aria-label="${esc(i.name)}${i.cuffTrim&&harmony(vis).cuff?', sleeves turned up':''}"><span class="t">${g(i,46,50,'position:static')}${i.cuffTrim&&harmony(vis).cuff?'<span class="cuf" aria-hidden="true"></span>':''}</span></span>`}).join('')}
       <button class="pr more" data-act="alts" data-date="${ds}" ${V.split?'':'tabindex="-1"'} aria-label="Other good options for this day"><span class="t">${ic('swap')}</span><span class="ml">Options</span></button>
     </div>
     <button class="ptab" data-act="split" aria-expanded="${!!V.split}" aria-label="${V.split?'Hide the pieces':'Show the pieces in this look'}"><svg class="hg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7.5a2 2 0 1 1 2-2c0 1-.8 1.4-1.4 1.8-.4.3-.6.6-.6 1.1v.6L3.5 15a1 1 0 0 0 .5 1.8h16a1 1 0 0 0 .5-1.8L12 9"/></svg><svg class="chev2" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></button>
