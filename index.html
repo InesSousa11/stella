@@ -1263,10 +1263,14 @@ function scLook(){
   const h=heroFor(ids,'L'+key,{cover:'look-dress',top:`<button class="heart topR ${fav?'on':''}" data-favlook="${esc(key)}" aria-pressed="${fav}" aria-label="${fav?'Remove from favourites':'Add to favourites'}">${ic('heart')}</button>`});
   const t=titleOf(baseOf(ids)),c=check(ids,LW),s=slots(ids),p=photoFor(ids);
   const LC=(()=>{const P=ids.map(byId),o=P.find(i=>i&&i.cat==='outer'&&i.suit),b=P.find(i=>i&&i.cat==='bottom');if(o&&b&&o.suit===b.suit)return'formal';if(V.look.code)return V.look.code;const cs=codesOf(G.base.split(','));return cs.includes('weekend')?'weekend':cs[0]||null})();
+  const swapIn=(src,cat,id)=>{let x=src.filter(v=>{const i=byId(v);return!i||grpOf(i)!==cat});if(id)x=x.concat(id);if(cat==='shoes'){const sh=byId(id);x=x.filter(v=>byId(v).cat!=='socks');if(sh&&sh.kind==='loafers')x=withSocks(x)}return x};
+  /* every strong outfit for this base and day: an option's score is the best outfit it can be part of, so it does not move as you tap */
+  const ALL=(()=>{const o=refineAll(baseOf(ids),LC||'work',LW,false,true).map(v=>v.x);return o.length?o:[ids]})();
+  const bestWith=(cat,id)=>Math.max(...ALL.map(x=>fitScore(swapIn(x,cat,id),LW)));
   const swap=(cat,id)=>{let x=ids.filter(v=>{const i=byId(v);return!i||grpOf(i)!==cat});if(id)x=x.concat(id);if(cat==='shoes'){const sh=byId(id);x=x.filter(v=>byId(v).cat!=='socks');if(sh&&sh.kind==='loafers')x=withSocks(x)}return x};
   const row=(cat,label,none)=>{let opts=S.items.filter(i=>grpOf(i)===cat&&!(cat==='bag'&&LC&&i.use&&!i.use.includes(LC)));if(cat==='outer2'&&LC!=='formal'){const b=s.bottom;opts=opts.filter(i=>!(b&&i.suit&&i.suit===b.suit))}
     if(!opts.length)return'';const cur=ids.map(byId).find(i=>i&&grpOf(i)===cat);
-    const W0=LW,cand=(none?[null]:[]).concat(opts).map(i=>({i,h:fitScore(swap(cat,i&&i.id),W0)}));const best=Math.max(...cand.map(c=>c.h));
+    const W0=LW,cand=(none?[null]:[]).concat(opts).map(i=>({i,h:bestWith(cat,i&&i.id)}));const best=Math.max(...cand.map(c=>c.h));
     const shown=cand.map(c=>Object.assign(c,{r:rateOf(c.h,best)})).filter(c=>S10(c.h)>=4||c.r!=='no'&&S10(c.h)>=3||(c.i?cur&&cur.id===c.i.id:!cur));
     const tag=c=>`<span class="sc" style="--sc:${scoreCol(c.h)}">${fmt10(c.h)}${c.h>=best-.01?'<em>top</em>':''}</span>`;
     return`<div><div class="flabel" style="margin-bottom:8px">${label}</div><div class="vers">${shown.map(c=>c.i?`<button class="ver ${cur&&cur.id===c.i.id?'on':''} ${avail(c.i)?'':'off'}" data-addon="${cat}:${c.i.id}" aria-pressed="${!!(cur&&cur.id===c.i.id)}" aria-label="${esc(c.i.name)}, scores ${fmt10(c.h)} out of 10"><span class="t" style="--sc:${scoreCol(c.h)}">${g(c.i,56,56,'position:static;--q:1')}</span>${esc(c.i.short)}${tag(c)}</button>`:`<button class="ver ${cur?'':'on'}" data-addon="${cat}:" aria-pressed="${!cur}" aria-label="None, scores ${fmt10(c.h)} out of 10"><span class="t" style="--sc:${scoreCol(c.h)}"><span class="none">None</span></span>None${tag(c)}</button>`).join('')}</div></div>`};
