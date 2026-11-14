@@ -490,8 +490,8 @@ nav.tabs .on i{background:var(--clay)}
 .ver.on{font-weight:600}
 .ver .sc{display:inline-flex;align-items:center;gap:4px;margin-top:4px;font-size:12px;font-weight:600;color:var(--sc);font-variant-numeric:tabular-nums}
 .ver .sc em{font-style:normal;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:#FFFDFA;background:var(--sc);padding:1px 5px;border-radius:6px}
-.scale{margin-top:10px;max-width:320px}
-.scale .bar{display:block;position:relative;height:8px;border-radius:4px;background:linear-gradient(90deg,rgb(196,182,166),rgb(214,148,116) 50%,rgb(154,78,51))}
+.scale{margin-top:12px;width:100%}
+.scale .bar{display:block;position:relative;height:8px;border-radius:4px;background:linear-gradient(90deg,rgb(181,88,76),rgb(206,124,74) 25%,rgb(208,168,84) 50%,rgb(156,160,92) 75%,rgb(108,134,88))}
 .scale .bar i{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:7px;background:var(--card);box-shadow:0 0 0 2px var(--ink)}
 .scale .lb{display:flex;justify-content:space-between;margin-top:5px;font-size:11px;color:var(--muted)}
 .verdict b{font-size:16px;color:var(--sc)}.verdict span{color:var(--muted);margin-left:1px}
@@ -882,8 +882,9 @@ const S10=raw=>Math.max(0,Math.min(10,5+raw*.7));
 const fmt10=raw=>S10(raw).toFixed(1);
 /* colour for a score: weak clay, middling sand, strong olive */
 /* palette scale: pale oat-taupe (weak) → soft terracotta → deep clay (strong) */
-const SCALE=[[4,[196,182,166]],[7,[214,148,116]],[10,[154,78,51]]];
-function scoreCol(raw){const v=Math.max(4,Math.min(10,S10(raw)));let a=SCALE[0],b=SCALE[1];if(v>SCALE[1][0]){a=SCALE[1];b=SCALE[2]}const t=(v-a[0])/(b[0]-a[0]);return`rgb(${a[1].map((x,i)=>Math.round(x+(b[1][i]-x)*t)).join(',')})`}
+/* muted traffic-light scale in the palette's earthy tones: brick, amber, ochre, olive-sage */
+const SCALE=[[4,[181,88,76]],[5.5,[206,124,74]],[7,[208,168,84]],[8.5,[156,160,92]],[10,[108,134,88]]];
+function scoreCol(raw){const v=Math.max(4,Math.min(10,S10(raw)));let j=0;while(j<SCALE.length-2&&v>SCALE[j+1][0])j++;const a=SCALE[j],b=SCALE[j+1],t=(v-a[0])/(b[0]-a[0]);return`rgb(${a[1].map((x,i)=>Math.round(x+(b[1][i]-x)*t)).join(',')})`}
 /* every allowed combination of layers, shoes and bag for a base, best first.
    Layers keep the levels the weather asked for, but any piece of that level can compete. */
 function refineAll(ids,type,w,recent,free){const A=S.items.filter(avail),P=ids.map(byId).filter(Boolean),base=P.filter(i=>!['shoes','bag','socks','outer'].includes(i.cat));
