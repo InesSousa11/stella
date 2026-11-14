@@ -1007,10 +1007,10 @@ function scWishlist(){
 }
 function scWardrobe(){
   const Wd=V.ward,q=Wd.q.trim().toLowerCase();Wd.mode=Wd.mode||'mine';
-  let list=S.items.filter(i=>(Wd.cat==='all'||i.cat===Wd.cat||(Wd.cat==='fav'&&i.fav)||(Wd.cat==='wash'&&i.laundry)||(Wd.cat==='forgot'&&forgotten(i)))&&(!q||(i.name+' '+i.colorName+' '+i.fabric+' '+i.place+' '+(i.brand||'')).toLowerCase().includes(q)));
+  let list=S.items.filter(i=>(Wd.cat==='all'||i.cat===Wd.cat||grpOf(i)===Wd.cat||(Wd.cat==='fav'&&i.fav)||(Wd.cat==='wash'&&i.laundry)||(Wd.cat==='forgot'&&forgotten(i)))&&(!q||(i.name+' '+i.colorName+' '+i.fabric+' '+i.place+' '+(i.brand||'')).toLowerCase().includes(q)));
   const wash=S.items.filter(i=>i.laundry).length;
   const nWash=S.items.filter(i=>i.laundry).length,nForg=S.items.filter(forgotten).length;
-  const tabs=[['all','All'],...CATS.filter(c=>S.items.some(i=>i.cat===c[0])).map(c=>[c[0],c[2]]),['wash',ic('laundry')+(nWash?'<span>'+nWash+'</span>':''),'In the wash'],['forgot',ic('unworn')+(nForg?'<span>'+nForg+'</span>':''),'Not worn lately']];if(Wd.cat==='fav')Wd.cat='all';
+  const tabs=[['all','All'],...[['outer1','Knit layers'],['outer2','Jackets'],['outer3','Coats']].filter(t=>S.items.some(i=>grpOf(i)===t[0])),...CATS.filter(c=>c[0]!=='outer'&&S.items.some(i=>i.cat===c[0])).map(c=>[c[0],c[2]]),['wash',ic('laundry')+(nWash?'<span>'+nWash+'</span>':''),'In the wash'],['forgot',ic('unworn')+(nForg?'<span>'+nForg+'</span>':''),'Not worn lately']];if(Wd.cat==='fav'||Wd.cat==='outer')Wd.cat='all';
   const rows=list.map(i=>{
     const tags=[];if(i.laundry)tags.push('<span class="tag clay">In the wash</span>');else if(i.stored)tags.push('<span class="tag olive">Stored</span>');
     tags.push(forgotten(i)?`<span class="tag clay">${i.last?daysSince(i.last)+' days unworn':'Never worn'}</span>`:`<span class="tag">Worn ${i.worn}×</span>`);if(!i.laundry&&!i.stored&&i.use)tags.push(`<span class="tag">${i.use.includes('work')?'Work & dressy':'Casual days'}</span>`);else if(!i.laundry&&!i.stored)tags.push(`<span class="tag">${i.warm[1]>=30?'Above '+i.warm[0]:'Below '+i.warm[1]}°</span>`);
