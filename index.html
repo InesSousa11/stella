@@ -787,9 +787,11 @@ async function loadWeather(){
 /* ---------- outfit photos ----------
    Each photographed look lists its pieces and one image per combination of visible layers.
    More looks can be added in photos/index.json using the same shape. */
-let PHOTOS=[{id:'look-001',items:['i1','i17','i18','i19','i20'],images:[
-  {show:['i1','i17','i18','i19','i20'],src:'photos/look-001-full.webp?v=2'},
-  {show:['i17','i18','i19','i20'],src:'photos/look-001-no-coat.webp?v=2'}]}];
+/* outfit photos: one entry per look, plus entries for its layer-free versions so those days show a photo too */
+let PHOTOS=[
+  {id:'look-001',items:['i2','i22','i42','i8','i21','i15'],images:[{show:['i2','i22','i42','i8','i21','i15'],src:'photos/looks/look-001-1-full.webp'},{show:['i22','i42','i8','i21','i15'],src:'photos/looks/look-001-2-no-coat.webp'},{show:['i42','i8','i21','i15'],src:'photos/looks/look-001-3-no-layers.webp'}]},
+  {id:'look-001b',items:['i22','i42','i8','i21','i15'],images:[{show:['i22','i42','i8','i21','i15'],src:'photos/looks/look-001-2-no-coat.webp'},{show:['i42','i8','i21','i15'],src:'photos/looks/look-001-3-no-layers.webp'}]},
+  {id:'look-001c',items:['i42','i8','i21','i15'],images:[{show:['i42','i8','i21','i15'],src:'photos/looks/look-001-3-no-layers.webp'}]}];
 const same=(a,b)=>a.length===b.length&&a.every(x=>b.includes(x));
 const noAcc=ids=>(ids||[]).filter(id=>{const i=byId(id);return!(i&&i.cat==='socks')});
 const photoFor=ids=>PHOTOS.find(p=>same(p.items,noAcc(ids)));
