@@ -497,6 +497,7 @@ nav.tabs .on i{background:var(--clay)}
 .scale .bar{display:block;position:relative;height:8px;border-radius:4px;background:linear-gradient(90deg,rgb(181,88,76),rgb(206,124,74) 25%,rgb(208,168,84) 50%,rgb(156,160,92) 75%,rgb(108,134,88))}
 .scale .bar i{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:7px;background:var(--card);box-shadow:0 0 0 2px var(--ink)}
 .scale .lb{display:flex;justify-content:space-between;margin-top:5px;font-size:11px;color:var(--muted)}
+.lsc{font-weight:600;color:var(--sc);font-variant-numeric:tabular-nums}
 .verdict b{font-size:16px;color:var(--sc)}.verdict span{color:var(--muted);margin-left:1px}
 .ver .rt{display:block;margin-top:3px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-weight:500}
 .ver .rt.best{color:var(--clay-ink)}.ver .rt.good{color:var(--muted)}
@@ -748,7 +749,7 @@ if(FRESH)S.onboarded=false;else if(S.onboarded==null)S.onboarded=true;
 S.trips=S.trips||{};
 S.items&&S.items.forEach(i=>{const m=MY_BAGS.find(x=>x.id===i.id);if(m){if(m.brand)i.brand=m.brand;i.use=m.use}});if(!(S.mig&&S.mig.shoes1&&S.mig.bags1&&S.mig.pieces11&&S.mig.clean1)){migShoes(S);migBags(S);migPieces(S);migClean(S);try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}}
 S.wish=S.wish||[];S.profile=S.profile||{};
-function save(){for(const k in SUG)delete SUG[k];S.updatedAt=Date.now();try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}if(typeof schedulePush==='function')schedulePush()}
+function save(){for(const k in SUG)delete SUG[k];for(const k in BSC)delete BSC[k];S.updatedAt=Date.now();try{localStorage.setItem('stella-c',JSON.stringify(S))}catch(e){}if(typeof schedulePush==='function')schedulePush()}
 const byId=id=>S.items.find(i=>i.id===id);
 
 /* ---------- weather ---------- */
@@ -835,6 +836,14 @@ function famOf(i){const n=(i.colorName||'').toLowerCase();if(FAM_BY_NAME[n])retu
   const h=(i.color||'#888').replace('#',''),r=parseInt(h.slice(0,2),16)/255,g=parseInt(h.slice(2,4),16)/255,b=parseInt(h.slice(4,6),16)/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2;
   if(l<.16)return b>r+.04?'navy':'black';if(l>.86)return'white';if(mx-mn<.08)return'grey';if(r>=g&&g>=b)return l>.55?'sand':'brown';return'other'+Math.round(mx*10)}
 const FNAME={black:'black',navy:'navy',brown:'brown',camel:'camel',sand:'beige',white:'white',olive:'olive',green:'green',mauve:'mauve',lightblue:'light blue',grey:'grey',rust:'rust',denim:'denim'};
+/* shape, pattern and formality of each piece (1 = very casual, 5 = suit) */
+const STY={i23:['relaxed','solid',4],i24:['relaxed','solid',4],i25:['relaxed','solid',3],i26:['relaxed','solid',4],i27:['fitted','solid',4],i28:['fitted','solid',3],i29:['fitted','solid',3],
+  i37:['relaxed','texture',3],i38:['relaxed','texture',2],i39:['volume','solid',2],i40:['volume','solid',2],i41:['volume','texture',2],i42:['relaxed','solid',4],i43:['relaxed','solid',4],
+  i8:['straight','solid',5],i34:['wide','stripe',3],i35:['wide','solid',4],i36:['wide','solid',4],
+  i22:[null,'solid',5],i33:[null,'solid',3],i2:[null,'solid',4],i30:[null,'solid',3],i31:[null,'solid',3]};
+const sty=i=>{const v=STY[i.id];if(v)return{vol:v[0],pat:v[1],form:v[2]};
+  const k=i.kind||'',form=i.suit?5:k==='blazer'||k==='shirt'?4:k==='trousers'||k==='skirt'||k==='trench'||k==='coat'?4:k==='jeans'||k==='tee'?2:3;
+  return{vol:i.cat==='bottom'?(k==='jeans'?'slim':'straight'):i.cat==='top'?'relaxed':null,pat:'solid',form}};
 /* score an outfit; higher is better. Returns {s, why[]} */
 function harmony(ids){const P=ids.map(byId).filter(Boolean),G=P.filter(i=>['outer','top','dress','bottom'].includes(i.cat)),sh=P.find(i=>i.cat==='shoes'),bg=P.find(i=>i.cat==='bag'),bot=P.find(i=>i.cat==='bottom');
   let s=0;const why=[];const gF=G.map(famOf),all=new Set(gF.concat(sh?[famOf(sh)]:[],bg?[famOf(bg)]:[]));
@@ -858,6 +867,14 @@ function harmony(ids){const P=ids.map(byId).filter(Boolean),G=P.filter(i=>['oute
   if(fams.has('black')&&fams.has('brown')&&!light)s-=2;
   /* 8. navy against black reads as a mistake unless something light breaks it up */
   if(gF.includes('navy')&&gF.includes('black'))s-=light?.5:1.5;
+  /* 10. proportion: volume in one place, the other half streamlined */
+  const tp=P.find(i=>i.cat==='top');if(tp&&bot){const a=sty(tp).vol,b=sty(bot).vol;
+    if(a==='volume'&&b==='wide')s-=1.5;else if(a==='volume'&&(b==='slim'||b==='straight')){s+=.5;why.push('A streamlined leg balances the volume on top')}
+    else if(a==='fitted'&&b==='wide'){s+=1;why.push('Fitted top balances the wide trousers')}}
+  /* 11. one pattern at a time; solids and textures are fine with it */
+  const pats=G.filter(i=>{const p=sty(i).pat;return p==='stripe'||p==='print'||p==='check'});if(pats.length>1)s-=1.5;
+  /* 12. pieces at a similar level of dressiness */
+  const fs=G.map(i=>sty(i).form);if(fs.length>1){const sp=Math.max(...fs)-Math.min(...fs);if(sp>=3)s-=1.5;else if(sp===2)s-=.5;else if(sp<=1&&G.length>1){s+=.5;why.push('Pieces sit at the same level of dressiness')}}
   /* 9. mix of textures adds depth */
   if(new Set(G.map(i=>(i.fabric||'').toLowerCase())).size>=2)s+=.5;
   return{s,why}}
@@ -1190,7 +1207,7 @@ const baseOf=ids=>ids.filter(id=>{const i=byId(id);return i&&BASEC.includes(i.ca
    casual = jeans or relaxed bottoms with shirts, knits or tees, flats, boots or sneakers. */
 function codesOf(baseIds){const P=baseIds.map(byId).filter(Boolean),t=P.find(i=>i.cat==='top'),b=P.find(i=>i.cat==='bottom'),d=P.find(i=>i.cat==='dress'),out=[];
   const A=S.items,tailored=b&&(b.kind==='trousers'||b.kind==='skirt'),dressyTop=t&&(t.kind==='shirt'||t.kind==='cami'||t.dressy);
-  if(t&&t.casualOnly){if(b&&(b.kind==='jeans'||b.casual))out.push('weekend');return out}
+  if(t&&t.casualOnly){if(b)out.push('weekend');return out}/* a casual top makes any bottom casual */
   if(b&&b.suit&&dressyTop&&A.some(i=>i.cat==='outer'&&i.suit===b.suit))out.push('formal');
   if((tailored||(b&&b.kind==='jeans'))&&t)out.push('work');
   if(d&&d.kind==='dress')out.push('work');
@@ -1216,23 +1233,31 @@ function versionsNote(G){const n=c=>new Set(G.variants.map(v=>(v.ids.map(byId).f
 function baseThumb(ids){const s=slots(ids),ks=['outer','dress','top','bottom'].filter(k=>s[k]),z=ks.length>2?72:100;return`<span class="flat flatb" style="padding:10px">${ks.map(k=>g(s[k],z,z,'position:static;--q:1')).join('')}</span>`}
 function lookThumb(ids){const p=photoFor(ids);if(p){const src=imageFor(p,ids);if(src)return`<img src="${esc(src)}" alt="">`}
   const s=slots(withBag(ids));return`<span class="flat">${['outer','dress','top','bottom','shoes','socks','bag'].filter(k=>s[k]).map(k=>g(s[k],k==='shoes'||k==='bag'?56:58,k==='shoes'||k==='bag'?40:70,'position:static;--q:1')).join('')}</span>`}
+/* a base's score: the best complete outfit it can make for today's weather and its dress code */
+const BSC={};
+function baseScore(base,code){const k=base.join(',')+'|'+code+'|'+TODAY;if(BSC[k]!=null)return BSC[k];const o=refineAll(base,code,wx(TODAY),false,true);
+  return BSC[k]=o.length?Math.max(...o.slice(0,6).map(v=>fitScore(v.x,wx(TODAY)))):fitScore(withSocks(base),wx(TODAY))}
 function scLooks(){
   const L=allLooks(),hasFav=L.some(x=>x.fav);if(!V.looksF)V.looksF=hasFav?'fav':'all';
   const w=wx(TODAY),F=V.looksF;
-  const list=L.filter(G=>(CODE_NAME[F]&&codesOf(G.base.split(',')).includes(F))||F==='all'||(F==='fav'&&G.fav)||(F==='onme'&&G.photo)||(F==='today'&&G.main.ids.every(id=>avail(byId(id)))&&check(G.main.ids,w).ok));
+  const list=L.filter(G=>(CODE_NAME[F]&&codesOf(G.base.split(',')).includes(F))||F==='all'&&(codesOf(G.base.split(',')).length||G.photo||G.fav)||(F==='fav'&&G.fav)||(F==='onme'&&G.photo)||(F==='today'&&G.main.ids.every(id=>avail(byId(id)))&&check(G.main.ids,w).ok));
+  const codeFor=G=>{if(CODE_NAME[F])return F;const cs=codesOf(G.base.split(','));return cs.includes('work')?'work':cs[0]||'work'};
+  list.forEach(G=>G.sc=baseScore(G.base.split(','),codeFor(G)));
+  const keep=G=>G.photo||G.fav||G.variants.some(v=>v.fav||v.src.has('worn'))||S10(G.sc)>=6;
+  const hidden=list.filter(G=>!keep(G)).length;list.splice(0,list.length,...list.filter(keep).sort((a,b)=>b.sc-a.sc));
   const chip=(k,t)=>`<button class="chip ${F===k?'on':''}" data-lf="${k}" aria-pressed="${F===k}">${t}</button>`;
   const cards=list.map(G=>{const l=G.variants.find(v=>v.fav)||G.main,t=titleOf(baseOf(l.ids)),vn='';
     return`<div class="lcard"><button class="im" data-look="${esc(G.base)}" aria-label="Open look: ${esc(t.join(' '))}">${G.photo?lookThumb(l.ids):baseThumb(F==='formal'?(()=>{const bs=G.base.split(','),b=bs.map(byId).find(i=>i.cat==='bottom'),bl=b&&S.items.find(i=>i.cat==='outer'&&i.suit&&i.suit===b.suit);return bl?[bl.id].concat(bs):bs})():G.base.split(','))}</button>
       ${G.photo?'<span class="onme">On you</span>':''}
       <button class="hb ${l.fav?'on':''}" data-favlook="${esc(l.key)}" aria-pressed="${l.fav}" aria-label="${l.fav?'Remove from favourites':'Add to favourites'}">${ic('heart')}</button>
-      <span class="nm">${esc(t[0])} <i class="it">${esc(t[1])}</i></span><span class="mt">${vn||esc(G.photo?'On you':G.variants.some(v=>v.src.has('worn'))?'Worn before':G.variants.some(v=>v.fav)?'Saved look':'Photo to come')}</span></div>`}).join('');
+      <span class="nm">${esc(t[0])} <i class="it">${esc(t[1])}</i></span><span class="mt"><b class="lsc" style="--sc:${scoreCol(G.sc)}">${fmt10(G.sc)}</b> · ${vn||esc(G.photo?'On you':G.variants.some(v=>v.src.has('worn'))?'Worn before':G.variants.some(v=>v.fav)?'Saved look':'Photo to come')}</span></div>`}).join('');
   return`
   <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-top:8px">
     <div><div class="eyebrow">${L.length} look${L.length===1?'':'s'} · ${L.filter(x=>x.fav).length} favourite${L.filter(x=>x.fav).length===1?'':'s'}</div><h1 class="h-xl" style="margin-top:2px">Your <i class="it">looks</i></h1></div></div>
   <button class="trycard" data-act="stats"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V5M19 20v-6"/></svg></span><span style="flex:1;min-width:0"><b style="font-weight:500;display:block">Your style</b><span class="note">What you wear most, your colours and cost per wear.</span></span><span class="chev">${ic('right')}</span></button>
   <button class="trycard" data-act="try-new"><span class="ti">${ic('sparkle')}</span><span style="flex:1;min-width:0"><b style="font-weight:500;display:block">Try on something new</b><span class="note">Paste a store link or add a photo and see it on you before you buy.</span></span><span class="chev">${ic('right')}</span></button>
   <div class="chips" role="group" aria-label="Filter looks">${chip('all','All')}${chip('formal','Business formal')}${chip('work','Business casual')}${chip('weekend','Casual')}${chip('fav','Favourites')}${chip('onme','On you')}${chip('today','Good for today')}</div>
-  ${cards?`<div class="lgrid">${cards}</div>`:`<div class="empty"><h3>${F==='fav'?'No favourites yet':CODE_NAME[F]?'No '+CODE_NAME[F].toLowerCase()+' looks yet':'Nothing here yet'}</h3>${CODE_NAME[F]?`<p>${F==='formal'?'You need a suit: a blazer with matching trousers or skirt, plus a shirt or blouse.':F==='work'?'You need tailored trousers, a skirt or dark jeans with a shirt, blouse or knit.':'You need casual bottoms like jeans or relaxed trousers. Add some to your wardrobe and casual looks will appear here.'}</p>`:''}${CODE_NAME[F]?'':F==='fav'?'Tap the heart on any look, on Today or here, and it will be kept in this list.':'Looks you plan, wear or save show up here.'}</div>`}`;
+  ${cards?`<div class="lgrid">${cards}</div>${hidden?`<p class="note" style="text-align:center;margin-top:4px">${hidden} weaker combination${hidden===1?'':'s'} hidden</p>`:''}`:`<div class="empty"><h3>${F==='fav'?'No favourites yet':CODE_NAME[F]?'No '+CODE_NAME[F].toLowerCase()+' looks yet':'Nothing here yet'}</h3>${CODE_NAME[F]?`<p>${F==='formal'?'You need a suit: a blazer with matching trousers or skirt, plus a shirt or blouse.':F==='work'?'You need tailored trousers, a skirt or dark jeans with a shirt, blouse or knit.':'You need casual bottoms like jeans or relaxed trousers. Add some to your wardrobe and casual looks will appear here.'}</p>`:''}${CODE_NAME[F]?'':F==='fav'?'Tap the heart on any look, on Today or here, and it will be kept in this list.':'Looks you plan, wear or save show up here.'}</div>`}`;
 }
 function heroFor(ids,hk,extra){
   const p=photoFor(ids),hid=(V.hide[hk]||[]).filter(id=>ids.includes(id));let vis=ids.filter(id=>!hid.includes(id)),img=p&&imageFor(p,vis);
