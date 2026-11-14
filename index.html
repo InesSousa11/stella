@@ -354,8 +354,8 @@ nav.tabs .on i{background:var(--clay)}
 .hero .right .pp-head{padding:2px 2px 4px}
 .hero .right .note{font-size:12px;line-height:1.35}
 .pr{display:block;padding:0;border-radius:18px;flex:none;position:relative}
-.pr .t:has(.cuf){position:relative;overflow:hidden}
-.pr .cuf{position:absolute;right:0;bottom:0;width:20px;height:20px;background:linear-gradient(135deg,transparent 50%,#8A5A3C 50%);pointer-events:none}
+.pr .t:has(.cuf){position:relative;overflow:hidden;clip-path:polygon(0 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%)}
+.pr .cuf{position:absolute;right:0;bottom:0;width:18px;height:18px;z-index:2;pointer-events:none;background:linear-gradient(to bottom right,#8A5A3C 50%,transparent 50%);border-top-left-radius:3px;filter:drop-shadow(-1px -1px 1.5px rgba(43,36,32,.22))}
 .pr.more .t{display:grid;place-items:center;background:transparent;border:1.5px dashed var(--clay);box-shadow:none}
 .pr.more .t svg{width:22px;height:22px;fill:none;stroke:var(--clay-ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .pr.more .ml{display:block;text-align:center;font-size:11px;color:var(--clay-ink);margin-top:3px}
