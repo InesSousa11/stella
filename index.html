@@ -879,7 +879,10 @@ let PHOTOS=[
   {id:'look-XHWFc',items:['i26','i35','i13','i15'],images:[{show:['i26','i35','i13','i15'],src:'photos/looks/look-XHWF-3-no-layers.webp'}]},
   {id:'look-DZHJ',items:['i2','i31','i23','i8','i12','i15'],images:[{show:['i2','i31','i23','i8','i12','i15'],src:'photos/looks/look-DZHJ-1-full.webp'},{show:['i31','i23','i8','i12','i15'],src:'photos/looks/look-DZHJ-2-no-coat.webp'},{show:['i23','i8','i12','i15'],src:'photos/looks/look-DZHJ-3-no-layers.webp'}]},
   {id:'look-DZHJb',items:['i31','i23','i8','i12','i15'],images:[{show:['i31','i23','i8','i12','i15'],src:'photos/looks/look-DZHJ-2-no-coat.webp'},{show:['i23','i8','i12','i15'],src:'photos/looks/look-DZHJ-3-no-layers.webp'}]},
-  {id:'look-DZHJc',items:['i23','i8','i12','i15'],images:[{show:['i23','i8','i12','i15'],src:'photos/looks/look-DZHJ-3-no-layers.webp'}]}];
+  {id:'look-DZHJc',items:['i23','i8','i12','i15'],images:[{show:['i23','i8','i12','i15'],src:'photos/looks/look-DZHJ-3-no-layers.webp'}]},
+  {id:'look-1F8C',items:['i2','i31','i27','i34','i12','i15'],images:[{show:['i2','i31','i27','i34','i12','i15'],src:'photos/looks/look-1F8C-1-full.webp'},{show:['i31','i27','i34','i12','i15'],src:'photos/looks/look-1F8C-2-no-coat.webp'},{show:['i27','i34','i12','i15'],src:'photos/looks/look-1F8C-3-no-layers.webp'}]},
+  {id:'look-1F8Cb',items:['i31','i27','i34','i12','i15'],images:[{show:['i31','i27','i34','i12','i15'],src:'photos/looks/look-1F8C-2-no-coat.webp'},{show:['i27','i34','i12','i15'],src:'photos/looks/look-1F8C-3-no-layers.webp'}]},
+  {id:'look-1F8Cc',items:['i27','i34','i12','i15'],images:[{show:['i27','i34','i12','i15'],src:'photos/looks/look-1F8C-3-no-layers.webp'}]}];
 const same=(a,b)=>a.length===b.length&&a.every(x=>b.includes(x));
 const noAcc=ids=>(ids||[]).filter(id=>{const i=byId(id);return!(i&&i.cat==='socks')});
 const photoFor=ids=>PHOTOS.find(p=>same(p.items,noAcc(ids)));
