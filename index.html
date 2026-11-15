@@ -898,6 +898,12 @@ function suggest(ds,type){
   let bases=[];tops.forEach(a=>bots.forEach(b=>bases.push([a.id,b.id])));dresses.forEach(d=>bases.push([d.id]));
   const code=['formal','work','weekend'].includes(t)?t:null,fit=code?bases.filter(x=>codesOf(x).includes(code)):[];
   if(fit.length)bases=fit;else if(code==='weekend'){const wk=bases.filter(x=>codesOf(x).includes('work'));if(wk.length)bases=wk}
+  /* one base per week: a top + bottom (or dress) worn on another day of the same Mon–Sun week is off the table */
+  {const dw=(parse(ds).getDay()+6)%7,used=new Set();
+   for(let j=0;j<7;j++){const d=add(ds,j-dw);if(d===ds)continue;const L=S.looks[d];let ids=null;
+     if(d<ds)ids=d<TODAY?(L&&L.items)||null:lookFor(d).ids;else if(L&&L.items&&L.items.length&&!L.auto)ids=L.items;
+     if(ids&&ids.length)used.add(baseOf(ids).slice().sort().join(','))}
+   const free=bases.filter(b=>!used.has(b.slice().sort().join(',')));if(free.length)bases=free}
   /* variety: what the previous three days wear (worn or planned), heavier for yesterday */
   const prev=[1,2,3].map(j=>{const d=add(ds,-j);if(d<TODAY){const L=S.looks[d];return L&&L.items||[]}return lookFor(d).ids});
   const WT={top:6,dress:6,bottom:2.5,shoes:2.5,bag:.6,socks:0},DEC=[1,.6,.3];
