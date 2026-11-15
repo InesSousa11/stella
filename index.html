@@ -1103,7 +1103,7 @@ function toast(t){document.querySelectorAll('.toast').forEach(x=>x.remove());con
 function nextOpen(){for(let i=1;i<30;i++){const d=add(TODAY,i);const L=S.looks[d];if(!L||!L.items||!L.items.length)return d}return add(TODAY,1)}
 function openDressing(ds,preset){
   const base=preset||lookFor(ds).ids;V.dr={date:ds,ids:base.slice(),tab:'top',hist:[]};
-  if(preset){const p=byId(preset[0]);if(p)V.dr.tab=p.cat==='dress'?'top':p.cat}
+  if(preset){const p=byId(preset[0]);if(p)V.dr.tab=p.cat==='dress'?'top':grpOf(p)}
   go('dressing');
 }
 
@@ -1262,10 +1262,11 @@ function scWardrobe(){
 
 function scDressing(){
   const D=V.dr,w=wx(D.date),L=S.looks[D.date],c=check(D.ids,w),s=slots(D.ids);
-  const tabs=[['outer','Outer'],['top','Top'],['bottom','Bottom'],['shoes','Shoes'],['bag','Bag']];
-  const cats=D.tab==='top'?['top','dress']:[D.tab];
-  const pool=S.items.filter(i=>cats.includes(i.cat));
-  const cur=D.tab==='top'?(s.dress||s.top):s[D.tab];
+  const tabs=[['outer3','Coat'],['outer2','Jacket'],['outer1','Knit'],['top','Top'],['bottom','Bottom'],['shoes','Shoes'],['bag','Bag']].filter(t=>!t[0].startsWith('outer')||S.items.some(i=>grpOf(i)===t[0]));
+  if(D.tab==='outer')D.tab=tabs[0][0];
+  const inTab=i=>D.tab==='top'?['top','dress'].includes(i.cat):grpOf(i)===D.tab;
+  const pool=S.items.filter(inTab);
+  const cur=D.ids.map(byId).find(i=>i&&inTab(i));
   let tiles=pool.map(i=>`<button class="tile ${cur&&cur.id===i.id?'on':''} ${avail(i)?'':'off'}" data-pick="${i.id}" ${avail(i)?'':'aria-disabled="true"'} aria-pressed="${!!(cur&&cur.id===i.id)}" aria-label="${esc(i.name)}${i.laundry?', in the wash':i.stored?', stored':''}">${g(i,46,46,'position:static')}${i.laundry?'<small>In wash</small>':i.stored?'<small>Stored</small>':''}</button>`).join('');
   if(D.tab!=='top'&&D.tab!=='bottom'||(D.tab==='bottom'&&s.dress))tiles=`<button class="tile ${cur?'':'on'}" data-pick="none" aria-pressed="${!cur}"><span class="none">None</span></button>`+tiles;
   const cap=D.ids.map(byId).filter(Boolean).map(i=>i.short).join(' · ');
@@ -1278,8 +1279,9 @@ function scDressing(){
     <div class="badge ${c.ok?'':'warn'}" title="${esc(c.why)}">${ic(c.ok?'sun':'warn')}<span style="white-space:pre-line">${esc(c.t)}</span></div>
     ${cap?`<div class="cap"><span>${esc(cap)}</span></div>`:''}</div>
   <p class="note" style="margin:-6px 4px 0">${esc(c.why)}</p>
-  <div class="utabs" role="tablist" aria-label="Layer" style="justify-content:space-between">${tabs.map(t=>`<button role="tab" aria-selected="${D.tab===t[0]}" class="${D.tab===t[0]?'on':''}" data-layer="${t[0]}">${t[1]}</button>`).join('')}</div>
+  <div class="utabs" role="tablist" aria-label="Layer" style="justify-content:space-between;overflow-x:auto;gap:14px">${tabs.map(t=>`<button role="tab" aria-selected="${D.tab===t[0]}" class="${D.tab===t[0]?'on':''}" data-layer="${t[0]}">${t[1]}</button>`).join('')}</div>
   <div class="tiles">${tiles}</div>
+  ${(()=>{if(photoFor(withSocks(D.ids)))return'';const k=aiSet(withSocks(D.ids)).key,on=(S.photoReq||[]).some(r=>r.key===k);return`<button class="btn ghost" style="width:100%;margin-top:14px" data-act="ai-req" aria-pressed="${on}">${ic('sparkle')}${on?'On your photos to make list':'Add to photos to make'}</button>`})()}
   <div class="sticky row"><button class="sq ${isFavKey(keyOf(D.ids))?'on':''}" data-favlook="${esc(keyOf(D.ids))}" aria-pressed="${isFavKey(keyOf(D.ids))}" aria-label="Save to your looks">${ic('heart')}</button><button class="btn" data-act="save-look">Save look for ${D.evt?esc(D.evt):esc(rel(D.date).replace('Today','today').replace('Tomorrow','tomorrow'))}</button></div>`;
 }
 
@@ -1377,11 +1379,13 @@ function aiSet(ids){const P=ids.map(byId).filter(Boolean),srt=P.slice().sort((a,
   layers.forEach(L=>{acc.push(AI_SHORT[L.id]||L.short);fol.push('Go back to the FIRST photo of this look. Take off the '+acc.join(' and the ')+'. Change only the clothes.')});
   return{code,key,ids:P.map(i=>i.id),pieces:srt,text:'Look '+code+'. Outside in: '+lines.join(' · ')+'.',fol,covers:(()=>{const out=[key];let cur=P.filter(i=>i.cat!=='socks');layers.forEach(L=>{cur=cur.filter(i=>i!==L);out.push(cur.map(i=>i.id).sort().join(','))});return out})()}}
 let TODO=null,TODOW=null;
-function todoList(){const sig=S.items.filter(avail).length+'|'+PHOTOS.length+'|'+TODAY;if(TODO&&TODO.sig===sig)return TODO;
+function todoList(){S.mig=S.mig||{};if(!S.mig.req1){S.mig.req1=1;S.photoReq=S.photoReq||[];const ids=withSocks(['i33','i30','i28','i36','i19','i15'].filter(byId));if(ids.length>=5&&!S.photoReq.some(r=>r.key===aiSet(ids).key))S.photoReq.unshift({key:aiSet(ids).key,ids});save()}
+  const sig=S.items.filter(avail).length+'|'+PHOTOS.length+'|'+TODAY+'|'+(S.photoReq||[]).length;if(TODO&&TODO.sig===sig)return TODO;
   const covered=new Set();PHOTOS.forEach(p=>p.images.forEach(im=>covered.add(noAcc(im.show).slice().sort().join(','))));
   const out=[],seen=new Set();const push=(ids,tag,rank)=>{const st=aiSet(ids);if(st.covers.some(k=>covered.has(k))&&covered.has(st.key))return;if(seen.has(st.key))return;
     /* skip if this outfit is a layer-free version of a set already on the list */
     if(out.some(o=>o.covers.includes(st.key)))return;seen.add(st.key);out.push(Object.assign(st,{tag,rank}))};
+  (S.photoReq||[]).forEach(r=>{if(!photoFor(r.ids))push(r.ids,'Added by you',-1)});
   for(let j=0;j<14;j++){const d=add(TODAY,j),ids=lookFor(d).ids;if(!photoFor(ids))push(ids,rel(d),j)}
   TODO={sig,list:out,more:null};return TODO}
 /* the rest of the wardrobe's strong outfits, worked out in small steps so the page stays smooth */
@@ -1905,8 +1909,8 @@ document.addEventListener('click',e=>{
   if(d.pick){
     const D=V.dr;if(t.getAttribute('aria-disabled')){const i=byId(d.pick);return toast(i.laundry?i.name+' is in the wash':i.name+' is stored for the season')}
     D.hist.push(D.ids.slice());
-    const cats=D.tab==='top'?['top','dress']:[D.tab];
-    D.ids=D.ids.filter(id=>{const i=byId(id);return i&&!cats.includes(i.cat)});
+    const inTab=i=>D.tab==='top'?['top','dress'].includes(i.cat):grpOf(i)===D.tab;
+    D.ids=D.ids.filter(id=>{const i=byId(id);return i&&!inTab(i)});
     if(d.pick!=='none'){const p=byId(d.pick);D.ids.push(p.id);
       if(p.cat==='dress')D.ids=D.ids.filter(id=>byId(id).cat!=='bottom');
       if(p.cat==='bottom')D.ids=D.ids.filter(id=>byId(id).cat!=='dress')}
@@ -1939,6 +1943,8 @@ document.addEventListener('click',e=>{
     case'ai-txt':{const st=todoList().list.find(o=>o.code===d.code);if(!st)return;const n=+d.n;return aiCopy(n?st.fol[n-1]:st.text)}
     case'ai-img':{const st=todoList().list.find(o=>o.code===d.code);if(!st)return;toast('Preparing image…');aiSheet(st).then(b=>aiShare(b,'look-'+st.code+'.jpg'));return}
     case'ai-setup':return aiCopy(AI_SETUP);
+    case'ai-req':{const ids=withSocks(V.dr.ids),k=aiSet(ids).key;S.photoReq=S.photoReq||[];const at=S.photoReq.findIndex(r=>r.key===k);
+      if(at>=0){S.photoReq.splice(at,1);toast('Removed from photos to make')}else{S.photoReq.unshift({key:k,ids});toast('Added to photos to make')}save();TODO=null;return render()}
     case'ai-trouser':fetch('photos/ref/trouser-fit.jpg').then(r=>r.blob()).then(b=>aiShare(b,'trouser-fit-reference.jpg'));return;
     case'see-forgot':V.stack=[];V.screen='wardrobe';V.ward.mode='mine';V.ward.cat='forgot';V.anim='f';return render(true);
     case'price':return sheetPrice();
